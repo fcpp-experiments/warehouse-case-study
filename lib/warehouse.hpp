@@ -14,7 +14,7 @@
 
 enum class warehouse_device_type { Pallet, Wearable };
 
-#define NO_GOODS -1
+#define NO_GOODS 255
 
 // [SYSTEM SETUP]
 
@@ -63,53 +63,53 @@ namespace tags {
     struct node_size {};
     //! @brief Shape of the current node.
     struct node_shape {};
+    struct node_uid {};
 }
 
 // [AGGREGATE PROGRAM]
 
 FUN device_t nearest_device(ARGS) { CODE
-    return get<1>(min_hood(CALL, make_tuple(node.nbr_dist(), node.nbr_uid())));
+    return get<1>(min_hood(CALL, make_tuple(node.nbr_dist(), node.nbr_uid()), make_tuple(INF, node.uid)));
 }
 
 FUN void load_goods_on_pallet(ARGS) { CODE 
-    using state_type = tuple<device_t,char>;
+    using state_type = tuple<device_t,uint8_t>;
     nbr(CALL, state_type(node.uid, node.storage(tags::loaded_good{})), [&](field<state_type> fs) {
-        if (node.storage(tags::node_type{}) == warehouse_device_type::Pallet) {
-            common::option<char> new_value = fold_hood(CALL, [&](state_type const& s, common::option<char> acc) {
-                if (get<0>(s) == node.uid) {
-                    return common::option<char>(get<1>(s));
-                } else {
-                    return acc;
-                }
-            }, fs, common::option<char>());
-            if (!new_value.empty()) {
-                node.storage(tags::loaded_good{}) = new_value.front();
-            }
-            return state_type(node.uid, node.storage(tags::loaded_good{}));
-        } else {
-            char goods_currenting_loading = node.storage(tags::loading_goods{});
-            if (goods_currenting_loading == NO_GOODS) {
-                return state_type(node.uid, NO_GOODS);
+        state_type last_state = self(CALL, fs);
+        uint8_t pallet_value = fold_hood(CALL, [&](state_type const& s, uint8_t acc) {
+            if (get<0>(s) == node.uid) {
+                return get<1>(s);
             } else {
-                state_type last_state = self(CALL, fs);
-                if (get<0>(last_state) == node.uid) {
-                    return state_type(nearest_device(CALL), goods_currenting_loading);
-                } else {
-                    if (any_hood(CALL, map_hood([&](state_type const& x) {
-                        return get<0>(x) == get<0>(last_state) && get<1>(x) == get<1>(last_state);
-                    }, fs))) {
-                        node.storage(tags::loading_goods{}) = NO_GOODS;
-                        return state_type(node.uid, NO_GOODS);
-                    } else {
-                        return last_state;
-                    }
-                }
+                return acc;
             }
+        }, fs, get<1>(last_state));
+        uint8_t goods_currenting_loading = node.storage(tags::loading_goods{});
+        device_t wearable_device_id = get<0>(last_state);
+        uint8_t wearable_value = get<1>(last_state);
+        device_t nearest = nearest_device(CALL);
+        if (get<0>(last_state) == node.uid && goods_currenting_loading != NO_GOODS) {
+            wearable_device_id = nearest;
+            wearable_value = goods_currenting_loading;
         }
+        if (any_hood(CALL, map_hood([&](state_type const& x) {
+                return get<0>(x) == get<0>(last_state) && get<1>(x) == get<1>(last_state);
+            }, fs)) && get<0>(last_state) != node.uid) {
+            node.storage(tags::loading_goods{}) = NO_GOODS;
+            wearable_device_id = node.uid;
+            wearable_value = NO_GOODS;
+        }
+        if (node.storage(tags::node_type{}) == warehouse_device_type::Pallet) {
+            node.storage(tags::loaded_good{}) = pallet_value;
+        }
+        return mux(
+            node.storage(tags::node_type{}) == warehouse_device_type::Pallet,
+            state_type(node.uid, pallet_value),
+            state_type(wearable_device_id, wearable_value)
+        );
     });
 }
 
-FUN_EXPORT load_goods_on_pallet_t = common::export_list<tuple<device_t,char>>;
+FUN_EXPORT load_goods_on_pallet_t = common::export_list<tuple<device_t,uint8_t>>;
 
 //! @brief Function doing stuff.
 FUN void stuff(ARGS) { CODE
@@ -117,12 +117,32 @@ FUN void stuff(ARGS) { CODE
 //! @brief Export types used by the stuff function (none).
 FUN_EXPORT stuff_t = common::export_list<>;
 
+FUN void maybe_change_loading_goods_for_simulation(ARGS) { CODE
+    if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable &&
+    node.storage(tags::loading_goods{}) == NO_GOODS && (rand() % 100) < 5) {
+        node.storage(tags::loading_goods{}) = rand() % 2;
+    }
+}
+
 //! @brief Main function.
 MAIN() {
     using namespace tags;
+    maybe_change_loading_goods_for_simulation(CALL);
     load_goods_on_pallet(CALL);
-    char current_loaded_good = node.storage(loaded_good{});
-    if (current_loaded_good == -1) {
+    node.storage(node_uid{}) = node.uid;
+    uint8_t current_loaded_good = NO_GOODS;
+    if (node.storage(node_type{}) == warehouse_device_type::Pallet) {
+        node.storage(node_shape{}) = shape::cube;
+        current_loaded_good = node.storage(loaded_good{});
+    } else {
+        if (node.storage(loading_goods{}) == NO_GOODS) {
+            node.storage(node_shape{}) = shape::sphere;
+        } else {
+            node.storage(node_shape{}) = shape::star;
+        }
+        current_loaded_good = node.storage(loading_goods{});
+    }
+    if (current_loaded_good == NO_GOODS) {
         node.storage(node_color{}) = color(GREEN);
     } else if (current_loaded_good == 0) {
         node.storage(node_color{}) = color(GOLD);
@@ -131,14 +151,11 @@ MAIN() {
     } else {
         node.storage(node_color{}) = color(RED);
     }
-    if (node.storage(node_type{}) == warehouse_device_type::Pallet) {
-        node.storage(node_shape{}) = shape::cube;
-    } else {
-        node.storage(node_shape{}) = shape::star;
-    }
     node.storage(node_size{}) = 5;
-    if (node.storage(node_type{}) == warehouse_device_type::Wearable) {
-        rectangle_walk(CALL, make_vec(0,0,0), make_vec(side,side,height), comm/3, 1);
+    if (node.storage(node_type{}) == warehouse_device_type::Wearable && node.storage(loading_goods{}) == NO_GOODS) {
+        rectangle_walk(CALL, make_vec(0,0,0), make_vec(side,side,height), comm/15, 1);
+    } else {
+        rectangle_walk(CALL, make_vec(0,0,0), make_vec(side,side,height), 0, 1);
     }
 }
 //! @brief Export types used by the main function.
@@ -172,12 +189,13 @@ using wearable_spawn_s = sequence::multiple_n<wearable_node_num, 0>;
 using rectangle_d = distribution::rect_n<1, 0, 0, 0, side, side, height>;
 //! @brief The contents of the node storage as tags and associated types.
 using store_t = tuple_store<
-    loaded_good,        char,
-    loading_goods,      char,
+    loaded_good,        uint8_t,
+    loading_goods,      uint8_t,
     node_type,          warehouse_device_type,
     node_color,         color,
     node_shape,         shape,
-    node_size,          double
+    node_size,          double,
+    node_uid,           device_t
 >;
 //! @brief The tags and corresponding aggregators to be logged.
 using aggregator_t = aggregators<
@@ -202,15 +220,15 @@ DECLARE_OPTIONS(list,
     init<
         x,      rectangle_d,
         node_type, pallet_distribution,
-        loaded_good, distribution::constant_n<char, -1>,
-        loading_goods, distribution::constant_n<char, -1>
+        loaded_good, distribution::constant_n<uint8_t, NO_GOODS>,
+        loading_goods, distribution::constant_n<uint8_t, NO_GOODS>
     >,
     spawn_schedule<wearable_spawn_s>,
     init<
         x,      rectangle_d,
         node_type, wearable_distribution,
-        loaded_good, distribution::constant_n<char, -1>,
-        loading_goods, distribution::constant_n<char, -1>
+        loaded_good, distribution::constant_n<uint8_t, NO_GOODS>,
+        loading_goods, distribution::constant_n<uint8_t, NO_GOODS>
     >,
     plot_type<plot_t>, // the plot description to be used
     dimension<dim>, // dimensionality of the space
