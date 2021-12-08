@@ -21,17 +21,19 @@ enum class warehouse_device_type { Pallet, Wearable };
 //! @brief The final simulation time.
 constexpr size_t end_time = 300;
 //! @brief Number of pallet devices.
-constexpr size_t pallet_node_num = 1000;
+constexpr size_t pallet_node_num = 150;
 //! @brief Number of wearable devices.
 constexpr size_t wearable_node_num = 5;
 //! @brief Communication radius.
-constexpr size_t comm = 100;
+constexpr size_t comm = 240;
 //! @brief Dimensionality of the space.
 constexpr size_t dim = 3;
+constexpr size_t grid_cell_size = 20;
 //! @brief Side of the area.
-constexpr size_t side = 500;
+constexpr size_t side = 1140;
+constexpr size_t side_2 = 1260;
 //! @brief Height of the area.
-constexpr size_t height = 100;
+constexpr size_t height = 200;
 
 
 /**
@@ -221,21 +223,46 @@ FUN void update_node_in_simulation(ARGS) { CODE
         node.storage(node_color{}) = color(RED);
     }
     if (node.storage(led_on{})) {
-        node.storage(node_size{}) = 10;
+        node.storage(node_size{}) = 30;
     } else {
-        node.storage(node_size{}) = 5;
+        node.storage(node_size{}) = 15;
     }
     if (node.storage(node_type{}) == warehouse_device_type::Wearable && current_loaded_good == NO_GOODS) {
-        rectangle_walk(CALL, make_vec(0,0,0), make_vec(side,side,height), comm/15, 1);
+        rectangle_walk(CALL, make_vec(grid_cell_size,grid_cell_size,0), make_vec(side - grid_cell_size,side_2 - grid_cell_size,0), comm/10, 1);
     } else {
-        rectangle_walk(CALL, make_vec(0,0,0), make_vec(side,side,height), 0, 1);
+        rectangle_walk(CALL, make_vec(grid_cell_size,grid_cell_size,0), make_vec(side - grid_cell_size,side_2 - grid_cell_size,0), 0, 1);
     }
 }
 
 FUN_EXPORT update_node_in_simulation_t = common::export_list<vec<dim>>;
 
+std::set<tuple<int,int,int>> used_slots;
+
+FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
+    if (coordination::counter(CALL, uint32_t{1}) == 1 && node.storage(tags::node_type{}) == warehouse_device_type::Pallet) {
+        int row, col, height;
+        real_t x, y, z;
+        do {
+            row = node.next_int(0,21);
+            col = node.next_int(0,44);
+            height = node.next_int(0,2);
+            if (row == 0) {
+                row = 22;
+            }
+            x = ((((row / 2) * 3) + row) * grid_cell_size) + (grid_cell_size / 2);
+            y = ((((col / 15) * 3) + col + 9) * grid_cell_size) + (grid_cell_size / 2);
+            z = height * grid_cell_size * 1.5;
+        } while (used_slots.find(make_tuple(row,col,height)) != used_slots.end());
+        used_slots.insert(make_tuple(row,col,height));
+        node.position() = make_vec(x,y,z);
+    }
+}
+
+FUN_EXPORT setup_nodes_if_first_round_of_simulation_t = common::export_list<uint32_t>;
+
 //! @brief Main function.
 MAIN() {
+    setup_nodes_if_first_round_of_simulation(CALL);
     maybe_change_loading_goods_for_simulation(CALL);
     load_goods_on_pallet(CALL);
     collision_detection(CALL, 0.1, 0.1);
@@ -244,7 +271,7 @@ MAIN() {
     update_node_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
-FUN_EXPORT main_t = common::export_list<load_goods_on_pallet_t, collision_detection_t, find_goods_t, log_collection_t, update_node_in_simulation_t>;
+FUN_EXPORT main_t = common::export_list<load_goods_on_pallet_t, collision_detection_t, find_goods_t, log_collection_t, update_node_in_simulation_t, setup_nodes_if_first_round_of_simulation_t>;
 
 
 } // namespace coordination
@@ -271,7 +298,7 @@ using pallet_spawn_s = sequence::multiple_n<pallet_node_num, 0>;
 
 using wearable_spawn_s = sequence::multiple_n<wearable_node_num, 0>;
 //! @brief The distribution of initial node positions (random in a given rectangle).
-using rectangle_d = distribution::rect_n<1, 0, 0, 0, side, side, height>;
+using rectangle_d = distribution::rect_n<1, 0, 0, 0, side, side_2, 0>;
 //! @brief The contents of the node storage as tags and associated types.
 using store_t = tuple_store<
     loaded_good,        pallet_content_type,
@@ -326,7 +353,8 @@ DECLARE_OPTIONS(list,
     connector<connect::fixed<comm, 1, dim>>,
     shape_tag<node_shape>, // the shape of a node is read from this tag in the store
     size_tag<node_size>,   // the size of a node is read from this tag in the store
-    color_tag<node_color>  // colors of a node are read from these
+    color_tag<node_color>,  // colors of a node are read from these
+    area<0,0,side,side_2>
 );
 
 
