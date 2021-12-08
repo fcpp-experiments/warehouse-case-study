@@ -150,6 +150,23 @@ FUN device_t find_goods(ARGS, query_type query) { CODE
 }
 FUN_EXPORT find_goods_t = common::export_list<query_type>;
 
+//! @brief Collects distributed data with a Lossless-information-speed-threshold strategy (blist) and a idempotent accumulate function [TO CHECK].
+GEN(T, G, BOUND( G, T(T,T) ))
+T blist_idem_collection(ARGS, real_t const& distance, T const& value, real_t radius, real_t speed, T const& null, G&& accumulate) { CODE
+    field<real_t> nbrdist = nbr(CALL, distance);
+    real_t t = node.current_time();
+    field<real_t> Tu = nbr(CALL, node.next_time());
+    field<real_t> Pu = nbr(CALL,distance + speed * (Tu - t));
+    field<real_t> dist = node.nbr_dist();
+    field<real_t> maxDistanceNow = dist + speed * node.nbr_lag();
+    field<real_t> Vwst = mux(isfinite(distance) && distance > nbrdist, (distance - Pu) / (Tu - t) , field<real_t>{0} ) ;
+    field<real_t> threshold = mux( (isfinite(distance) && maxDistanceNow < radius), max_hood(CALL, Vwst) , -INF);
+    return nbr(CALL, value, [&](field<T> old){
+        return fold_hood(CALL, accumulate, mux(nbrdist >= distance + node.nbr_lag() * nbr(CALL,threshold) && nbrdist > distance, old, null), value);
+    });
+}
+template <typename T> using blist_idem_collection_t = common::export_list<T,field<real_t>,real_t >;
+
 FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> const& new_logs, int parity) { CODE
     bool source = node.uid % 2 == parity and node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     real_t dist = bis_distance(CALL, source, 1, 0.5*comm);
