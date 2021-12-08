@@ -157,6 +157,8 @@ FUN std::vector<log_type> log_collection(ARGS, std::vector<log_type> new_logs) {
     return std::vector<log_type>();
 }
 
+FUN_EXPORT log_collection_t = common::export_list<>;
+
 FUN void update_node_in_simulation(ARGS) { CODE
     using namespace tags;
     node.storage(node_uid{}) = node.uid;
@@ -205,7 +207,7 @@ MAIN() {
     update_node_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
-FUN_EXPORT main_t = common::export_list<load_goods_on_pallet_t, collision_detection_t, find_goods_t, update_node_in_simulation_t>;
+FUN_EXPORT main_t = common::export_list<load_goods_on_pallet_t, collision_detection_t, find_goods_t, log_collection_t, update_node_in_simulation_t>;
 
 
 } // namespace coordination
