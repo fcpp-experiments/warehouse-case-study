@@ -142,22 +142,42 @@ FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t thresh
     // TODO
     return std::vector<log_type>();
 }
-
 FUN_EXPORT collision_detection_t = common::export_list<>;
 
 FUN device_t find_goods(ARGS, query_type query) { CODE
     // TODO
     return node.uid;
 }
-
 FUN_EXPORT find_goods_t = common::export_list<query_type>;
 
-FUN std::vector<log_type> log_collection(ARGS, std::vector<log_type> new_logs) { CODE
-    // TODO
-    return std::vector<log_type>();
+FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> const& new_logs, int parity) { CODE
+    bool source = node.uid % 2 == parity and node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
+    real_t dist = bis_distance(CALL, source, 1, 0.5*comm);
+    return mp_collection(CALL, dist, new_logs, std::vector<log_type>{}, [](std::vector<log_type> const& x, std::vector<log_type> const& y){
+        std::vector<log_type> z;
+        size_t i = 0, j = 0;
+        while (i < x.size() and j < y.size()) {
+            if (x[i] <= y[j]) {
+                if (x[i] == y[j]) ++j;
+                z.push_back(x[i++]);
+            } else z.push_back(y[j++]);
+        }
+        while (i < x.size()) z.push_back(x[i++]);
+        while (j < y.size()) z.push_back(y[j++]);
+        return z;
+    }, [](std::vector<log_type> x, size_t){
+        return x;
+    });
 }
+FUN_EXPORT single_log_collection_t = common::export_list<mp_collection_t<real_t, std::vector<log_type>>, bis_distance_t>;
 
-FUN_EXPORT log_collection_t = common::export_list<>;
+FUN std::vector<log_type> log_collection(ARGS, std::vector<log_type> new_logs) { CODE
+    std::sort(new_logs.begin(), new_logs.end());
+    std::vector<log_type> r0 = single_log_collection(CALL, new_logs, 0);
+    std::vector<log_type> r1 = single_log_collection(CALL, new_logs, 1);
+    return r0.empty() ? r1 : r0;
+}
+FUN_EXPORT log_collection_t = common::export_list<single_log_collection_t>;
 
 FUN void update_node_in_simulation(ARGS) { CODE
     using namespace tags;
