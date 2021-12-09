@@ -15,7 +15,10 @@
 enum class warehouse_device_type { Pallet, Wearable };
 
 #define NO_GOODS 255
-#define PALLET_CONTENT_CHANGE_LOG_TYPE 1
+#define UNLOAD_GOODS 254
+#define LOG_TYPE_PALLET_CONTENT_CHANGE 1
+#define LOG_TYPE_HANDLE_PALLET 2
+
 
 // [SYSTEM SETUP]
 
@@ -86,9 +89,19 @@ namespace coordination {
 
 // [AGGREGATE PROGRAM]
 
-FUN device_t nearest_device(ARGS) { CODE
-    return get<1>(min_hood(CALL, make_tuple(node.nbr_dist(), node.nbr_uid()), make_tuple(INF, node.uid)));
+FUN device_t nearest_pallet_device(ARGS) { CODE
+    auto tuple_field = make_tuple(node.nbr_dist(), node.nbr_uid(), nbr(CALL, node.storage(tags::node_type{})));
+    auto pallet_tuple_field = map_hood([](tuple<real_t, device_t, warehouse_device_type> const& t) {
+        tuple<real_t, device_t, warehouse_device_type> o(t);
+        if (get<2>(o) == warehouse_device_type::Wearable) {
+            get<0>(o) = INF;
+        }
+        return o;
+    }, tuple_field);
+    return get<1>(min_hood(CALL, pallet_tuple_field, make_tuple(INF, node.uid, node.storage(tags::node_type{}))));
 }
+
+FUN_EXPORT nearest_pallet_device_t = common::export_list<warehouse_device_type>;
 
 FUN std::vector<log_type> load_goods_on_pallet(ARGS) { CODE 
     using state_type = tuple<device_t,pallet_content_type>;
@@ -103,15 +116,20 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS) { CODE
             }
         }, fs, get<1>(last_state));
         if (node.storage(tags::node_type{}) == warehouse_device_type::Pallet && get<1>(last_state) != pallet_value) {
-            loading_logs.push_back(common::make_tagged_tuple<tags::log_content_type, tags::logger_id, tags::log_time, tags::log_content>(PALLET_CONTENT_CHANGE_LOG_TYPE, node.uid, node.net.real_time(), get<tags::goods_type>(pallet_value)));
+            loading_logs.push_back(common::make_tagged_tuple<tags::log_content_type, tags::logger_id, tags::log_time, tags::log_content>(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, node.net.real_time(), get<tags::goods_type>(pallet_value)));
         }
         pallet_content_type goods_currenting_loading = node.storage(tags::loading_goods{});
         device_t wearable_device_id = get<0>(last_state);
         pallet_content_type wearable_value = get<1>(last_state);
-        device_t nearest = nearest_device(CALL);
+        device_t nearest = nearest_pallet_device(CALL);
         if (get<0>(last_state) == node.uid && get<tags::goods_type>(goods_currenting_loading) != NO_GOODS) {
             wearable_device_id = nearest;
-            wearable_value = goods_currenting_loading;
+            if (get<tags::goods_type>(goods_currenting_loading) == UNLOAD_GOODS) {
+                wearable_value = NO_GOODS;
+            } else {
+                wearable_value = goods_currenting_loading;
+            }
+            loading_logs.push_back(common::make_tagged_tuple<tags::log_content_type, tags::logger_id, tags::log_time, tags::log_content>(LOG_TYPE_HANDLE_PALLET, node.uid, node.net.real_time(), nearest));
         }
         if (any_hood(CALL, map_hood([&](state_type const& x) {
                 return get<0>(x) == get<0>(last_state) && get<1>(x) == get<1>(last_state);
@@ -145,7 +163,11 @@ FUN void maybe_change_loading_goods_for_simulation(ARGS) { CODE
         node.storage(tags::node_type{}) == warehouse_device_type::Wearable                          &&
         get<tags::goods_type>(node.storage(tags::loading_goods{})) == NO_GOODS                      &&
         (rand() % 100) < 5) {
-        node.storage(tags::loading_goods{}) = common::make_tagged_tuple<coordination::tags::goods_type>(rand() % 2);
+        int new_type = rand() % 3;
+        if (new_type == 2) {
+            new_type = UNLOAD_GOODS;
+        }
+        node.storage(tags::loading_goods{}) = common::make_tagged_tuple<coordination::tags::goods_type>(new_type);
     }
 }
 
@@ -230,6 +252,8 @@ FUN void update_node_in_simulation(ARGS) { CODE
         node.storage(node_color{}) = color(GOLD);
     } else if (current_loaded_good == 1) {
         node.storage(node_color{}) = color(CYAN);
+    } else if (current_loaded_good == UNLOAD_GOODS) {
+        node.storage(node_color{}) = color(DARK_GREEN);
     } else {
         node.storage(node_color{}) = color(RED);
     }
@@ -304,6 +328,7 @@ MAIN() {
 }
 //! @brief Export types used by the main function.
 FUN_EXPORT main_t = common::export_list<
+    nearest_pallet_device_t,
     load_goods_on_pallet_t, 
     collision_detection_t, 
     find_goods_t, 
