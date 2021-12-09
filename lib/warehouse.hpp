@@ -21,7 +21,7 @@ enum class warehouse_device_type { Pallet, Wearable };
 //! @brief The final simulation time.
 constexpr size_t end_time = 300;
 //! @brief Number of pallet devices.
-constexpr size_t pallet_node_num = 150;
+constexpr size_t pallet_node_num = 250;
 //! @brief Number of wearable devices.
 constexpr size_t wearable_node_num = 5;
 //! @brief Communication radius.
@@ -134,11 +134,15 @@ FUN void stuff(ARGS) { CODE
 FUN_EXPORT stuff_t = common::export_list<>;
 
 FUN void maybe_change_loading_goods_for_simulation(ARGS) { CODE
-    if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable &&
-    get<tags::goods_type>(node.storage(tags::loading_goods{})) == NO_GOODS && (rand() % 100) < 5) {
+    if (any_hood(CALL, nbr(CALL, node.storage(tags::node_type{}) == warehouse_device_type::Pallet)) &&
+        node.storage(tags::node_type{}) == warehouse_device_type::Wearable                          &&
+        get<tags::goods_type>(node.storage(tags::loading_goods{})) == NO_GOODS                      &&
+        (rand() % 100) < 5) {
         node.storage(tags::loading_goods{}) = common::make_tagged_tuple<coordination::tags::goods_type>(rand() % 2);
     }
 }
+
+FUN_EXPORT maybe_change_loading_goods_for_simulation_t = common::export_list<bool>;
 
 FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold) { CODE
     // TODO
@@ -228,18 +232,33 @@ FUN void update_node_in_simulation(ARGS) { CODE
         node.storage(node_size{}) = 15;
     }
     if (node.storage(node_type{}) == warehouse_device_type::Wearable && current_loaded_good == NO_GOODS) {
-        rectangle_walk(CALL, make_vec(grid_cell_size,grid_cell_size,0), make_vec(side - grid_cell_size,side_2 - grid_cell_size,0), comm/10, 1);
+        auto closest_obstacle = node.net.closest_obstacle(node.position());
+        real_t dist_to_obstacle = distance(closest_obstacle, node.position());
+        if (dist_to_obstacle <= 10) {
+            node.storage(node_color{}) = color(RED);
+            node.velocity() = make_vec(0,0,0);
+            node.propulsion() = make_vec(0,0,0);
+            if (dist_to_obstacle > 0) {
+                node.propulsion() += -coordination::point_elastic_force(CALL,closest_obstacle,1,5);
+            } else {
+                node.propulsion() += coordination::point_elastic_force(CALL,node.net.closest_space(node.position()),1,5);
+            }
+        } else {
+            node.propulsion() = make_vec(0,0,0);
+            rectangle_walk(CALL, make_vec(grid_cell_size,grid_cell_size,0), make_vec(side - grid_cell_size,side_2 - grid_cell_size,0), comm/10, 1);
+        }
     } else {
-        rectangle_walk(CALL, make_vec(grid_cell_size,grid_cell_size,0), make_vec(side - grid_cell_size,side_2 - grid_cell_size,0), 0, 1);
+        node.propulsion() = make_vec(0,0,0);
+        rectangle_walk(CALL, make_vec(0,0,0), make_vec(0,0,0), 0, 1);
     }
 }
 
-FUN_EXPORT update_node_in_simulation_t = common::export_list<vec<dim>>;
+FUN_EXPORT update_node_in_simulation_t = common::export_list<vec<dim>, int>;
 
 std::set<tuple<int,int,int>> used_slots;
 
 FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
-    if (coordination::counter(CALL, uint32_t{1}) == 1 && node.storage(tags::node_type{}) == warehouse_device_type::Pallet) {
+    if (coordination::counter(CALL) == 1 && node.storage(tags::node_type{}) == warehouse_device_type::Pallet) {
         int row, col, height;
         real_t x, y, z;
         do {
@@ -271,7 +290,15 @@ MAIN() {
     update_node_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
-FUN_EXPORT main_t = common::export_list<load_goods_on_pallet_t, collision_detection_t, find_goods_t, log_collection_t, update_node_in_simulation_t, setup_nodes_if_first_round_of_simulation_t>;
+FUN_EXPORT main_t = common::export_list<
+    load_goods_on_pallet_t, 
+    collision_detection_t, 
+    find_goods_t, 
+    log_collection_t, 
+    update_node_in_simulation_t, 
+    setup_nodes_if_first_round_of_simulation_t,
+    maybe_change_loading_goods_for_simulation_t
+>;
 
 
 } // namespace coordination
@@ -299,6 +326,8 @@ using pallet_spawn_s = sequence::multiple_n<pallet_node_num, 0>;
 using wearable_spawn_s = sequence::multiple_n<wearable_node_num, 0>;
 //! @brief The distribution of initial node positions (random in a given rectangle).
 using rectangle_d = distribution::rect_n<1, 0, 0, 0, side, side_2, 0>;
+//! @brief The distribution of initial node positions (random in a given rectangle).
+using wearable_rectangle_d = distribution::rect_n<1, grid_cell_size, grid_cell_size, 0, grid_cell_size * 35, grid_cell_size * 9, 0>;
 //! @brief The contents of the node storage as tags and associated types.
 using store_t = tuple_store<
     loaded_good,        pallet_content_type,
@@ -341,7 +370,7 @@ DECLARE_OPTIONS(list,
     >,
     spawn_schedule<wearable_spawn_s>,
     init<
-        x,      rectangle_d,
+        x,      wearable_rectangle_d,
         led_on, false_distribution,
         node_type, wearable_distribution,
         loaded_good, no_goods_distribution,

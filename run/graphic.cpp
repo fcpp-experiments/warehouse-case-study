@@ -14,9 +14,10 @@ int main() {
     //! @brief The network object type (interactive simulator with given options).
     using net_t = component::interactive_simulator<option::list>::net;
     //! @brief The initialisation values (simulation name, texture of the reference plane, node movement speed).
-    auto init_v = common::make_tagged_tuple<option::name, option::texture>(
+    auto init_v = common::make_tagged_tuple<option::name, option::texture, option::obstacles>(
         "Warehouse Case Study",
-        "warehouse.png"
+        "warehouse.png",
+        "warehouse-obstacles.png"
     );
     //! @brief Construct the network object.
     net_t network{init_v};
