@@ -15,6 +15,7 @@
 enum class warehouse_device_type { Pallet, Wearable };
 
 #define NO_GOODS 255
+#define PALLET_CONTENT_CHANGE_LOG_TYPE 1
 
 // [SYSTEM SETUP]
 
@@ -23,7 +24,7 @@ constexpr size_t end_time = 300;
 //! @brief Number of pallet devices.
 constexpr size_t pallet_node_num = 250;
 //! @brief Number of wearable devices.
-constexpr size_t wearable_node_num = 5;
+constexpr size_t wearable_node_num = 6;
 //! @brief Communication radius.
 constexpr size_t comm = 240;
 //! @brief Dimensionality of the space.
@@ -45,13 +46,14 @@ namespace fcpp {
 namespace coordination {
     namespace tags {
         struct goods_type {};
-        struct log_type {};
+        struct log_content_type {};
         struct logger_id {};
         struct log_time {};
         struct log_content {};
         struct loaded_good {};
         struct loading_goods{};
         struct query_goods {};
+        struct logs {};
         struct led_on {};
         struct node_type {};
         //! @brief Color of the current node.
@@ -75,7 +77,7 @@ bool operator<(vec<n> const&, vec<n> const&) {
 
 using pallet_content_type = common::tagged_tuple_t<coordination::tags::goods_type, uint8_t>;
 
-using log_type = common::tagged_tuple_t<coordination::tags::log_type, uint8_t, coordination::tags::logger_id, device_t, coordination::tags::log_time, times_t, coordination::tags::log_content, real_t>;
+using log_type = common::tagged_tuple_t<coordination::tags::log_content_type, uint8_t, coordination::tags::logger_id, device_t, coordination::tags::log_time, times_t, coordination::tags::log_content, real_t>;
 
 using query_type = common::tagged_tuple_t<coordination::tags::query_goods, uint8_t>;
 
@@ -88,8 +90,9 @@ FUN device_t nearest_device(ARGS) { CODE
     return get<1>(min_hood(CALL, make_tuple(node.nbr_dist(), node.nbr_uid()), make_tuple(INF, node.uid)));
 }
 
-FUN void load_goods_on_pallet(ARGS) { CODE 
+FUN std::vector<log_type> load_goods_on_pallet(ARGS) { CODE 
     using state_type = tuple<device_t,pallet_content_type>;
+    std::vector<log_type> loading_logs;
     nbr(CALL, state_type(node.uid, node.storage(tags::loaded_good{})), [&](field<state_type> fs) {
         state_type last_state = self(CALL, fs);
         pallet_content_type pallet_value = fold_hood(CALL, [&](state_type const& s, pallet_content_type acc) {
@@ -99,6 +102,9 @@ FUN void load_goods_on_pallet(ARGS) { CODE
                 return acc;
             }
         }, fs, get<1>(last_state));
+        if (node.storage(tags::node_type{}) == warehouse_device_type::Pallet && get<1>(last_state) != pallet_value) {
+            loading_logs.push_back(common::make_tagged_tuple<tags::log_content_type, tags::logger_id, tags::log_time, tags::log_content>(PALLET_CONTENT_CHANGE_LOG_TYPE, node.uid, node.net.real_time(), get<tags::goods_type>(pallet_value)));
+        }
         pallet_content_type goods_currenting_loading = node.storage(tags::loading_goods{});
         device_t wearable_device_id = get<0>(last_state);
         pallet_content_type wearable_value = get<1>(last_state);
@@ -123,6 +129,7 @@ FUN void load_goods_on_pallet(ARGS) { CODE
             state_type(wearable_device_id, wearable_value)
         );
     });
+    return loading_logs;
 }
 
 FUN_EXPORT load_goods_on_pallet_t = common::export_list<tuple<device_t,pallet_content_type>>;
@@ -235,7 +242,6 @@ FUN void update_node_in_simulation(ARGS) { CODE
         auto closest_obstacle = node.net.closest_obstacle(node.position());
         real_t dist_to_obstacle = distance(closest_obstacle, node.position());
         if (dist_to_obstacle <= 10) {
-            node.storage(node_color{}) = color(RED);
             node.velocity() = make_vec(0,0,0);
             node.propulsion() = make_vec(0,0,0);
             if (dist_to_obstacle > 0) {
@@ -281,12 +287,19 @@ FUN_EXPORT setup_nodes_if_first_round_of_simulation_t = common::export_list<uint
 
 //! @brief Main function.
 MAIN() {
+    std::vector<log_type> new_logs;
     setup_nodes_if_first_round_of_simulation(CALL);
     maybe_change_loading_goods_for_simulation(CALL);
-    load_goods_on_pallet(CALL);
-    collision_detection(CALL, 0.1, 0.1);
+    std::vector<log_type> loading_logs = load_goods_on_pallet(CALL);
+    new_logs.insert(new_logs.end(), loading_logs.begin(), loading_logs.end());
+    std::vector<log_type> collision_logs = collision_detection(CALL, 0.1, 0.1);
+    new_logs.insert(new_logs.end(), collision_logs.begin(), collision_logs.end());
     find_goods(CALL, common::make_tagged_tuple<tags::query_goods>(0));
-    log_collection(CALL, std::vector<log_type>());
+    std::vector<log_type> collected_logs = log_collection(CALL, new_logs);
+    if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable) {
+        std::vector<log_type>& previously_collected_logs = node.storage(tags::logs{});
+        previously_collected_logs.insert(previously_collected_logs.end(), collected_logs.begin(), collected_logs.end());
+    }
     update_node_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
@@ -332,6 +345,7 @@ using wearable_rectangle_d = distribution::rect_n<1, grid_cell_size, grid_cell_s
 using store_t = tuple_store<
     loaded_good,        pallet_content_type,
     loading_goods,      pallet_content_type,
+    logs,               std::vector<log_type>,
     led_on,             bool,
     node_type,          warehouse_device_type,
     node_color,         color,
