@@ -66,7 +66,6 @@ namespace coordination {
         struct log_content {};
         struct loaded_good {};
         struct loading_goods{};
-        struct query_goods {};
         struct logs {};
         struct led_on {};
         struct node_type {};
@@ -93,7 +92,20 @@ using pallet_content_type = common::tagged_tuple_t<coordination::tags::goods_typ
 
 using log_type = common::tagged_tuple_t<coordination::tags::log_content_type, uint8_t, coordination::tags::logger_id, device_t, coordination::tags::log_time, times_t, coordination::tags::log_content, real_t>;
 
-using query_type = common::tagged_tuple_t<coordination::tags::query_goods, uint8_t>;
+using query_type = common::tagged_tuple_t<coordination::tags::goods_type, uint8_t>;
+
+}
+
+namespace std {
+    template <>
+    struct hash<fcpp::tuple<fcpp::device_t,fcpp::query_type>> {
+        size_t operator()(fcpp::tuple<fcpp::device_t,fcpp::query_type> const& k) const {
+            return get<fcpp::coordination::tags::goods_type>(get<1>(k)) | (get<0>(k) << 8);
+        }
+    };
+}
+
+namespace fcpp {
 
 //! @brief Namespace containing the libraries of coordination routines.
 namespace coordination {
@@ -216,11 +228,27 @@ FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t thresh
 }
 FUN_EXPORT collision_detection_t = common::export_list<spawn_t<device_t, bool>, bis_distance_t, mp_collection_t<real_t, real_t>, real_t>;
 
-FUN device_t find_goods(ARGS, query_type query) { CODE
-    // TODO
-    return node.uid;
+inline bool match(query_type const& q, pallet_content_type const& c) {
+    return get<tags::goods_type>(q) == get<tags::goods_type>(c);
 }
-FUN_EXPORT find_goods_t = common::export_list<query_type>;
+
+inline bool empty(query_type const& q) {
+    return get<tags::goods_type>(q) == NO_GOODS;
+}
+
+FUN device_t find_goods(ARGS, query_type query) { CODE
+    using key_type = tuple<device_t,query_type>;
+    std::unordered_map<key_type, device_t> resmap = spawn(CALL, [&](key_type const& key){
+        bool found = match(get<1>(key), node.storage(tags::loaded_good{}));
+        real_t dist = bis_distance(CALL, found, 1, 0.5*comm);
+        device_t waypoint = get<1>(min_hood(CALL, make_tuple(nbr(CALL, dist), node.nbr_uid())));
+        return make_tuple(waypoint, get<0>(key) != node.uid ? status::internal : empty(query) ? status::terminated : status::internal_output);
+    }, empty(query) ? common::option<key_type>{} : common::option<key_type>{node.uid,query});
+    device_t waypoint = resmap.empty() ? node.uid : resmap.begin()->second;
+    node.storage(tags::led_on{}) = any_hood(CALL, nbr(CALL, waypoint) == node.uid, false);
+    return waypoint;
+}
+FUN_EXPORT find_goods_t = common::export_list<spawn_t<tuple<device_t,query_type>, status>, bis_distance_t, real_t, device_t>;
 
 FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> const& new_logs, int parity) { CODE
     bool source = node.uid % 2 == parity and node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
@@ -339,7 +367,7 @@ MAIN() {
     new_logs.insert(new_logs.end(), loading_logs.begin(), loading_logs.end());
     std::vector<log_type> collision_logs = collision_detection(CALL, 0.1, 0.1);
     new_logs.insert(new_logs.end(), collision_logs.begin(), collision_logs.end());
-    find_goods(CALL, common::make_tagged_tuple<tags::query_goods>(0));
+    find_goods(CALL, common::make_tagged_tuple<tags::goods_type>(0));
     std::vector<log_type> collected_logs = log_collection(CALL, new_logs);
     if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable) {
         std::vector<log_type>& previously_collected_logs = node.storage(tags::logs{});
