@@ -14,10 +14,21 @@
 
 enum class warehouse_device_type { Pallet, Wearable };
 
+std::string to_string(warehouse_device_type t) {
+    switch (t) {
+        case warehouse_device_type::Pallet:
+            return "Pallet";
+            break;
+        case warehouse_device_type::Wearable:
+            return "Wearable";
+    }
+}
+
 #define NO_GOODS 255
 #define UNLOAD_GOODS 254
 #define LOG_TYPE_PALLET_CONTENT_CHANGE 1
 #define LOG_TYPE_HANDLE_PALLET 2
+#define LOG_TYPE_COLLISION_RISK 3
 
 
 // [SYSTEM SETUP]
@@ -152,12 +163,6 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS) { CODE
 
 FUN_EXPORT load_goods_on_pallet_t = common::export_list<tuple<device_t,pallet_content_type>>;
 
-//! @brief Function doing stuff.
-FUN void stuff(ARGS) { CODE
-}
-//! @brief Export types used by the stuff function (none).
-FUN_EXPORT stuff_t = common::export_list<>;
-
 FUN void maybe_change_loading_goods_for_simulation(ARGS) { CODE
     if (any_hood(CALL, nbr(CALL, node.storage(tags::node_type{}) == warehouse_device_type::Pallet)) &&
         node.storage(tags::node_type{}) == warehouse_device_type::Wearable                          &&
@@ -172,18 +177,6 @@ FUN void maybe_change_loading_goods_for_simulation(ARGS) { CODE
 }
 
 FUN_EXPORT maybe_change_loading_goods_for_simulation_t = common::export_list<bool>;
-
-FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold) { CODE
-    // TODO
-    return std::vector<log_type>();
-}
-FUN_EXPORT collision_detection_t = common::export_list<>;
-
-FUN device_t find_goods(ARGS, query_type query) { CODE
-    // TODO
-    return node.uid;
-}
-FUN_EXPORT find_goods_t = common::export_list<query_type>;
 
 //! @brief Collects distributed data with a Lossless-information-speed-threshold strategy (blist) and a idempotent accumulate function [TO CHECK].
 GEN(T, G, BOUND( G, T(T,T) ))
@@ -202,10 +195,37 @@ T blist_idem_collection(ARGS, real_t const& distance, T const& value, real_t rad
 }
 template <typename T> using blist_idem_collection_t = common::export_list<T,field<real_t>,real_t >;
 
+FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold) { CODE
+    bool wearable = node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
+    std::unordered_map<device_t, real_t> logmap = spawn(CALL, [&](device_t source){
+        real_t dist = bis_distance(CALL, node.uid == source, 1, 0.5*comm);
+        real_t closest_wearable = mp_collection(CALL, dist, wearable and node.uid != source ? dist : INF, INF, [](real_t x, real_t y){
+            return min(x,y);
+        }, [](real_t x, size_t) {
+            return x;
+        });
+        real_t v = 0;
+        if (isfinite(closest_wearable))
+            v = (old(CALL, closest_wearable) - closest_wearable) / (node.current_time() - node.previous_time());
+        return make_tuple(v, dist < radius);
+    }, wearable ? common::option<device_t>{node.uid} : common::option<device_t>{});
+    std::vector<log_type> logvec;
+    if (logmap[node.uid] > threshold)
+        logvec.emplace_back(LOG_TYPE_COLLISION_RISK, node.uid, node.current_time(), logmap[node.uid]);
+    return logvec;
+}
+FUN_EXPORT collision_detection_t = common::export_list<spawn_t<device_t, bool>, bis_distance_t, mp_collection_t<real_t, real_t>, real_t>;
+
+FUN device_t find_goods(ARGS, query_type query) { CODE
+    // TODO
+    return node.uid;
+}
+FUN_EXPORT find_goods_t = common::export_list<query_type>;
+
 FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> const& new_logs, int parity) { CODE
     bool source = node.uid % 2 == parity and node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     real_t dist = bis_distance(CALL, source, 1, 0.5*comm);
-    return mp_collection(CALL, dist, new_logs, std::vector<log_type>{}, [](std::vector<log_type> const& x, std::vector<log_type> const& y){
+    std::vector<log_type> r = mp_collection(CALL, dist, new_logs, std::vector<log_type>{}, [](std::vector<log_type> const& x, std::vector<log_type> const& y){
         std::vector<log_type> z;
         size_t i = 0, j = 0;
         while (i < x.size() and j < y.size()) {
@@ -220,6 +240,7 @@ FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> cons
     }, [](std::vector<log_type> x, size_t){
         return x;
     });
+    return source ? r : std::vector<log_type>{};
 }
 FUN_EXPORT single_log_collection_t = common::export_list<mp_collection_t<real_t, std::vector<log_type>>, bis_distance_t>;
 
