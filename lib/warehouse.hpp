@@ -40,15 +40,15 @@ constexpr size_t pallet_node_num = 250;
 //! @brief Number of wearable devices.
 constexpr size_t wearable_node_num = 6;
 //! @brief Communication radius.
-constexpr size_t comm = 240;
+constexpr size_t comm = 1800;
 //! @brief Dimensionality of the space.
 constexpr size_t dim = 3;
-constexpr size_t grid_cell_size = 20;
+constexpr size_t grid_cell_size = 150;
 //! @brief Side of the area.
-constexpr size_t side = 1140;
-constexpr size_t side_2 = 1260;
+constexpr size_t side = 8550;
+constexpr size_t side_2 = 9450;
 //! @brief Height of the area.
-constexpr size_t height = 200;
+constexpr size_t height = 1000;
 
 
 /**
@@ -66,6 +66,7 @@ namespace coordination {
         struct log_content {};
         struct loaded_good {};
         struct loading_goods{};
+        struct querying {};
         struct logs {};
         struct led_on {};
         struct node_type {};
@@ -76,6 +77,11 @@ namespace coordination {
         //! @brief Shape of the current node.
         struct node_shape {};
         struct node_uid {};
+        //! @brief Maximum message size ever experienced.
+        struct max_msg {};
+        struct log_drop {};
+        struct log_created {};
+        struct log_delay {};
     }
 }
 
@@ -139,7 +145,7 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS) { CODE
             }
         }, fs, get<1>(last_state));
         if (node.storage(tags::node_type{}) == warehouse_device_type::Pallet && get<1>(last_state) != pallet_value) {
-            loading_logs.push_back(common::make_tagged_tuple<tags::log_content_type, tags::logger_id, tags::log_time, tags::log_content>(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, node.net.real_time(), get<tags::goods_type>(pallet_value)));
+            loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, node.current_time(), get<tags::goods_type>(pallet_value));
         }
         pallet_content_type goods_currenting_loading = node.storage(tags::loading_goods{});
         device_t wearable_device_id = get<0>(last_state);
@@ -152,7 +158,7 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS) { CODE
             } else {
                 wearable_value = goods_currenting_loading;
             }
-            loading_logs.push_back(common::make_tagged_tuple<tags::log_content_type, tags::logger_id, tags::log_time, tags::log_content>(LOG_TYPE_HANDLE_PALLET, node.uid, node.net.real_time(), nearest));
+            loading_logs.emplace_back(LOG_TYPE_HANDLE_PALLET, node.uid, node.current_time(), nearest);
         }
         if (any_hood(CALL, map_hood([&](state_type const& x) {
                 return get<0>(x) == get<0>(last_state) && get<1>(x) == get<1>(last_state);
@@ -189,23 +195,6 @@ FUN void maybe_change_loading_goods_for_simulation(ARGS) { CODE
 }
 
 FUN_EXPORT maybe_change_loading_goods_for_simulation_t = common::export_list<bool>;
-
-//! @brief Collects distributed data with a Lossless-information-speed-threshold strategy (blist) and a idempotent accumulate function [TO CHECK].
-GEN(T, G, BOUND( G, T(T,T) ))
-T blist_idem_collection(ARGS, real_t const& distance, T const& value, real_t radius, real_t speed, T const& null, G&& accumulate) { CODE
-    field<real_t> nbrdist = nbr(CALL, distance);
-    real_t t = node.current_time();
-    field<real_t> Tu = nbr(CALL, node.next_time());
-    field<real_t> Pu = nbr(CALL,distance + speed * (Tu - t));
-    field<real_t> dist = node.nbr_dist();
-    field<real_t> maxDistanceNow = dist + speed * node.nbr_lag();
-    field<real_t> Vwst = mux(isfinite(distance) && distance > nbrdist, (distance - Pu) / (Tu - t) , field<real_t>{0} ) ;
-    field<real_t> threshold = mux( (isfinite(distance) && maxDistanceNow < radius), max_hood(CALL, Vwst) , -INF);
-    return nbr(CALL, value, [&](field<T> old){
-        return fold_hood(CALL, accumulate, mux(nbrdist >= distance + node.nbr_lag() * nbr(CALL,threshold) && nbrdist > distance, old, null), value);
-    });
-}
-template <typename T> using blist_idem_collection_t = common::export_list<T,field<real_t>,real_t >;
 
 FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold) { CODE
     bool wearable = node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
@@ -307,9 +296,9 @@ FUN void update_node_in_simulation(ARGS) { CODE
         node.storage(node_color{}) = color(RED);
     }
     if (node.storage(led_on{})) {
-        node.storage(node_size{}) = 30;
+        node.storage(node_size{}) = (grid_cell_size * 3) / 2;
     } else {
-        node.storage(node_size{}) = 15;
+        node.storage(node_size{}) = (grid_cell_size * 2) / 3;
     }
     if (node.storage(node_type{}) == warehouse_device_type::Wearable && current_loaded_good == NO_GOODS) {
         auto closest_obstacle = node.net.closest_obstacle(node.position());
@@ -358,6 +347,14 @@ FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
 
 FUN_EXPORT setup_nodes_if_first_round_of_simulation_t = common::export_list<uint32_t>;
 
+unsigned int created_logs = 0;
+
+std::set<log_type> received_logs;
+
+unsigned int non_unique_received_logs = 0;
+
+times_t total_delay_logs = 0.0;
+
 //! @brief Main function.
 MAIN() {
     std::vector<log_type> new_logs;
@@ -367,12 +364,22 @@ MAIN() {
     new_logs.insert(new_logs.end(), loading_logs.begin(), loading_logs.end());
     std::vector<log_type> collision_logs = collision_detection(CALL, 0.1, 0.1);
     new_logs.insert(new_logs.end(), collision_logs.begin(), collision_logs.end());
-    find_goods(CALL, common::make_tagged_tuple<tags::goods_type>(0));
+    find_goods(CALL, node.storage(tags::querying{}));
+    created_logs += new_logs.size();
     std::vector<log_type> collected_logs = log_collection(CALL, new_logs);
     if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable) {
         std::vector<log_type>& previously_collected_logs = node.storage(tags::logs{});
         previously_collected_logs.insert(previously_collected_logs.end(), collected_logs.begin(), collected_logs.end());
+        std::copy(collected_logs.begin(), collected_logs.end(), std::inserter(received_logs, received_logs.end()));
+        non_unique_received_logs += collected_logs.size();
+        for (log_type log: collected_logs) {
+            total_delay_logs += node.current_time() - get<tags::log_time>(log);
+        }
     }
+    node.storage(tags::log_drop{}) = 1.0 - (received_logs.size() / (double)created_logs);
+    node.storage(tags::log_created{}) = created_logs;
+    node.storage(tags::log_delay{}) = total_delay_logs / non_unique_received_logs;
+    node.storage(tags::max_msg{}) = coordination::gossip_max(CALL, node.msg_size());
     update_node_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
@@ -380,11 +387,12 @@ FUN_EXPORT main_t = common::export_list<
     nearest_pallet_device_t,
     load_goods_on_pallet_t, 
     collision_detection_t, 
-    find_goods_t, 
+    find_goods_t,
     log_collection_t, 
     update_node_in_simulation_t, 
     setup_nodes_if_first_round_of_simulation_t,
-    maybe_change_loading_goods_for_simulation_t
+    maybe_change_loading_goods_for_simulation_t,
+    size_t
 >;
 
 
@@ -419,13 +427,18 @@ using wearable_rectangle_d = distribution::rect_n<1, grid_cell_size, grid_cell_s
 using store_t = tuple_store<
     loaded_good,        pallet_content_type,
     loading_goods,      pallet_content_type,
+    querying,           query_type,
     logs,               std::vector<log_type>,
     led_on,             bool,
     node_type,          warehouse_device_type,
     node_color,         color,
     node_shape,         shape,
     node_size,          double,
-    node_uid,           device_t
+    node_uid,           device_t,
+    max_msg,            size_t,
+    log_drop,           double,
+    log_created,        unsigned int,
+    log_delay,          times_t
 >;
 //! @brief The tags and corresponding aggregators to be logged.
 using aggregator_t = aggregators<
@@ -437,11 +450,14 @@ CONSTANT_DISTRIBUTION(false_distribution, bool, false);
 CONSTANT_DISTRIBUTION(pallet_distribution, warehouse_device_type, warehouse_device_type::Pallet);
 CONSTANT_DISTRIBUTION(wearable_distribution, warehouse_device_type, warehouse_device_type::Wearable);
 CONSTANT_DISTRIBUTION(no_goods_distribution, pallet_content_type, fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS));
+CONSTANT_DISTRIBUTION(no_query_distribution, query_type, fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS));
 
 //! @brief The general simulation options.
 DECLARE_OPTIONS(list,
     parallel<false>,     // no multithreading on node rounds
     synchronised<false>, // optimise for asynchronous networks
+    message_size<true>,
+    export_split<true>,
     program<coordination::main>,   // program to be run (refers to MAIN above)
     exports<coordination::main_t>, // export type list (types used in messages)
     round_schedule<round_s>, // the sequence generator for round events on nodes
@@ -454,7 +470,8 @@ DECLARE_OPTIONS(list,
         led_on, false_distribution,
         node_type, pallet_distribution,
         loaded_good, no_goods_distribution,
-        loading_goods, no_goods_distribution
+        loading_goods, no_goods_distribution,
+        querying, no_query_distribution
     >,
     spawn_schedule<wearable_spawn_s>,
     init<
@@ -462,7 +479,8 @@ DECLARE_OPTIONS(list,
         led_on, false_distribution,
         node_type, wearable_distribution,
         loaded_good, no_goods_distribution,
-        loading_goods, no_goods_distribution
+        loading_goods, no_goods_distribution,
+        querying, no_query_distribution
     >,
     plot_type<plot_t>, // the plot description to be used
     dimension<dim>, // dimensionality of the space
