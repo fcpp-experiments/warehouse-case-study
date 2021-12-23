@@ -225,6 +225,20 @@ inline bool empty(query_type const& q) {
     return get<tags::goods_type>(q) == NO_GOODS;
 }
 
+// NOTE: bis_distance_waypoint would save a real_t for find_space and every process in find_goods
+
+FUN device_t find_space(ARGS, real_t grid_step) { CODE
+    bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet;
+    int pallet_count = sum_hood(CALL, field<int>{node.nbr_dist() < 1.2 * grid_step and nbr(CALL, is_pallet)}, 0);
+    bool source = is_pallet and pallet_count < 2;
+    real_t dist = bis_distance(CALL, source, 1, 0.5*comm);
+    device_t waypoint = get<1>(min_hood(CALL, make_tuple(nbr(CALL, dist), node.nbr_uid())));
+    // the following should be merged with the one in find_goods, to be done once in the calling function
+    node.storage(tags::led_on{}) = any_hood(CALL, nbr(CALL, waypoint) == node.uid, false);
+    return waypoint;
+}
+FUN_EXPORT find_space_t = common::export_list<bis_distance_t, bool, real_t, device_t>;
+
 FUN device_t find_goods(ARGS, query_type query) { CODE
     using key_type = tuple<device_t,query_type>;
     std::unordered_map<key_type, device_t> resmap = spawn(CALL, [&](key_type const& key){
