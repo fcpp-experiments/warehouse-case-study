@@ -118,6 +118,16 @@ namespace coordination {
 
 // [AGGREGATE PROGRAM]
 
+FUN uint8_t random_good(ARGS) { CODE
+    constexpr real_t f = 5.187377517639621;
+    real_t r = node.next_real(f);
+    for (uint8_t i=1; ; ++i) {
+        r -= real_t(1)/i;
+        if (r < 0) return i-1;
+    }
+    return 99;
+}
+
 FUN device_t nearest_pallet_device(ARGS) { CODE
     auto tuple_field = make_tuple(node.nbr_dist(), node.nbr_uid(), nbr(CALL, node.storage(tags::node_type{})));
     auto pallet_tuple_field = map_hood([](tuple<real_t, device_t, warehouse_device_type> const& t) {
@@ -196,6 +206,9 @@ FUN void maybe_change_loading_goods_for_simulation(ARGS) { CODE
 
 FUN_EXPORT maybe_change_loading_goods_for_simulation_t = common::export_list<bool>;
 
+// DO: print logmap to check that few processes are running
+// TRY: tweak radius
+// MAYBE: for each wearable, if position within radius, sum_i [unit(pos1-pos2) * v_i] < threshold, and compare
 FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold) { CODE
     bool wearable = node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     std::unordered_map<device_t, real_t> logmap = spawn(CALL, [&](device_t source){
@@ -225,8 +238,7 @@ inline bool empty(query_type const& q) {
     return get<tags::goods_type>(q) == NO_GOODS;
 }
 
-// NOTE: bis_distance_waypoint would save a real_t for find_space and every process in find_goods
-
+// TRY: bis_distance_waypoint would save a real_t for find_space and every process in find_goods
 FUN device_t find_space(ARGS, real_t grid_step) { CODE
     bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet;
     int pallet_count = sum_hood(CALL, field<int>{node.nbr_dist() < 1.2 * grid_step and nbr(CALL, is_pallet)}, 0);
@@ -239,6 +251,8 @@ FUN device_t find_space(ARGS, real_t grid_step) { CODE
 }
 FUN_EXPORT find_space_t = common::export_list<bis_distance_t, bool, real_t, device_t>;
 
+// TRY: broadcast dist to cut propagation radius
+// TRY: bloom filter to guide expansion
 FUN device_t find_goods(ARGS, query_type query) { CODE
     using key_type = tuple<device_t,query_type>;
     std::unordered_map<key_type, device_t> resmap = spawn(CALL, [&](key_type const& key){
@@ -253,6 +267,11 @@ FUN device_t find_goods(ARGS, query_type query) { CODE
 }
 FUN_EXPORT find_goods_t = common::export_list<spawn_t<tuple<device_t,query_type>, status>, bis_distance_t, real_t, device_t>;
 
+// DO: add log collection result and its size in storage, and aggregate this sizes with max/mean
+// TRY: use hops
+// TRY: tweak simulation to produce fewer logs
+// TRY: reduce single log size (times_t as uint8_t of seconds%256, content as uint16_t)
+// TRY: do not flush logs every round
 FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> const& new_logs, int parity) { CODE
     bool source = node.uid % 2 == parity and node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     real_t dist = bis_distance(CALL, source, 1, 0.5*comm);
