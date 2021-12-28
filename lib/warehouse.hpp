@@ -30,13 +30,15 @@ std::string to_string(warehouse_device_type t) {
 #define LOG_TYPE_HANDLE_PALLET 2
 #define LOG_TYPE_COLLISION_RISK 3
 
+#define MSG_SIZE_HARDWARE_LIMIT 200
+
 
 // [SYSTEM SETUP]
 
 //! @brief The final simulation time.
 constexpr size_t end_time = 300;
 //! @brief Number of pallet devices.
-constexpr size_t pallet_node_num = 250;
+constexpr size_t pallet_node_num = 500;
 //! @brief Number of wearable devices.
 constexpr size_t wearable_node_num = 6;
 //! @brief Communication radius.
@@ -78,10 +80,13 @@ namespace coordination {
         struct node_shape {};
         struct node_uid {};
         //! @brief Maximum message size ever experienced.
-        struct max_msg {};
+        struct msg_size {};
+        struct msg_dropped {};
+        struct log_collected_size {};
         struct log_drop {};
         struct log_created {};
-        struct log_delay {};
+        struct max_log_delay {};
+        struct mean_log_delay {};
     }
 }
 
@@ -142,7 +147,7 @@ FUN device_t nearest_pallet_device(ARGS) { CODE
 
 FUN_EXPORT nearest_pallet_device_t = common::export_list<warehouse_device_type>;
 
-FUN std::vector<log_type> load_goods_on_pallet(ARGS) { CODE 
+FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CODE 
     using state_type = tuple<device_t,pallet_content_type>;
     std::vector<log_type> loading_logs;
     nbr(CALL, state_type(node.uid, node.storage(tags::loaded_good{})), [&](field<state_type> fs) {
@@ -155,7 +160,7 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS) { CODE
             }
         }, fs, get<1>(last_state));
         if (node.storage(tags::node_type{}) == warehouse_device_type::Pallet && get<1>(last_state) != pallet_value) {
-            loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, node.current_time(), get<tags::goods_type>(pallet_value));
+            loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, current_clock, get<tags::goods_type>(pallet_value));
         }
         pallet_content_type goods_currenting_loading = node.storage(tags::loading_goods{});
         device_t wearable_device_id = get<0>(last_state);
@@ -168,7 +173,7 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS) { CODE
             } else {
                 wearable_value = goods_currenting_loading;
             }
-            loading_logs.emplace_back(LOG_TYPE_HANDLE_PALLET, node.uid, node.current_time(), nearest);
+            loading_logs.emplace_back(LOG_TYPE_HANDLE_PALLET, node.uid, current_clock, nearest);
         }
         if (any_hood(CALL, map_hood([&](state_type const& x) {
                 return get<0>(x) == get<0>(last_state) && get<1>(x) == get<1>(last_state);
@@ -209,7 +214,7 @@ FUN_EXPORT maybe_change_loading_goods_for_simulation_t = common::export_list<boo
 // DO: print logmap to check that few processes are running
 // TRY: tweak radius
 // MAYBE: for each wearable, if position within radius, sum_i [unit(pos1-pos2) * v_i] < threshold, and compare
-FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold) { CODE
+FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold, times_t current_clock) { CODE
     bool wearable = node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     std::unordered_map<device_t, real_t> logmap = spawn(CALL, [&](device_t source){
         real_t dist = bis_distance(CALL, node.uid == source, 1, 0.5*comm);
@@ -225,7 +230,7 @@ FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t thresh
     }, wearable ? common::option<device_t>{node.uid} : common::option<device_t>{});
     std::vector<log_type> logvec;
     if (logmap[node.uid] > threshold)
-        logvec.emplace_back(LOG_TYPE_COLLISION_RISK, node.uid, node.current_time(), logmap[node.uid]);
+        logvec.emplace_back(LOG_TYPE_COLLISION_RISK, node.uid, current_clock, logmap[node.uid]);
     return logvec;
 }
 FUN_EXPORT collision_detection_t = common::export_list<spawn_t<device_t, bool>, bis_distance_t, mp_collection_t<real_t, real_t>, real_t>;
@@ -319,10 +324,8 @@ FUN void update_node_in_simulation(ARGS) { CODE
     }
     if (current_loaded_good == NO_GOODS) {
         node.storage(node_color{}) = color(GREEN);
-    } else if (current_loaded_good == 0) {
+    } else if (current_loaded_good >= 0 && current_loaded_good < 100) {
         node.storage(node_color{}) = color(GOLD);
-    } else if (current_loaded_good == 1) {
-        node.storage(node_color{}) = color(CYAN);
     } else if (current_loaded_good == UNLOAD_GOODS) {
         node.storage(node_color{}) = color(DARK_GREEN);
     } else {
@@ -375,6 +378,7 @@ FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
         } while (used_slots.find(make_tuple(row,col,height)) != used_slots.end());
         used_slots.insert(make_tuple(row,col,height));
         node.position() = make_vec(x,y,z);
+        node.storage(tags::loaded_good{}) = random_good(CALL);
     }
 }
 
@@ -388,14 +392,29 @@ unsigned int non_unique_received_logs = 0;
 
 times_t total_delay_logs = 0.0;
 
+FUN void collect_data_for_plot(ARGS, std::vector<log_type>& collected_logs, times_t current_clock) { CODE 
+    node.storage(tags::log_drop{}) = 1.0 - (received_logs.size() / (double)created_logs);
+    node.storage(tags::log_created{}) = created_logs;
+    node.storage(tags::mean_log_delay{}) = total_delay_logs / non_unique_received_logs;
+    node.storage(tags::msg_size{}) = node.msg_size();
+    node.storage(tags::msg_dropped{}) = node.msg_size() > MSG_SIZE_HARDWARE_LIMIT;
+    node.storage(tags::log_collected_size{}) = collected_logs.size() * sizeof(log_type);
+    std::vector<times_t> delays { 0 };
+    transform(collected_logs.begin(), collected_logs.end(), back_inserter(delays), [current_clock](log_type log) -> times_t {
+        return current_clock - get<tags::log_time>(log);
+    });
+    node.storage(tags::max_log_delay{}) = *max_element(delays.begin(), delays.end());
+}
+
 //! @brief Main function.
 MAIN() {
     std::vector<log_type> new_logs;
     setup_nodes_if_first_round_of_simulation(CALL);
+    times_t shared_clock_value = coordination::shared_clock(CALL);
     maybe_change_loading_goods_for_simulation(CALL);
-    std::vector<log_type> loading_logs = load_goods_on_pallet(CALL);
+    std::vector<log_type> loading_logs = load_goods_on_pallet(CALL, shared_clock_value);
     new_logs.insert(new_logs.end(), loading_logs.begin(), loading_logs.end());
-    std::vector<log_type> collision_logs = collision_detection(CALL, 0.1, 0.1);
+    std::vector<log_type> collision_logs = collision_detection(CALL, 0.1, 0.1, shared_clock_value);
     new_logs.insert(new_logs.end(), collision_logs.begin(), collision_logs.end());
     find_goods(CALL, node.storage(tags::querying{}));
     created_logs += new_logs.size();
@@ -409,10 +428,7 @@ MAIN() {
             total_delay_logs += node.current_time() - get<tags::log_time>(log);
         }
     }
-    node.storage(tags::log_drop{}) = 1.0 - (received_logs.size() / (double)created_logs);
-    node.storage(tags::log_created{}) = created_logs;
-    node.storage(tags::log_delay{}) = total_delay_logs / non_unique_received_logs;
-    node.storage(tags::max_msg{}) = coordination::gossip_max(CALL, node.msg_size());
+    collect_data_for_plot(CALL, collected_logs, shared_clock_value);
     update_node_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
@@ -468,13 +484,22 @@ using store_t = tuple_store<
     node_shape,         shape,
     node_size,          double,
     node_uid,           device_t,
-    max_msg,            size_t,
+    msg_size,           size_t,
+    log_collected_size, size_t,
+    msg_dropped,        bool,
     log_drop,           double,
     log_created,        unsigned int,
-    log_delay,          times_t
+    max_log_delay,      times_t,
+    mean_log_delay,     times_t
 >;
 //! @brief The tags and corresponding aggregators to be logged.
 using aggregator_t = aggregators<
+    msg_size,           aggregator::combine<aggregator::max<size_t>, aggregator::min<size_t>, aggregator::mean<size_t>>,
+    msg_dropped,        aggregator::mean<double>,
+    log_collected_size, aggregator::max<size_t>,
+    log_created,        aggregator::max<unsigned int>,
+    max_log_delay,      aggregator::max<times_t>,
+    mean_log_delay,     aggregator::max<times_t>
 >;
 //! @brief The description of plots.
 using plot_t = plot::none;
