@@ -11,6 +11,7 @@
 #define FCPP_WAREHOUSE_H_
 
 #include "lib/fcpp.hpp"
+#include "custom_aggregator.hpp"
 
 enum class warehouse_device_type { Pallet, Wearable };
 
@@ -85,8 +86,7 @@ namespace coordination {
         struct log_collected_size {};
         struct log_drop {};
         struct log_created {};
-        struct max_log_delay {};
-        struct mean_log_delay {};
+        struct collected_logs_delay {};
     }
 }
 
@@ -384,7 +384,7 @@ FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
 
 FUN_EXPORT setup_nodes_if_first_round_of_simulation_t = common::export_list<uint32_t>;
 
-unsigned int created_logs = 0;
+unsigned int total_created_logs = 0;
 
 std::set<log_type> received_logs;
 
@@ -392,18 +392,17 @@ unsigned int non_unique_received_logs = 0;
 
 times_t total_delay_logs = 0.0;
 
-FUN void collect_data_for_plot(ARGS, std::vector<log_type>& collected_logs, times_t current_clock) { CODE 
-    node.storage(tags::log_drop{}) = 1.0 - (received_logs.size() / (double)created_logs);
-    node.storage(tags::log_created{}) = created_logs;
-    node.storage(tags::mean_log_delay{}) = total_delay_logs / non_unique_received_logs;
+FUN void collect_data_for_plot(ARGS, std::vector<log_type>& new_logs, std::vector<log_type>& collected_logs, times_t current_clock) { CODE
+    node.storage(tags::log_drop{}) = received_logs.size() / (double)total_created_logs;
+    node.storage(tags::log_created{}) = new_logs.size();
     node.storage(tags::msg_size{}) = node.msg_size();
     node.storage(tags::msg_dropped{}) = node.msg_size() > MSG_SIZE_HARDWARE_LIMIT;
-    node.storage(tags::log_collected_size{}) = collected_logs.size() * sizeof(log_type);
-    std::vector<times_t> delays { 0 };
+    node.storage(tags::log_collected_size{}) = collected_logs.size();
+    std::vector<times_t> delays;
     transform(collected_logs.begin(), collected_logs.end(), back_inserter(delays), [current_clock](log_type log) -> times_t {
         return current_clock - get<tags::log_time>(log);
     });
-    node.storage(tags::max_log_delay{}) = *max_element(delays.begin(), delays.end());
+    node.storage(tags::collected_logs_delay{}) = delays;
 }
 
 //! @brief Main function.
@@ -417,7 +416,7 @@ MAIN() {
     std::vector<log_type> collision_logs = collision_detection(CALL, 0.1, 0.1, shared_clock_value);
     new_logs.insert(new_logs.end(), collision_logs.begin(), collision_logs.end());
     find_goods(CALL, node.storage(tags::querying{}));
-    created_logs += new_logs.size();
+    total_created_logs += new_logs.size();
     std::vector<log_type> collected_logs = log_collection(CALL, new_logs);
     if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable) {
         std::vector<log_type>& previously_collected_logs = node.storage(tags::logs{});
@@ -428,7 +427,7 @@ MAIN() {
             total_delay_logs += node.current_time() - get<tags::log_time>(log);
         }
     }
-    collect_data_for_plot(CALL, collected_logs, shared_clock_value);
+    collect_data_for_plot(CALL, new_logs, collected_logs, shared_clock_value);
     update_node_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
@@ -474,32 +473,31 @@ using rectangle_d = distribution::rect_n<1, 0, 0, 0, side, side_2, 0>;
 using wearable_rectangle_d = distribution::rect_n<1, grid_cell_size, grid_cell_size, 0, grid_cell_size * 35, grid_cell_size * 9, 0>;
 //! @brief The contents of the node storage as tags and associated types.
 using store_t = tuple_store<
-    loaded_good,        pallet_content_type,
-    loading_goods,      pallet_content_type,
-    querying,           query_type,
-    logs,               std::vector<log_type>,
-    led_on,             bool,
-    node_type,          warehouse_device_type,
-    node_color,         color,
-    node_shape,         shape,
-    node_size,          double,
-    node_uid,           device_t,
-    msg_size,           size_t,
-    log_collected_size, size_t,
-    msg_dropped,        bool,
-    log_drop,           double,
-    log_created,        unsigned int,
-    max_log_delay,      times_t,
-    mean_log_delay,     times_t
+    loaded_good,            pallet_content_type,
+    loading_goods,          pallet_content_type,
+    querying,               query_type,
+    logs,                   std::vector<log_type>,
+    led_on,                 bool,
+    node_type,              warehouse_device_type,
+    node_color,             color,
+    node_shape,             shape,
+    node_size,              double,
+    node_uid,               device_t,
+    msg_size,               size_t,
+    log_collected_size,     size_t,
+    msg_dropped,            bool,
+    log_drop,               double,
+    log_created,            unsigned int,
+    collected_logs_delay,   std::vector<times_t>
 >;
 //! @brief The tags and corresponding aggregators to be logged.
 using aggregator_t = aggregators<
-    msg_size,           aggregator::combine<aggregator::max<size_t>, aggregator::min<size_t>, aggregator::mean<size_t>>,
-    msg_dropped,        aggregator::mean<double>,
-    log_collected_size, aggregator::max<size_t>,
-    log_created,        aggregator::max<unsigned int>,
-    max_log_delay,      aggregator::max<times_t>,
-    mean_log_delay,     aggregator::max<times_t>
+    msg_size,               aggregator::combine<aggregator::max<size_t>, aggregator::min<size_t>, aggregator::mean<double>>,
+    msg_dropped,            aggregator::mean<double>,
+    log_collected_size,     aggregator::combine<aggregator::max<size_t>, aggregator::sum<size_t>>,
+    log_created,            aggregator::combine<aggregator::max<size_t>, aggregator::sum<size_t>>,
+    collected_logs_delay,   aggregator::combine<aggregator::vector_max<times_t>, aggregator::vector_mean<times_t>>,
+    log_drop,               aggregator::min<double>
 >;
 //! @brief The description of plots.
 using plot_t = plot::none;
