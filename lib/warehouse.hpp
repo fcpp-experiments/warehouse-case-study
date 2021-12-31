@@ -81,11 +81,11 @@ namespace coordination {
         struct node_uid {};
         //! @brief Maximum message size ever experienced.
         struct msg_size {};
-        struct msg_dropped {};
-        struct log_collected_size {};
-        struct log_drop {};
+        struct msg_received__perc {};
+        struct log_collected {};
+        struct log_received__perc {};
         struct log_created {};
-        struct collected_logs_delay {};
+        struct logging_delay {};
     }
 }
 
@@ -392,16 +392,16 @@ unsigned int non_unique_received_logs = 0;
 times_t total_delay_logs = 0.0;
 
 FUN void collect_data_for_plot(ARGS, std::vector<log_type>& new_logs, std::vector<log_type>& collected_logs, times_t current_clock) { CODE
-    node.storage(tags::log_drop{}) = received_logs.size() / (double)total_created_logs;
+    node.storage(tags::log_received__perc{}) = received_logs.size() / (double)total_created_logs;
     node.storage(tags::log_created{}) = new_logs.size();
     node.storage(tags::msg_size{}) = node.msg_size();
-    node.storage(tags::msg_dropped{}) = node.msg_size() > MSG_SIZE_HARDWARE_LIMIT;
-    node.storage(tags::log_collected_size{}) = collected_logs.size();
+    node.storage(tags::msg_received__perc{}) = node.msg_size() > MSG_SIZE_HARDWARE_LIMIT;
+    node.storage(tags::log_collected{}) = collected_logs.size();
     std::vector<times_t> delays;
     transform(collected_logs.begin(), collected_logs.end(), back_inserter(delays), [current_clock](log_type log) -> times_t {
         return current_clock - get<tags::log_time>(log);
     });
-    node.storage(tags::collected_logs_delay{}) = delays;
+    node.storage(tags::logging_delay{}) = delays;
 }
 
 //! @brief Main function.
@@ -483,29 +483,29 @@ using store_t = tuple_store<
     node_size,              double,
     node_uid,               device_t,
     msg_size,               size_t,
-    log_collected_size,     size_t,
-    msg_dropped,            bool,
-    log_drop,               double,
+    log_collected,          size_t,
+    msg_received__perc,     bool,
+    log_received__perc,     double,
     log_created,            unsigned int,
-    collected_logs_delay,   std::vector<times_t>
+    logging_delay,          std::vector<times_t>
 >;
 //! @brief The tags and corresponding aggregators to be logged.
 using aggregator_t = aggregators<
     msg_size,               aggregator::combine<aggregator::max<size_t>, aggregator::min<size_t>, aggregator::mean<double>>,
-    msg_dropped,            aggregator::mean<double>,
-    log_collected_size,     aggregator::combine<aggregator::max<size_t>, aggregator::sum<size_t>>,
+    msg_received__perc,     aggregator::mean<double>,
+    log_collected,          aggregator::combine<aggregator::max<size_t>, aggregator::sum<size_t>>,
     log_created,            aggregator::combine<aggregator::max<size_t>, aggregator::sum<size_t>>,
-    collected_logs_delay,   aggregator::container<std::vector<times_t>, aggregator::combine<aggregator::max<times_t>, aggregator::mean<times_t>>>,
-    log_drop,               aggregator::min<double>
+    logging_delay,          aggregator::container<std::vector<times_t>, aggregator::combine<aggregator::max<times_t>, aggregator::mean<times_t>>>,
+    log_received__perc,     aggregator::mean<double>
 >;
 //! @brief Message size plot.
 using msg_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, msg_size>>;
 //! @brief Log plot.
-using log_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, log_created, log_collected_size>>;
+using log_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, log_created, log_collected>>;
 //! @brief Loss percentage plot.
-using loss_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, msg_dropped, log_drop>>;
+using loss_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, msg_received__perc, log_received__perc>>;
 //! @brief Log delay plot.
-using delay_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, collected_logs_delay>>;
+using delay_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, logging_delay>>;
 //! @brief The overall description of plots.
 using plot_t = plot::join<msg_plot_t, log_plot_t, loss_plot_t, delay_plot_t>;
 
