@@ -11,7 +11,6 @@
 #define FCPP_WAREHOUSE_H_
 
 #include "lib/fcpp.hpp"
-#include "custom_aggregator.hpp"
 
 enum class warehouse_device_type { Pallet, Wearable };
 
@@ -496,11 +495,19 @@ using aggregator_t = aggregators<
     msg_dropped,            aggregator::mean<double>,
     log_collected_size,     aggregator::combine<aggregator::max<size_t>, aggregator::sum<size_t>>,
     log_created,            aggregator::combine<aggregator::max<size_t>, aggregator::sum<size_t>>,
-    collected_logs_delay,   aggregator::combine<aggregator::vector_max<times_t>, aggregator::vector_mean<times_t>>,
+    collected_logs_delay,   aggregator::container<std::vector<times_t>, aggregator::combine<aggregator::max<times_t>, aggregator::mean<times_t>>>,
     log_drop,               aggregator::min<double>
 >;
-//! @brief The description of plots.
-using plot_t = plot::none;
+//! @brief Message size plot.
+using msg_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, msg_size>>;
+//! @brief Log plot.
+using log_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, log_created, log_collected_size>>;
+//! @brief Loss percentage plot.
+using loss_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, msg_dropped, log_drop>>;
+//! @brief Log delay plot.
+using delay_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, collected_logs_delay>>;
+//! @brief The overall description of plots.
+using plot_t = plot::join<msg_plot_t, log_plot_t, loss_plot_t, delay_plot_t>;
 
 CONSTANT_DISTRIBUTION(false_distribution, bool, false);
 CONSTANT_DISTRIBUTION(pallet_distribution, warehouse_device_type, warehouse_device_type::Pallet);
