@@ -3,6 +3,7 @@
 .#*
 bin/
 doc/
+plot/
 output/
 .vagrant/
 .DS_Store
