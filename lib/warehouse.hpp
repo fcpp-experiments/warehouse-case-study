@@ -41,8 +41,8 @@ constexpr size_t end_time = 300;
 constexpr size_t pallet_node_num = 500;
 //! @brief Number of wearable devices.
 constexpr size_t wearable_node_num = 6;
-//! @brief Communication radius.
-constexpr size_t comm = 1800;
+//! @brief Communication radius (25m w-w, 15m w-p, 9m p-p).
+constexpr size_t comm = 2500;
 //! @brief Dimensionality of the space.
 constexpr size_t dim = 3;
 constexpr size_t grid_cell_size = 150;
@@ -74,6 +74,7 @@ namespace coordination {
         struct node_type {};
         //! @brief Color of the current node.
         struct node_color {};
+        struct side_color {};
         //! @brief Size of the current node.
         struct node_size {};
         //! @brief Shape of the current node.
@@ -210,29 +211,47 @@ FUN void maybe_change_loading_goods_for_simulation(ARGS) { CODE
 
 FUN_EXPORT maybe_change_loading_goods_for_simulation_t = common::export_list<bool>;
 
-// DO: print logmap to check that few processes are running
-// TRY: tweak radius
-// MAYBE: for each wearable, if position within radius, sum_i [unit(pos1-pos2) * v_i] < threshold, and compare
+// TODO: [LATER] tweak distortion
+//! @brief Computes the distance of every neighbour from a source, and the best waypoint towards it (distorting the nbr_dist metric).
+FUN tuple<field<real_t>, device_t> distance_waypoint(ARGS, bool source, real_t distortion) { CODE
+    return nbr(CALL, INF, [&] (field<real_t> d) {
+        real_t dist;
+        device_t waypoint;
+        tie(dist, waypoint) = min_hood(CALL, make_tuple(d + node.nbr_dist(), node.nbr_uid()), make_tuple(source ? -distortion : INF, node.uid));
+        dist += distortion;
+        mod_self(CALL, d) = dist;
+        return make_tuple(make_tuple(d, waypoint), dist);
+    });
+}
+FUN_EXPORT distance_waypoint_t = common::export_list<real_t>;
+
+// TODO: log only risk start and end
+// TODO: [LATER] tweak threshold
 FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold, times_t current_clock) { CODE
     bool wearable = node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     std::unordered_map<device_t, real_t> logmap = spawn(CALL, [&](device_t source){
-        real_t dist = bis_distance(CALL, node.uid == source, 1, 0.5*comm);
-        real_t closest_wearable = mp_collection(CALL, dist, wearable and node.uid != source ? dist : INF, INF, [](real_t x, real_t y){
-            return min(x,y);
-        }, [](real_t x, size_t) {
-            return x;
+        auto t = distance_waypoint(CALL, node.uid == source, 0.1*comm);
+        real_t dist = self(CALL, get<0>(t));
+        real_t closest_wearable = nbr(CALL, INF, [&](field<real_t> x){
+            return min_hood(CALL, mux(get<0>(t) > dist, x, INF), dist);
         });
         real_t v = 0;
         if (isfinite(closest_wearable))
             v = (old(CALL, closest_wearable) - closest_wearable) / (node.current_time() - node.previous_time());
-        return make_tuple(v, dist < radius);
+        return make_tuple(dist < radius ? v : -INF, dist < radius);
     }, wearable ? common::option<device_t>{node.uid} : common::option<device_t>{});
+    node.storage(tags::side_color{}) = color(BLACK);
+    for (size_t i=0; i<wearable_node_num; ++i)
+        if (logmap.count(i + pallet_node_num) and logmap.at(i + pallet_node_num) > -INF) {
+            node.storage(tags::side_color{}) = color::hsva(i*360/wearable_node_num,1,1,1);
+            break;
+        }
     std::vector<log_type> logvec;
     if (logmap[node.uid] > threshold)
         logvec.emplace_back(LOG_TYPE_COLLISION_RISK, node.uid, current_clock, logmap[node.uid]);
     return logvec;
 }
-FUN_EXPORT collision_detection_t = common::export_list<spawn_t<device_t, bool>, bis_distance_t, mp_collection_t<real_t, real_t>, real_t>;
+FUN_EXPORT collision_detection_t = common::export_list<spawn_t<device_t, bool>, distance_waypoint_t, real_t>;
 
 inline bool match(query_type const& q, pallet_content_type const& c) {
     return get<tags::goods_type>(q) == get<tags::goods_type>(c);
@@ -242,40 +261,42 @@ inline bool empty(query_type const& q) {
     return get<tags::goods_type>(q) == NO_GOODS;
 }
 
-// TRY: bis_distance_waypoint would save a real_t for find_space and every process in find_goods
+// TODO: nbr(is_pallet) as argument to recycle it around
+// TODO: set led on outside, to save further messages
 FUN device_t find_space(ARGS, real_t grid_step) { CODE
     bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet;
     int pallet_count = sum_hood(CALL, field<int>{node.nbr_dist() < 1.2 * grid_step and nbr(CALL, is_pallet)}, 0);
     bool source = is_pallet and pallet_count < 2;
-    real_t dist = bis_distance(CALL, source, 1, 0.5*comm);
-    device_t waypoint = get<1>(min_hood(CALL, make_tuple(nbr(CALL, dist), node.nbr_uid())));
+    auto t = distance_waypoint(CALL, source, 0.1*comm);
+    real_t dist = self(CALL, get<0>(t));
+    device_t waypoint = get<1>(t);
     // the following should be merged with the one in find_goods, to be done once in the calling function
     node.storage(tags::led_on{}) = any_hood(CALL, nbr(CALL, waypoint) == node.uid, false);
     return waypoint;
 }
-FUN_EXPORT find_space_t = common::export_list<bis_distance_t, bool, real_t, device_t>;
+FUN_EXPORT find_space_t = common::export_list<distance_waypoint_t, bool, device_t>;
 
-// TRY: broadcast dist to cut propagation radius
-// TRY: bloom filter to guide expansion
+// TODO: set led on outside, to save further messages
+// TODO: [LATER] broadcast dist to cut propagation radius
+// TODO: [MAYBE] bloom filter to guide process expansion
 FUN device_t find_goods(ARGS, query_type query) { CODE
     using key_type = tuple<device_t,query_type>;
     std::unordered_map<key_type, device_t> resmap = spawn(CALL, [&](key_type const& key){
         bool found = match(get<1>(key), node.storage(tags::loaded_good{}));
-        real_t dist = bis_distance(CALL, found, 1, 0.5*comm);
-        device_t waypoint = get<1>(min_hood(CALL, make_tuple(nbr(CALL, dist), node.nbr_uid())));
+        auto t = distance_waypoint(CALL, found, 0.1*comm);
+        real_t dist = self(CALL, get<0>(t));
+        device_t waypoint = get<1>(t);
         return make_tuple(waypoint, get<0>(key) != node.uid ? status::internal : empty(query) ? status::terminated : status::internal_output);
     }, empty(query) ? common::option<key_type>{} : common::option<key_type>{node.uid,query});
     device_t waypoint = resmap.empty() ? node.uid : resmap.begin()->second;
     node.storage(tags::led_on{}) = any_hood(CALL, nbr(CALL, waypoint) == node.uid, false);
     return waypoint;
 }
-FUN_EXPORT find_goods_t = common::export_list<spawn_t<tuple<device_t,query_type>, status>, bis_distance_t, real_t, device_t>;
+FUN_EXPORT find_goods_t = common::export_list<spawn_t<tuple<device_t,query_type>, status>, distance_waypoint_t, device_t>;
 
-// DO: add log collection result and its size in storage, and aggregate this sizes with max/mean
-// TRY: use hops
-// TRY: tweak simulation to produce fewer logs
-// TRY: reduce single log size (times_t as uint8_t of seconds%256, content as uint16_t)
-// TRY: do not flush logs every round
+// TODO: assert that logs are sorted and unique
+// TODO: switch to smart sp_collection (using nbr_pallet) to reduce duplication (maybe on hops_distance)
+// TODO: reduce single log size (times_t as uint8_t of seconds%256, content as uint16_t)
 FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> const& new_logs, int parity) { CODE
     bool source = node.uid % 2 == parity and node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     real_t dist = bis_distance(CALL, source, 1, 0.5*comm);
@@ -298,6 +319,7 @@ FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> cons
 }
 FUN_EXPORT single_log_collection_t = common::export_list<mp_collection_t<real_t, std::vector<log_type>>, bis_distance_t>;
 
+// TODO: ensure logs are unique
 FUN std::vector<log_type> log_collection(ARGS, std::vector<log_type> new_logs) { CODE
     std::sort(new_logs.begin(), new_logs.end());
     std::vector<log_type> r0 = single_log_collection(CALL, new_logs, 0);
@@ -412,7 +434,7 @@ MAIN() {
     maybe_change_loading_goods_for_simulation(CALL);
     std::vector<log_type> loading_logs = load_goods_on_pallet(CALL, shared_clock_value);
     new_logs.insert(new_logs.end(), loading_logs.begin(), loading_logs.end());
-    std::vector<log_type> collision_logs = collision_detection(CALL, 0.1, 0.1, shared_clock_value);
+    std::vector<log_type> collision_logs = collision_detection(CALL, 2000, 300, shared_clock_value);
     new_logs.insert(new_logs.end(), collision_logs.begin(), collision_logs.end());
     find_goods(CALL, node.storage(tags::querying{}));
     total_created_logs += new_logs.size();
@@ -428,6 +450,8 @@ MAIN() {
     }
     collect_data_for_plot(CALL, new_logs, collected_logs, shared_clock_value);
     update_node_in_simulation(CALL);
+    if (node.uid >= pallet_node_num)
+        node.storage(tags::node_color{}) = color::hsva((node.uid-pallet_node_num)*360/wearable_node_num,1,1,1);
 }
 //! @brief Export types used by the main function.
 FUN_EXPORT main_t = common::export_list<
@@ -457,7 +481,7 @@ using namespace coordination::tags;
 //! @brief The randomised sequence of rounds for every node (about one every second, with 10% variance).
 using round_s = sequence::periodic<
     distribution::interval_n<times_t, 0, 1>,       // uniform time in the [0,1] interval for start
-    distribution::weibull_n<times_t, 10, 1, 10>,   // weibull-distributed time for interval (10/10=1 mean, 1/10=0.1 deviation)
+    distribution::weibull_n<times_t, 100, 1, 100>,   // weibull-distributed time for interval (100/100=1 mean, 1/100=0.01 deviation)
     distribution::constant_n<times_t, end_time+2>  // the constant end_time+2 number for end
 >;
 //! @brief The sequence of network snapshots (one every simulated second).
@@ -479,6 +503,7 @@ using store_t = tuple_store<
     led_on,                 bool,
     node_type,              warehouse_device_type,
     node_color,             color,
+    side_color,             color,
     node_shape,             shape,
     node_size,              double,
     node_uid,               device_t,
@@ -523,6 +548,7 @@ DECLARE_OPTIONS(list,
     export_split<true>,
     program<coordination::main>,   // program to be run (refers to MAIN above)
     exports<coordination::main_t>, // export type list (types used in messages)
+    retain<metric::retain<3>>, // 3s retain time of messages
     round_schedule<round_s>, // the sequence generator for round events on nodes
     log_schedule<log_s>,     // the sequence generator for log events on the network
     store_t,       // the contents of the node storage
@@ -534,7 +560,8 @@ DECLARE_OPTIONS(list,
         node_type, pallet_distribution,
         loaded_good, no_goods_distribution,
         loading_goods, no_goods_distribution,
-        querying, no_query_distribution
+        querying, no_query_distribution,
+        connection_data, distribution::constant_n<real_t, 6, 10>
     >,
     spawn_schedule<wearable_spawn_s>,
     init<
@@ -543,15 +570,16 @@ DECLARE_OPTIONS(list,
         node_type, wearable_distribution,
         loaded_good, no_goods_distribution,
         loading_goods, no_goods_distribution,
-        querying, no_query_distribution
+        querying, no_query_distribution,
+        connection_data, distribution::constant_n<real_t, 1>
     >,
     plot_type<plot_t>, // the plot description to be used
     dimension<dim>, // dimensionality of the space
-    connector<connect::radial<80,connect::fixed<comm,1,dim>>>, // probabilistic connection within a comm range (50% loss at 80% radius)
+    connector<connect::radial<80,connect::powered<comm,1,dim>>>, // probabilistic connection within a comm range (50% loss at 80% radius)
     connector<connect::fixed<comm, 1, dim>>,
     shape_tag<node_shape>, // the shape of a node is read from this tag in the store
     size_tag<node_size>,   // the size of a node is read from this tag in the store
-    color_tag<node_color>,  // colors of a node are read from these
+    color_tag<node_color, side_color>,  // colors of a node are read from these
     area<0,0,side,side_2>
 );
 
