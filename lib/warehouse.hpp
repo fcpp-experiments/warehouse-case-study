@@ -304,7 +304,7 @@ inline bool empty(query_type const& q) {
 
 // TODO: [LATER] set led on outside, to save further messages
 FUN device_t find_space(ARGS, real_t grid_step) { CODE
-    bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet;
+    bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet && get<tags::goods_type>(node.storage(tags::loaded_good{})) != NO_GOODS;
     int pallet_count = sum_hood(CALL, field<int>{node.nbr_dist() < 1.2 * grid_step and nbr(CALL, is_pallet)}, 0);
     bool source = is_pallet and pallet_count < 2;
     auto t = distance_waypoint(CALL, source, 0.1*comm);
@@ -463,26 +463,32 @@ FUN void update_simulation_pre_program(ARGS) { CODE
         if (get<0>(current_state) == WEARABLE_IDLE) {
             if (node.next_int(1,20) == 1) { // 20% change to start acting
                 uint8_t new_action = node.next_int(1,2);
-                uint8_t new_good = node.next_int(0,3);
-                node.storage(tags::wearable_sim_op{}) = make_tuple(new_action, new_good, 0);
+                uint8_t new_good = node.next_int(0,99);
+                bool found = false;
+                if (new_action == WEARABLE_RETRIEVE) { // use a good that is somewhere
+                    for (auto pallets : details::get_vals(node.nbr_uid())) {
+                        if (get<tags::goods_type>(node.net.node_at(pallets).storage(tags::loaded_good{})) == new_good) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (new_action != WEARABLE_RETRIEVE || found) {
+                    node.storage(tags::wearable_sim_op{}) = make_tuple(new_action, new_good, 0);
+                }
             }
         } else if (get<0>(current_state) == WEARABLE_INSERT) {
             if (get<2>(current_state) == 0) {
                 for (auto search_candidate : details::get_vals(node.nbr_uid())) {
                     if (node.net.node_at(search_candidate).storage(tags::node_type{}) == warehouse_device_type::Pallet &&
                             get<tags::goods_type>(node.net.node_at(search_candidate).storage(tags::loaded_good{})) == NO_GOODS) {
-                        node.storage(tags::wearable_sim_op{}) = make_tuple(get<0>(current_state), get<1>(current_state), search_candidate);
+                        node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERT, get<1>(current_state), search_candidate);
                         break;
                     }
                 }
             } else if (distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space) {
-                if (get<tags::goods_type>(node.net.node_at(get<2>(current_state)).storage(tags::loaded_good{})) != get<1>(current_state)) {
-                    node.storage(tags::loading_goods{}) = common::make_tagged_tuple<tags::goods_type>(get<1>(current_state));
-                } else {
-                    node.storage(tags::loading_goods{}) = common::make_tagged_tuple<tags::goods_type>(NO_GOODS);
-                    node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = node.uid;
-                    node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERTING, get<1>(current_state), get<2>(current_state));
-                }
+                node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = node.uid;
+                node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERTING, get<1>(current_state), get<2>(current_state));
             }
         } else if (get<0>(current_state) == WEARABLE_RETRIEVE) {
             node.storage(tags::querying{}) = common::make_tagged_tuple<coordination::tags::goods_type>(get<1>(current_state));
@@ -527,12 +533,19 @@ FUN void update_simulation_post_program(ARGS, device_t find_space_result, device
             }
         } else if (get<0>(current_state) == WEARABLE_INSERTING) {
             vec<dim> const& target_position = node.net.node_at(find_space_result).position();
-            if (distance_from(CALL, target_position) < distance_to_consider_same_space && 
-                    distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space) {
-                node.propulsion() = make_vec(0,0,0);
-                rectangle_walk(CALL, make_vec(0,0,0), make_vec(0,0,0), 0, 1);
-                node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERTED, get<1>(current_state), get<2>(current_state));
-                node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
+            node.propulsion() = make_vec(0,0,0);
+            rectangle_walk(CALL, make_vec(0,0,0), make_vec(0,0,0), 0, 1);
+            if (distance_from(CALL, target_position) < (distance_to_consider_same_space * 5)) { 
+                // stop a bit further otherwise won't be able to load the goods on the correct one
+                if (distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space) {
+                    if (get<tags::goods_type>(node.net.node_at(get<2>(current_state)).storage(tags::loaded_good{})) != get<1>(current_state)) {
+                        node.storage(tags::loading_goods{}) = common::make_tagged_tuple<tags::goods_type>(get<1>(current_state));
+                    } else {
+                        node.storage(tags::loading_goods{}) = common::make_tagged_tuple<tags::goods_type>(NO_GOODS);
+                        node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERTED, get<1>(current_state), get<2>(current_state));
+                        node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
+                    }
+                }
             } else {
                 follow_target(CALL, target_position, forklift_max_speed, real_t(1.0));
             }
