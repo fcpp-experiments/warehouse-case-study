@@ -189,6 +189,7 @@ FUN uint8_t random_good(ARGS) { CODE
     return 99;
 }
 
+// TODO: use nbr_pallet instead (in common with find_space)
 FUN device_t nearest_pallet_device(ARGS) { CODE
     auto tuple_field = make_tuple(node.nbr_dist(), node.nbr_uid(), nbr(CALL, node.storage(tags::node_type{})));
     auto pallet_tuple_field = map_hood([](tuple<real_t, device_t, warehouse_device_type> const& t) {
@@ -442,7 +443,7 @@ FUN void collect_data_for_plot(ARGS, std::vector<log_type>& new_logs, std::vecto
     node.storage(tags::log_received__perc{}) = received_logs.size() / (double)total_created_logs;
     node.storage(tags::log_created{}) = new_logs.size();
     node.storage(tags::msg_size{}) = node.msg_size();
-    node.storage(tags::msg_received__perc{}) = node.msg_size() > MSG_SIZE_HARDWARE_LIMIT;
+    node.storage(tags::msg_received__perc{}) = node.msg_size() <= MSG_SIZE_HARDWARE_LIMIT;
     node.storage(tags::log_collected{}) = collected_logs.size();
     std::vector<times_t> delays;
     transform(collected_logs.begin(), collected_logs.end(), back_inserter(delays), [current_clock](log_type log) -> times_t {
