@@ -261,8 +261,8 @@ FUN tuple<field<real_t>, device_t> distance_waypoint(ARGS, bool source, real_t d
 }
 FUN_EXPORT distance_waypoint_t = common::export_list<real_t>;
 
-// TODO: log only risk start and end
 // TODO: [LATER] tweak threshold
+// TODO: [MAYBE] log only risk start and end
 FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold, times_t current_clock) { CODE
     bool wearable = node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     std::unordered_map<device_t, real_t> logmap = spawn(CALL, [&](device_t source){
@@ -297,8 +297,7 @@ inline bool empty(query_type const& q) {
     return get<tags::goods_type>(q) == NO_GOODS;
 }
 
-// TODO: nbr(is_pallet) as argument to recycle it around
-// TODO: set led on outside, to save further messages
+// TODO: [LATER] set led on outside, to save further messages
 FUN device_t find_space(ARGS, real_t grid_step) { CODE
     bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet;
     int pallet_count = sum_hood(CALL, field<int>{node.nbr_dist() < 1.2 * grid_step and nbr(CALL, is_pallet)}, 0);
@@ -306,14 +305,13 @@ FUN device_t find_space(ARGS, real_t grid_step) { CODE
     auto t = distance_waypoint(CALL, source, 0.1*comm);
     real_t dist = self(CALL, get<0>(t));
     device_t waypoint = get<1>(t);
-    // the following should be merged with the one in find_goods, to be done once in the calling function
     node.storage(tags::led_on{}) = any_hood(CALL, nbr(CALL, waypoint) == node.uid, false);
     return waypoint;
 }
 FUN_EXPORT find_space_t = common::export_list<distance_waypoint_t, bool, device_t>;
 
-// TODO: set led on outside, to save further messages
 // TODO: [LATER] broadcast dist to cut propagation radius
+// TODO: [LATER] set led on outside, to save further messages
 // TODO: [MAYBE] bloom filter to guide process expansion
 FUN device_t find_goods(ARGS, query_type query) { CODE
     using key_type = tuple<device_t,query_type>;
@@ -336,7 +334,6 @@ bool is_sorted(std::vector<log_type> const& v) {
     return true;
 }
 
-// TODO: reduce single log size (times_t as uint8_t of seconds%256, content as uint16_t)
 FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> const& new_logs, int parity) { CODE
     bool source = node.uid % 2 == parity and node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     field<hops_t> nbrdist = nbr(CALL, std::numeric_limits<hops_t>::max(), [&](field<hops_t> d){
