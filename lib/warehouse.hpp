@@ -53,42 +53,6 @@ constexpr size_t side_2 = 9450;
 constexpr size_t height = 1000;
 
 
-namespace std {
-
-//! @brief Sorted vector merging.
-template <typename T>
-std::vector<T> operator+(std::vector<T> const& x, std::vector<T> const& y) {
-    if (y.size() == 0) return x;
-    if (x.size() == 0) return y;
-    std::vector<T> z;
-    size_t i = 0, j = 0;
-    while (i < x.size() and j < y.size()) {
-        if (x[i] <= y[j]) {
-            if (x[i] == y[j]) ++j;
-            z.push_back(x[i++]);
-        } else z.push_back(y[j++]);
-    }
-    while (i < x.size()) z.push_back(x[i++]);
-    while (j < y.size()) z.push_back(y[j++]);
-    return z;
-}
-
-//! @brief Sorted vector subtraction.
-template <typename T>
-std::vector<T> operator-(std::vector<T> x, std::vector<T> const& y) {
-    if (y.size() == 0) return x;
-    size_t i = 0;
-    for (size_t j=0, k=0; j<x.size(); ++j) {
-        while (k < y.size() and y[k] < x[j]) ++k;
-        if (k >= y.size() or y[k] > x[j]) x[i++] = x[j];
-    }
-    x.resize(i);
-    return x;
-}
-
-}
-
-
 /**
  * @brief Namespace containing all the objects in the FCPP library.
  */
@@ -137,19 +101,55 @@ bool operator<(vec<n> const&, vec<n> const&) {
 
 using pallet_content_type = common::tagged_tuple_t<coordination::tags::goods_type, uint8_t>;
 
-using log_type = common::tagged_tuple_t<coordination::tags::log_content_type, uint8_t, coordination::tags::logger_id, device_t, coordination::tags::log_time, times_t, coordination::tags::log_content, real_t>;
+using log_type = common::tagged_tuple_t<coordination::tags::log_content_type, uint8_t, coordination::tags::logger_id, device_t, coordination::tags::log_time, uint8_t, coordination::tags::log_content, uint16_t>;
 
 using query_type = common::tagged_tuple_t<coordination::tags::goods_type, uint8_t>;
+
+uint8_t discretizer(times_t t) {
+    return int(10*t) % 256;
+}
 
 }
 
 namespace std {
-    template <>
-    struct hash<fcpp::tuple<fcpp::device_t,fcpp::query_type>> {
-        size_t operator()(fcpp::tuple<fcpp::device_t,fcpp::query_type> const& k) const {
-            return get<fcpp::coordination::tags::goods_type>(get<1>(k)) | (get<0>(k) << 8);
-        }
-    };
+
+//! @brief Sorted vector merging.
+std::vector<fcpp::log_type> operator+(std::vector<fcpp::log_type> const& x, std::vector<fcpp::log_type> const& y) {
+    if (y.size() == 0) return x;
+    if (x.size() == 0) return y;
+    std::vector<fcpp::log_type> z;
+    size_t i = 0, j = 0;
+    while (i < x.size() and j < y.size()) {
+        if (x[i] <= y[j]) {
+            if (x[i] == y[j]) ++j;
+            z.push_back(x[i++]);
+        } else z.push_back(y[j++]);
+    }
+    while (i < x.size()) z.push_back(x[i++]);
+    while (j < y.size()) z.push_back(y[j++]);
+    return z;
+}
+
+//! @brief Sorted vector subtraction.
+std::vector<fcpp::log_type> operator-(std::vector<fcpp::log_type> x, std::vector<fcpp::log_type> const& y) {
+    if (y.size() == 0) return x;
+    size_t i = 0;
+    for (size_t j=0, k=0; j<x.size(); ++j) {
+        while (k < y.size() and y[k] < x[j]) ++k;
+        if (k >= y.size() or y[k] > x[j]) x[i++] = x[j];
+    }
+    x.resize(i);
+    return x;
+}
+
+//! @brief Tuple hasher.
+template <>
+struct hash<fcpp::tuple<fcpp::device_t,fcpp::query_type>> {
+    size_t operator()(fcpp::tuple<fcpp::device_t,fcpp::query_type> const& k) const {
+        return get<fcpp::coordination::tags::goods_type>(get<1>(k)) | (get<0>(k) << 8);
+    }
+};
+
 }
 
 namespace fcpp {
@@ -196,7 +196,7 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CO
             }
         }, fs, get<1>(last_state));
         if (node.storage(tags::node_type{}) == warehouse_device_type::Pallet && get<1>(last_state) != pallet_value) {
-            loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, current_clock, get<tags::goods_type>(pallet_value));
+            loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, discretizer(current_clock), get<tags::goods_type>(pallet_value));
         }
         pallet_content_type goods_currenting_loading = node.storage(tags::loading_goods{});
         device_t wearable_device_id = get<0>(last_state);
@@ -209,7 +209,7 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CO
             } else {
                 wearable_value = goods_currenting_loading;
             }
-            loading_logs.emplace_back(LOG_TYPE_HANDLE_PALLET, node.uid, current_clock, nearest);
+            loading_logs.emplace_back(LOG_TYPE_HANDLE_PALLET, node.uid, discretizer(current_clock), nearest);
         }
         if (any_hood(CALL, map_hood([&](state_type const& x) {
                 return get<0>(x) == get<0>(last_state) && get<1>(x) == get<1>(last_state);
@@ -284,7 +284,7 @@ FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t thresh
         }
     std::vector<log_type> logvec;
     if (logmap[node.uid] > threshold)
-        logvec.emplace_back(LOG_TYPE_COLLISION_RISK, node.uid, current_clock, logmap[node.uid]);
+        logvec.emplace_back(LOG_TYPE_COLLISION_RISK, node.uid, discretizer(current_clock), logmap[node.uid]);
     return logvec;
 }
 FUN_EXPORT collision_detection_t = common::export_list<spawn_t<device_t, bool>, distance_waypoint_t, real_t>;
@@ -457,7 +457,8 @@ FUN void collect_data_for_plot(ARGS, std::vector<log_type>& new_logs, std::vecto
     node.storage(tags::log_collected{}) = collected_logs.size();
     std::vector<times_t> delays;
     transform(collected_logs.begin(), collected_logs.end(), back_inserter(delays), [current_clock](log_type log) -> times_t {
-        return current_clock - get<tags::log_time>(log);
+        uint8_t d = discretizer(current_clock) - get<tags::log_time>(log);
+        return d * 0.1;
     });
     node.storage(tags::logging_delay{}) = delays;
 }
@@ -481,7 +482,8 @@ MAIN() {
         std::copy(collected_logs.begin(), collected_logs.end(), std::inserter(received_logs, received_logs.end()));
         non_unique_received_logs += collected_logs.size();
         for (log_type log: collected_logs) {
-            total_delay_logs += node.current_time() - get<tags::log_time>(log);
+            uint8_t d = discretizer(node.current_time()) - get<tags::log_time>(log);
+            total_delay_logs += d * 0.1;
         }
     }
     collect_data_for_plot(CALL, new_logs, collected_logs, shared_clock_value);
