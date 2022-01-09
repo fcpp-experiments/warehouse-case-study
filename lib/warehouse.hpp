@@ -464,18 +464,18 @@ FUN void update_simulation_pre_program(ARGS) { CODE
             if (node.next_int(1,20) == 1) { // 20% change to start acting
                 uint8_t new_action = node.next_int(1,2);
                 uint8_t new_good = node.next_int(0,99);
-                bool found = false;
                 if (new_action == WEARABLE_RETRIEVE) { // use a good that is somewhere
-                    for (auto pallets : details::get_vals(node.nbr_uid())) {
-                        if (get<tags::goods_type>(node.net.node_at(pallets).storage(tags::loaded_good{})) == new_good) {
-                            found = true;
-                            break;
+                    bool found = false;
+                    while (!found) {
+                        new_good = node.next_int(0,99);
+                        for (auto pallets : details::get_vals(node.nbr_uid())) {
+                            if (get<tags::goods_type>(node.net.node_at(pallets).storage(tags::loaded_good{})) == new_good) {
+                                found = true;
+                            }
                         }
                     }
                 }
-                if (new_action != WEARABLE_RETRIEVE || found) {
-                    node.storage(tags::wearable_sim_op{}) = make_tuple(new_action, new_good, 0);
-                }
+                node.storage(tags::wearable_sim_op{}) = make_tuple(new_action, new_good, 0);
             }
         } else if (get<0>(current_state) == WEARABLE_INSERT) {
             if (get<2>(current_state) == 0) {
