@@ -53,6 +53,42 @@ constexpr size_t side_2 = 9450;
 constexpr size_t height = 1000;
 
 
+namespace std {
+
+//! @brief Sorted vector merging.
+template <typename T>
+std::vector<T> operator+(std::vector<T> const& x, std::vector<T> const& y) {
+    if (y.size() == 0) return x;
+    if (x.size() == 0) return y;
+    std::vector<T> z;
+    size_t i = 0, j = 0;
+    while (i < x.size() and j < y.size()) {
+        if (x[i] <= y[j]) {
+            if (x[i] == y[j]) ++j;
+            z.push_back(x[i++]);
+        } else z.push_back(y[j++]);
+    }
+    while (i < x.size()) z.push_back(x[i++]);
+    while (j < y.size()) z.push_back(y[j++]);
+    return z;
+}
+
+//! @brief Sorted vector subtraction.
+template <typename T>
+std::vector<T> operator-(std::vector<T> x, std::vector<T> const& y) {
+    if (y.size() == 0) return x;
+    size_t i = 0;
+    for (size_t j=0, k=0; j<x.size(); ++j) {
+        while (k < y.size() and y[k] < x[j]) ++k;
+        if (k >= y.size() or y[k] > x[j]) x[i++] = x[j];
+    }
+    x.resize(i);
+    return x;
+}
+
+}
+
+
 /**
  * @brief Namespace containing all the objects in the FCPP library.
  */
@@ -294,34 +330,34 @@ FUN device_t find_goods(ARGS, query_type query) { CODE
 }
 FUN_EXPORT find_goods_t = common::export_list<spawn_t<tuple<device_t,query_type>, status>, distance_waypoint_t, device_t>;
 
-// TODO: assert that logs are sorted and unique
-// TODO: switch to smart sp_collection (using nbr_pallet) to reduce duplication (maybe on hops_distance)
+bool is_sorted(std::vector<log_type> const& v) {
+    for (size_t i=1; i<v.size(); ++i)
+        if (v[i] <= v[i-1]) return false;
+    return true;
+}
+
 // TODO: reduce single log size (times_t as uint8_t of seconds%256, content as uint16_t)
 FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> const& new_logs, int parity) { CODE
     bool source = node.uid % 2 == parity and node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
-    real_t dist = bis_distance(CALL, source, 1, 0.5*comm);
-    std::vector<log_type> r = mp_collection(CALL, dist, new_logs, std::vector<log_type>{}, [](std::vector<log_type> const& x, std::vector<log_type> const& y){
-        std::vector<log_type> z;
-        size_t i = 0, j = 0;
-        while (i < x.size() and j < y.size()) {
-            if (x[i] <= y[j]) {
-                if (x[i] == y[j]) ++j;
-                z.push_back(x[i++]);
-            } else z.push_back(y[j++]);
-        }
-        while (i < x.size()) z.push_back(x[i++]);
-        while (j < y.size()) z.push_back(y[j++]);
-        return z;
-    }, [](std::vector<log_type> x, size_t){
-        return x;
+    field<hops_t> nbrdist = nbr(CALL, std::numeric_limits<hops_t>::max(), [&](field<hops_t> d){
+        hops_t nd = min_hood(CALL, d, source ? hops_t(-1) : std::numeric_limits<hops_t>::max()-1) + 1;
+        mod_self(CALL, d) = nd;
+        return make_tuple(std::move(d), nd);
     });
+    hops_t dist = self(CALL, nbrdist);
+    std::vector<log_type> r = nbr(CALL, std::vector<log_type>{}, [&](field<std::vector<log_type>> nl){
+        std::vector<log_type> uplogs   = sum_hood(CALL, mux(nbrdist > dist, nl, std::vector<log_type>{}));
+        std::vector<log_type> downlogs = sum_hood(CALL, mux(nbrdist < dist, nl, std::vector<log_type>{}));
+        return (uplogs - downlogs) + new_logs;
+    });
+    assert(is_sorted(r));
     return source ? r : std::vector<log_type>{};
 }
-FUN_EXPORT single_log_collection_t = common::export_list<mp_collection_t<real_t, std::vector<log_type>>, bis_distance_t>;
+FUN_EXPORT single_log_collection_t = common::export_list<hops_t, std::vector<log_type>>;
 
-// TODO: ensure logs are unique
 FUN std::vector<log_type> log_collection(ARGS, std::vector<log_type> new_logs) { CODE
     std::sort(new_logs.begin(), new_logs.end());
+    assert(is_sorted(new_logs));
     std::vector<log_type> r0 = single_log_collection(CALL, new_logs, 0);
     std::vector<log_type> r1 = single_log_collection(CALL, new_logs, 1);
     return r0.empty() ? r1 : r0;
