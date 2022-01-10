@@ -367,6 +367,33 @@ FUN std::vector<log_type> log_collection(ARGS, std::vector<log_type> new_logs) {
 }
 FUN_EXPORT log_collection_t = common::export_list<single_log_collection_t>;
 
+//! @brief Computes the next waypoint towards target q while avoiding obstacles.
+FUN vec<3> waypoint_target(ARGS, vec<3> q) { CODE
+    // rescale for convenience
+    vec<3> p = node.position() / grid_cell_size;
+    q /= grid_cell_size;
+    // discretized target x
+    real_t qx = int((q[0]-1)/5) * 5 + 3.5;
+    // if close to target
+    if (abs(qx-p[0]) <= 2.5 and abs(q[1]-p[1]) <= 1)
+        return make_vec(q[0], q[1], 0) * grid_cell_size;
+    // if same vertical corridor as target
+    if (abs(qx-p[0]) <= 1)
+        return make_vec(p[0], q[1], 0) * grid_cell_size;
+    // if in horizontal corridor
+    if (int(p[1])%18 == 7)
+        return make_vec(qx, p[1], 0) * grid_cell_size;
+    // if in vertical corridor
+    if (int(p[0])%5 == 3) {
+        real_t qy = (p[1] + q[1])/2;
+        qy = int((qy+1.5)/18) * 18 + 7.5;
+        return make_vec(p[0], qy, 0) * grid_cell_size;
+    }
+    // otherwise
+    qx = int((p[0]-1)/5) * 5 + 3.5;
+    return make_vec(qx, p[1], 0) * grid_cell_size;
+}
+
 FUN void update_node_visually_in_simulation(ARGS) { CODE
     using namespace tags;
     node.storage(node_uid{}) = node.uid;
