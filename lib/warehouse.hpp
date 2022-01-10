@@ -410,15 +410,12 @@ FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
             int row, col, height;
             real_t x, y, z;
             do {
-                row = node.next_int(0,21);
+                row = node.next_int(1,22);
                 col = node.next_int(0,44);
                 height = node.next_int(0,2);
-                if (row == 0) {
-                    row = 22;
-                }
                 x = ((((row / 2) * 3) + row) * grid_cell_size) + (grid_cell_size / 2);
                 y = ((((col / 15) * 3) + col + 9) * grid_cell_size) + (grid_cell_size / 2);
-                z = height * grid_cell_size * 1.5;
+                z = height * grid_cell_size;
             } while (used_slots.find(make_tuple(row,col,height)) != used_slots.end());
             used_slots.insert(make_tuple(row,col,height));
             node.position() = make_vec(x,y,z);
