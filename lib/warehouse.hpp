@@ -65,29 +65,12 @@ namespace coordination {
         struct log_content {};
         struct loaded_good {};
         struct loading_goods{};
-        struct querying {};
         struct logs {};
         struct led_on {};
         struct node_type {};
-        //! @brief Color of the current node.
-        struct node_color {};
         struct side_color {};
-        //! @brief Size of the current node.
-        struct node_size {};
-        //! @brief Shape of the current node.
-        struct node_shape {};
-        struct node_uid {};
-        //! @brief Maximum message size ever experienced.
-        struct msg_size {};
-        struct msg_received__perc {};
-        struct log_collected {};
-        struct log_received__perc {};
-        struct log_created {};
         struct logging_delay {};
-        struct wearable_sim_op {};
-        struct wearable_sim_target_pos {};
         struct pallet_sim_follow {};
-        struct pallet_sim_follow_pos {};
         struct pallet_sim_handling {};
     }
 }

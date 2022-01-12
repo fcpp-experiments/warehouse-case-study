@@ -5,9 +5,7 @@
  * @brief Runs a single execution of the warehouse case study with a graphical user interface.
  */
 
-#include "lib/fcpp.hpp"
-#include "lib/warehouse.hpp"
-#include "lib/simulation.hpp"
+#include "lib/warehouse_simulation.hpp"
 
 using namespace fcpp;
 

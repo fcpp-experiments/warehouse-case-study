@@ -2,7 +2,6 @@
 #define FCPP_WAREHOUSE_SIMULATION_H_
 
 #include "lib/warehouse.hpp"
-#include "lib/fcpp.hpp"
 
 #define MSG_SIZE_HARDWARE_LIMIT 224
 
@@ -25,6 +24,26 @@ constexpr size_t loading_zone_bound_y_1 = grid_cell_size * 8;
 namespace fcpp {
 
 namespace coordination {
+
+    namespace tags {
+        struct querying {};
+        //! @brief Color of the current node.
+        struct node_color {};
+        //! @brief Size of the current node.
+        struct node_size {};
+        //! @brief Shape of the current node.
+        struct node_shape {};
+        struct node_uid {};
+        //! @brief Maximum message size ever experienced.
+        struct msg_size {};
+        struct msg_received__perc {};
+        struct log_collected {};
+        struct log_received__perc {};
+        struct log_created {};
+        struct wearable_sim_op {};
+        struct wearable_sim_target_pos {};
+        struct pallet_sim_follow_pos {};
+    }
 
 FUN uint8_t random_good(ARGS) { CODE
     constexpr real_t f = 5.187377517639621;
@@ -461,6 +480,7 @@ using aggregator_t = aggregators<
     logging_delay,          aggregator::container<std::vector<times_t>, aggregator::combine<aggregator::max<times_t>, aggregator::mean<times_t>>>,
     log_received__perc,     aggregator::mean<double>
 >;
+
 //! @brief Message size plot.
 using msg_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, msg_size>>;
 //! @brief Log plot.
