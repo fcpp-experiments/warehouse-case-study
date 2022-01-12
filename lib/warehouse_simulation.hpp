@@ -12,6 +12,19 @@
 #define WEARABLE_RETRIEVING 4
 #define WEARABLE_INSERTED 5
 
+//! @brief The final simulation time.
+constexpr size_t end_time = 300;
+constexpr size_t empty_pallet_node_num = 10;
+//! @brief Dimensionality of the space.
+constexpr size_t dim = 3;
+//! @brief Side of the area.
+constexpr size_t side = 8550;
+constexpr size_t side_2 = 9450;
+//! @brief Height of the area.
+constexpr size_t height = 1000;
+
+constexpr size_t grid_cell_size = 150;
+
 constexpr fcpp::real_t forklift_max_speed = 280;
 
 constexpr size_t distance_to_consider_same_space = 100; // must be less than grid_cell_size
@@ -40,8 +53,10 @@ namespace coordination {
         struct log_collected {};
         struct log_received__perc {};
         struct log_created {};
+        struct logging_delay {};
         struct wearable_sim_op {};
         struct wearable_sim_target_pos {};
+        struct pallet_sim_follow {};
         struct pallet_sim_follow_pos {};
     }
 

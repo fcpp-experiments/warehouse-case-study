@@ -32,23 +32,12 @@ std::string to_string(warehouse_device_type t) {
 
 // [SYSTEM SETUP]
 
-//! @brief The final simulation time.
-constexpr size_t end_time = 300;
 //! @brief Number of pallet devices.
 constexpr size_t pallet_node_num = 500;
-constexpr size_t empty_pallet_node_num = 10;
 //! @brief Number of wearable devices.
 constexpr size_t wearable_node_num = 6;
 //! @brief Communication radius (25m w-w, 15m w-p, 9m p-p).
 constexpr size_t comm = 2500;
-//! @brief Dimensionality of the space.
-constexpr size_t dim = 3;
-constexpr size_t grid_cell_size = 150;
-//! @brief Side of the area.
-constexpr size_t side = 8550;
-constexpr size_t side_2 = 9450;
-//! @brief Height of the area.
-constexpr size_t height = 1000;
 
 /**
  * @brief Namespace containing all the objects in the FCPP library.
@@ -69,8 +58,6 @@ namespace coordination {
         struct led_on {};
         struct node_type {};
         struct side_color {};
-        struct logging_delay {};
-        struct pallet_sim_follow {};
         struct pallet_sim_handling {};
     }
 }
