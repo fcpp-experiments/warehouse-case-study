@@ -12,6 +12,10 @@
 #define WEARABLE_RETRIEVING 4
 #define WEARABLE_INSERTED 5
 
+//! @brief Number of pallet devices.
+constexpr size_t pallet_node_num = 500;
+//! @brief Number of wearable devices.
+constexpr size_t wearable_node_num = 6;
 //! @brief The final simulation time.
 constexpr size_t end_time = 300;
 constexpr size_t empty_pallet_node_num = 10;
@@ -22,6 +26,8 @@ constexpr size_t side = 8550;
 constexpr size_t side_2 = 9450;
 //! @brief Height of the area.
 constexpr size_t height = 1000;
+//! @brief Communication radius (25m w-w, 15m w-p, 9m p-p).
+constexpr size_t comm = 2500;
 
 constexpr size_t grid_cell_size = 150;
 
@@ -35,6 +41,8 @@ constexpr size_t loading_zone_bound_y_0 = grid_cell_size * 2;
 constexpr size_t loading_zone_bound_y_1 = grid_cell_size * 8;
 
 namespace fcpp {
+
+using wearable_sim_state_type = fcpp::tuple<uint8_t, uint8_t, device_t>;
 
 namespace coordination {
 
@@ -396,10 +404,10 @@ MAIN() {
     times_t shared_clock_value = coordination::shared_clock(CALL);
     std::vector<log_type> loading_logs = load_goods_on_pallet(CALL, shared_clock_value);
     new_logs.insert(new_logs.end(), loading_logs.begin(), loading_logs.end());
-    std::vector<log_type> collision_logs = collision_detection(CALL, 2000, 300, shared_clock_value);
+    std::vector<log_type> collision_logs = collision_detection(CALL, 2000, 300, shared_clock_value, comm);
     new_logs.insert(new_logs.end(), collision_logs.begin(), collision_logs.end());
-    device_t find_space_result = find_space(CALL, grid_cell_size);
-    device_t find_goods_result = find_goods(CALL, node.storage(tags::querying{}));
+    device_t find_space_result = find_space(CALL, grid_cell_size, comm);
+    device_t find_goods_result = find_goods(CALL, node.storage(tags::querying{}), comm);
     total_created_logs += new_logs.size();
     std::vector<log_type> collected_logs = log_collection(CALL, new_logs);
     if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable) {
@@ -565,8 +573,7 @@ DECLARE_OPTIONS(list,
     connector<connect::fixed<comm, 1, dim>>,
     shape_tag<node_shape>, // the shape of a node is read from this tag in the store
     size_tag<node_size>,   // the size of a node is read from this tag in the store
-    color_tag<node_color>,  // colors of a node are read from these
-    //color_tag<node_color, side_color>,  // colors of a node are read from these
+    color_tag<node_color, side_color>,  // colors of a node are read from these
     area<0,0,side,side_2>
 );
 

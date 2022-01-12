@@ -1,4 +1,4 @@
-// Copyright © 2021 Giorgio Audrito. All Rights Reserved.
+// Copyright © 2022 Giorgio Audrito and Lorenzo Testa. All Rights Reserved.
 
 /**
  * @file warehouse.hpp
@@ -12,8 +12,19 @@
 
 #include "lib/fcpp.hpp"
 
+#define NO_GOODS 255
+#define UNLOAD_GOODS 254
+#define LOG_TYPE_PALLET_CONTENT_CHANGE 1
+#define LOG_TYPE_HANDLE_PALLET 2
+#define LOG_TYPE_COLLISION_RISK 3
+
+
+// [INTRODUCTION]
+
+//! @brief Enumeration of device types.
 enum class warehouse_device_type { Pallet, Wearable };
 
+//! @brief Printing the device types.
 std::string to_string(warehouse_device_type t) {
     switch (t) {
         case warehouse_device_type::Pallet:
@@ -23,21 +34,6 @@ std::string to_string(warehouse_device_type t) {
             return "Wearable";
     }
 }
-
-#define NO_GOODS 255
-#define UNLOAD_GOODS 254
-#define LOG_TYPE_PALLET_CONTENT_CHANGE 1
-#define LOG_TYPE_HANDLE_PALLET 2
-#define LOG_TYPE_COLLISION_RISK 3
-
-// [SYSTEM SETUP]
-
-//! @brief Number of pallet devices.
-constexpr size_t pallet_node_num = 500;
-//! @brief Number of wearable devices.
-constexpr size_t wearable_node_num = 6;
-//! @brief Communication radius (25m w-w, 15m w-p, 9m p-p).
-constexpr size_t comm = 2500;
 
 /**
  * @brief Namespace containing all the objects in the FCPP library.
@@ -63,22 +59,22 @@ namespace coordination {
 }
 
 
-// [INTRODUCTION]
-
 //! @brief Dummy ordering between positions (allows positions to be used as secondary keys in ordered tuples).
 template <size_t n>
 bool operator<(vec<n> const&, vec<n> const&) {
     return false;
 }
 
+//! @brief Type for the content description of pallets.
 using pallet_content_type = common::tagged_tuple_t<coordination::tags::goods_type, uint8_t>;
 
+//! @brief Type for logs.
 using log_type = common::tagged_tuple_t<coordination::tags::log_content_type, uint8_t, coordination::tags::logger_id, device_t, coordination::tags::log_time, uint8_t, coordination::tags::log_content, uint16_t>;
 
+//! @brief Type for queries.
 using query_type = common::tagged_tuple_t<coordination::tags::goods_type, uint8_t>;
 
-using wearable_sim_state_type = fcpp::tuple<uint8_t, uint8_t, device_t>;
-
+//! @brief Converts a floating-point time to a byte value (tenth of secs precision).
 uint8_t discretizer(times_t t) {
     return int(10*t) % 256;
 }
@@ -145,7 +141,6 @@ FUN device_t nearest_pallet_device(ARGS) { CODE
     }, tuple_field);
     return get<1>(min_hood(CALL, pallet_tuple_field, make_tuple(INF, node.uid, node.storage(tags::node_type{}))));
 }
-
 FUN_EXPORT nearest_pallet_device_t = common::export_list<warehouse_device_type>;
 
 FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CODE 
@@ -194,7 +189,6 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CO
     });
     return loading_logs;
 }
-
 FUN_EXPORT load_goods_on_pallet_t = common::export_list<tuple<device_t,pallet_content_type>>;
 
 // TODO: [LATER] tweak distortion
@@ -213,7 +207,7 @@ FUN_EXPORT distance_waypoint_t = common::export_list<real_t>;
 
 // TODO: [LATER] tweak threshold
 // TODO: [MAYBE] log only risk start and end
-FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold, times_t current_clock) { CODE
+FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold, times_t current_clock, real_t comm) { CODE
     bool wearable = node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
     std::unordered_map<device_t, real_t> logmap = spawn(CALL, [&](device_t source){
         auto t = distance_waypoint(CALL, node.uid == source, 0.1*comm);
@@ -227,9 +221,9 @@ FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t thresh
         return make_tuple(dist < radius ? v : -INF, dist < radius);
     }, wearable ? common::option<device_t>{node.uid} : common::option<device_t>{});
     node.storage(tags::side_color{}) = color(BLACK);
-    for (size_t i=0; i<wearable_node_num; ++i)
-        if (logmap.count(i + pallet_node_num) and logmap.at(i + pallet_node_num) > -INF) {
-            node.storage(tags::side_color{}) = color::hsva(i*360/wearable_node_num,1,1,1);
+    for (size_t i=0; i<6; ++i)
+        if (logmap.count(i + 500) and logmap.at(i + 500) > -INF) {
+            node.storage(tags::side_color{}) = color::hsva(i*360/6,1,1,1);
             break;
         }
     std::vector<log_type> logvec;
@@ -248,7 +242,7 @@ inline bool empty(query_type const& q) {
 }
 
 // TODO: [LATER] set led on outside, to save further messages
-FUN device_t find_space(ARGS, real_t grid_step) { CODE
+FUN device_t find_space(ARGS, real_t grid_step, real_t comm) { CODE
     bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet && 
         get<tags::goods_type>(node.storage(tags::loaded_good{})) != NO_GOODS &&
         node.storage(tags::pallet_sim_handling{}) == false;
@@ -265,7 +259,7 @@ FUN_EXPORT find_space_t = common::export_list<distance_waypoint_t, bool, device_
 // TODO: [LATER] broadcast dist to cut propagation radius
 // TODO: [LATER] set led on outside, to save further messages
 // TODO: [MAYBE] bloom filter to guide process expansion
-FUN device_t find_goods(ARGS, query_type query) { CODE
+FUN device_t find_goods(ARGS, query_type query, real_t comm) { CODE
     using key_type = tuple<device_t,query_type>;
     std::unordered_map<key_type, device_t> resmap = spawn(CALL, [&](key_type const& key){
         bool found = match(get<1>(key), node.storage(tags::loaded_good{})) && node.storage(tags::pallet_sim_handling{}) == false;
