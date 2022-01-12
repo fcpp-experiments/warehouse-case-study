@@ -24,14 +24,6 @@ constexpr size_t loading_zone_bound_y_1 = grid_cell_size * 8;
 
 namespace fcpp {
 
-using pallet_content_type = common::tagged_tuple_t<coordination::tags::goods_type, uint8_t>;
-
-using log_type = common::tagged_tuple_t<coordination::tags::log_content_type, uint8_t, coordination::tags::logger_id, device_t, coordination::tags::log_time, uint8_t, coordination::tags::log_content, uint16_t>;
-
-using query_type = common::tagged_tuple_t<coordination::tags::goods_type, uint8_t>;
-
-using wearable_sim_state_type = fcpp::tuple<uint8_t, uint8_t, device_t>;
-
 namespace coordination {
 
 FUN uint8_t random_good(ARGS) { CODE
