@@ -516,16 +516,13 @@ FUN vec<dim> find_actual_space(ARGS, device_t near) { CODE
     vec<dim> test_position(near_position);
     vec<dim> limit_test(near_position);
     bool found = false;
-    std::cout << "searching space near " << near;
     for (uint8_t i = 0; i < 3 && !found; i++) {
         limit_test[1] = (((i * 4) + (14 * (i + 1)) + 9) * grid_cell_size) + (grid_cell_size / 2);
         found = norm(near_position - limit_test) < distance_to_consider_same_space;
     }
-    std::cout << " is top? " << found;
     if (!found) {
         test_position[1] = test_position[1] + grid_cell_size;
         if (!pallet_in_near_location(CALL, test_position)) {
-            std::cout << " found!\n";
             return test_position;
         }
     }
@@ -533,35 +530,27 @@ FUN vec<dim> find_actual_space(ARGS, device_t near) { CODE
     found = false;
     for (uint8_t i = 0; i < 3 && !found; i++) {
         limit_test[1] = (((i * 18) + 9) * grid_cell_size) + (grid_cell_size / 2);
-        std::cout << " testing position " << limit_test << " " << norm(near_position - limit_test);
         found = norm(near_position - limit_test) < distance_to_consider_same_space;
     }
-    std::cout << " is bot? " << found;
     if (!found) {
         test_position[1] = test_position[1] - grid_cell_size;
         if (!pallet_in_near_location(CALL, test_position)) {
-            std::cout << " found!\n";
             return test_position;
         }
     }
     test_position = near_position;
-    std::cout << " is roof? " << (near_position[2] / grid_cell_size < 2);
     if (near_position[2] / grid_cell_size < 2) {
         test_position[2] = test_position[2] + grid_cell_size;
         if (!pallet_in_near_location(CALL, test_position)) {
-            std::cout << " found!\n";
             return test_position;
         }
     }
-    std::cout << " is floor? " << (near_position[2] / grid_cell_size > 0);
     if (near_position[2] / grid_cell_size > 0) {
         test_position[2] = test_position[2] - grid_cell_size;
         if (!pallet_in_near_location(CALL, test_position)) {
-            std::cout << " found!\n";
             return test_position;
         }
     }
-    std::cout << " space not found near " << near << "\n";
     return make_vec(near_position[0],near_position[1],grid_cell_size * 10);
 }
 
