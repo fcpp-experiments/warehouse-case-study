@@ -129,6 +129,8 @@ FUN void update_node_visually_in_simulation(ARGS) { CODE
     } else {
         node.storage(node_size{}) = (grid_cell_size * 2) / 3;
     }
+    if (node.uid >= pallet_node_num && node.uid < pallet_node_num + wearable_node_num)
+        node.storage(tags::node_color{}) = color::hsva((node.uid-pallet_node_num)*360/wearable_node_num,1,1,1);
 }
 
 FUN_EXPORT update_node_visually_in_simulation_t = common::export_list<vec<dim>, int>;
@@ -171,20 +173,13 @@ std::set<log_type> received_logs;
 
 unsigned int non_unique_received_logs = 0;
 
-times_t total_delay_logs = 0.0;
-
-FUN void collect_data_for_plot(ARGS, std::vector<log_type>& new_logs, std::vector<log_type>& collected_logs, times_t current_clock) { CODE
+FUN void simulation_statistics(ARGS) { CODE
+    std::vector<log_type>& new_logs = node.storage(tags::new_logs{});
+    std::vector<log_type>& coll_logs = node.storage(tags::coll_logs{});
+    total_created_logs += new_logs.size();
+    non_unique_received_logs += coll_logs.size();
+    std::copy(coll_logs.begin(), coll_logs.end(), std::inserter(received_logs, received_logs.end()));
     node.storage(tags::log_received__perc{}) = received_logs.size() / (double)total_created_logs;
-    node.storage(tags::log_created{}) = new_logs.size();
-    node.storage(tags::msg_size{}) = node.msg_size();
-    node.storage(tags::msg_received__perc{}) = node.msg_size() <= MSG_SIZE_HARDWARE_LIMIT;
-    node.storage(tags::log_collected{}) = collected_logs.size();
-    std::vector<times_t> delays;
-    transform(collected_logs.begin(), collected_logs.end(), back_inserter(delays), [current_clock](log_type log) -> times_t {
-        uint8_t d = discretizer(current_clock) - get<tags::log_time>(log);
-        return d * 0.1;
-    });
-    node.storage(tags::logging_delay{}) = delays;
 }
 
 FUN real_t distance_from(ARGS, vec<dim> const& other) { CODE
@@ -332,7 +327,7 @@ FUN void update_simulation_pre_program(ARGS) { CODE
 
 FUN_EXPORT update_simulation_pre_program_t = common::export_list<wearable_sim_state_type, vec<dim>>;
 
-FUN void update_simulation_post_program(ARGS, device_t find_space_result, device_t find_goods_result) { CODE
+FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
     common::unique_lock<false> lock;
     if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable) {
         wearable_sim_state_type current_state = node.storage(tags::wearable_sim_op{});
@@ -342,9 +337,9 @@ FUN void update_simulation_post_program(ARGS, device_t find_space_result, device
             if (get<2>(current_state) != 0 && node.net.node_count(get<2>(current_state))) {
                 follow_target(CALL, node.net.node_at(get<2>(current_state)).position(), forklift_max_speed, real_t(1.0));
             }
-        } else if (get<0>(current_state) == WEARABLE_INSERTING && node.net.node_count(find_space_result)) {
-            node.storage(tags::pallet_sim_follow{}) = find_space_result;
-            vec<dim> const& target_position = waypoint_target(CALL, node.net.node_at(find_space_result).position());
+        } else if (get<0>(current_state) == WEARABLE_INSERTING && node.net.node_count(waypoint)) {
+            node.storage(tags::pallet_sim_follow{}) = waypoint;
+            vec<dim> const& target_position = waypoint_target(CALL, node.net.node_at(waypoint).position());
             if (distance_from(CALL, target_position) < (distance_to_consider_same_space * 2.5) &&
                     node.net.node_count(get<2>(current_state))) {
                 stop_mov(CALL);
@@ -356,19 +351,19 @@ FUN void update_simulation_post_program(ARGS, device_t find_space_result, device
                     pallet_node.storage(tags::pallet_sim_follow_pos{}) = make_vec(0,0,0);
                 } else {
                     pallet_node.storage(tags::pallet_sim_follow{}) = 0;
-                    pallet_node.storage(tags::pallet_sim_follow_pos{}) = find_actual_space(CALL, find_space_result);
+                    pallet_node.storage(tags::pallet_sim_follow_pos{}) = find_actual_space(CALL, waypoint);
                 }
             } else {
                 follow_target(CALL, target_position, forklift_max_speed, real_t(1.0));
             }
-        } else if (get<0>(current_state) == WEARABLE_RETRIEVE && node.net.node_count(find_goods_result)) {
-            vec<dim> const& target_position = node.net.node_at(find_goods_result).position();
-            if (get<tags::goods_type>(node.net.node_at(find_goods_result).storage(tags::loaded_goods{})) == get<1>(current_state) &&
-                    node.net.node_at(find_goods_result).storage(tags::pallet_handled{}) == false &&
+        } else if (get<0>(current_state) == WEARABLE_RETRIEVE && node.net.node_count(waypoint)) {
+            vec<dim> const& target_position = node.net.node_at(waypoint).position();
+            if (get<tags::goods_type>(node.net.node_at(waypoint).storage(tags::loaded_goods{})) == get<1>(current_state) &&
+                    node.net.node_at(waypoint).storage(tags::pallet_handled{}) == false &&
                     distance_from(CALL, target_position) < distance_to_consider_same_space) {
                 stop_mov(CALL);
-                node.net.node_at(find_goods_result, lock).storage(tags::pallet_handled{}) = true;
-                node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_RETRIEVING, get<1>(current_state), find_goods_result);
+                node.net.node_at(waypoint, lock).storage(tags::pallet_handled{}) = true;
+                node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_RETRIEVING, get<1>(current_state), waypoint);
             } else {
                 follow_target(CALL, waypoint_target(CALL, target_position), forklift_max_speed, real_t(1.0));
             }
@@ -392,31 +387,10 @@ FUN_EXPORT update_simulation_post_program_t = common::export_list<real_t>;
 MAIN() {
     setup_nodes_if_first_round_of_simulation(CALL);
     update_simulation_pre_program(CALL);
-    std::vector<log_type> new_logs;
-    times_t shared_clock_value = coordination::shared_clock(CALL);
-    std::vector<log_type> loading_logs = load_goods_on_pallet(CALL, shared_clock_value);
-    new_logs.insert(new_logs.end(), loading_logs.begin(), loading_logs.end());
-    std::vector<log_type> collision_logs = collision_detection(CALL, 2000, 300, shared_clock_value, comm);
-    new_logs.insert(new_logs.end(), collision_logs.begin(), collision_logs.end());
-    device_t find_space_result = find_space(CALL, grid_cell_size, comm);
-    device_t find_goods_result = find_goods(CALL, node.storage(tags::querying{}), comm);
-    total_created_logs += new_logs.size();
-    std::vector<log_type> collected_logs = log_collection(CALL, new_logs);
-    if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable) {
-        std::vector<log_type>& previously_collected_logs = node.storage(tags::logs{});
-        previously_collected_logs.insert(previously_collected_logs.end(), collected_logs.begin(), collected_logs.end());
-        std::copy(collected_logs.begin(), collected_logs.end(), std::inserter(received_logs, received_logs.end()));
-        non_unique_received_logs += collected_logs.size();
-        for (log_type log: collected_logs) {
-            uint8_t d = discretizer(node.current_time()) - get<tags::log_time>(log);
-            total_delay_logs += d * 0.1;
-        }
-    }
-    collect_data_for_plot(CALL, new_logs, collected_logs, shared_clock_value);
-    update_simulation_post_program(CALL, find_space_result, find_goods_result);
+    device_t waypoint = warehouse_app(CALL, grid_cell_size, comm, 2000, 300);
+    simulation_statistics(CALL);
+    update_simulation_post_program(CALL, waypoint);
     update_node_visually_in_simulation(CALL);
-    if (node.uid >= pallet_node_num && node.uid < pallet_node_num + wearable_node_num)
-        node.storage(tags::node_color{}) = color::hsva((node.uid-pallet_node_num)*360/wearable_node_num,1,1,1);
 }
 //! @brief Export types used by the main function.
 FUN_EXPORT main_t = common::export_list<
