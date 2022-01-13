@@ -129,21 +129,14 @@ namespace coordination {
 
 // [AGGREGATE PROGRAM]
 
-// TODO: use nbr_pallet instead (in common with find_space)
+// TODO: use nbr_pallet argument instead (in common with find_space and other)
 FUN device_t nearest_pallet_device(ARGS) { CODE
-    auto tuple_field = make_tuple(node.nbr_dist(), node.nbr_uid(), nbr(CALL, node.storage(tags::node_type{})));
-    auto pallet_tuple_field = map_hood([](tuple<real_t, device_t, warehouse_device_type> const& t) {
-        tuple<real_t, device_t, warehouse_device_type> o(t);
-        if (get<2>(o) == warehouse_device_type::Wearable) {
-            get<0>(o) = INF;
-        }
-        return o;
-    }, tuple_field);
-    return get<1>(min_hood(CALL, pallet_tuple_field, make_tuple(INF, node.uid, node.storage(tags::node_type{}))));
+    field<bool> nbr_pallet = nbr(CALL, node.storage(tags::node_type{}) == warehouse_device_type::Pallet);
+    return get<1>(min_hood(CALL, make_tuple(mux(nbr_pallet, node.nbr_dist(), INF), node.nbr_uid())));
 }
-FUN_EXPORT nearest_pallet_device_t = common::export_list<warehouse_device_type>;
+FUN_EXPORT nearest_pallet_device_t = common::export_list<bool>;
 
-FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CODE 
+FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CODE
     using state_type = tuple<device_t,pallet_content_type>;
     std::vector<log_type> loading_logs;
     nbr(CALL, state_type(node.uid, node.storage(tags::loaded_good{})), [&](field<state_type> fs) {
@@ -189,7 +182,7 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CO
     });
     return loading_logs;
 }
-FUN_EXPORT load_goods_on_pallet_t = common::export_list<tuple<device_t,pallet_content_type>>;
+FUN_EXPORT load_goods_on_pallet_t = common::export_list<tuple<device_t,pallet_content_type>, nearest_pallet_device_t>;
 
 // TODO: [LATER] tweak distortion
 //! @brief Computes the distance of every neighbour from a source, and the best waypoint towards it (distorting the nbr_dist metric).
