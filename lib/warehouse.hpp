@@ -348,7 +348,7 @@ FUN_EXPORT statistics_t = common::export_list<>;
 
 
 //! @brief Application for warehouse assistance.
-FUN void warehouse_app(ARGS, real_t grid_step, real_t comm_rad, real_t safety_radius, real_t safe_speed) { CODE
+FUN device_t warehouse_app(ARGS, real_t grid_step, real_t comm_rad, real_t safety_radius, real_t safe_speed) { CODE
     bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet;
     bool nbr_pallet = nbr(CALL, is_pallet);
     times_t current_clock = shared_clock(CALL);
@@ -359,9 +359,10 @@ FUN void warehouse_app(ARGS, real_t grid_step, real_t comm_rad, real_t safety_ra
     node.storage(tags::coll_logs{}) = log_collection(CALL, logs);
     device_t space_waypoint = find_space(CALL, grid_step, comm_rad);
     device_t goods_waypoint = find_goods(CALL, node.storage(tags::querying{}), comm_rad);
-    device_t waypoint = is_pallet ? node.uid : goods_waypoint != node.uid ? goods_waypoint : space_waypoint;
+    device_t waypoint = is_pallet ? node.uid : node.storage(tags::querying{}) == no_content ? space_waypoint : goods_waypoint;
     node.storage(tags::led_on{}) = any_hood(CALL, nbr(CALL, waypoint) == node.uid, false);
     statistics(CALL, current_clock);
+    return waypoint;
 }
 //! @brief Export list for warehouse_app.
 FUN_EXPORT warehouse_app_t = common::export_list<bool, shared_clock_t, load_goods_on_pallet_t, collision_detection_t, find_space_t, find_goods_t, device_t, log_collection_t, statistics_t>;
