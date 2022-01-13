@@ -168,17 +168,14 @@ FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
 FUN_EXPORT setup_nodes_if_first_round_of_simulation_t = common::export_list<uint32_t>;
 
 unsigned int total_created_logs = 0;
-
-std::set<log_type> received_logs;
-
-unsigned int non_unique_received_logs = 0;
+std::set<std::pair<int, log_type>> received_logs;
 
 FUN void simulation_statistics(ARGS) { CODE
-    std::vector<log_type>& new_logs = node.storage(tags::new_logs{});
-    std::vector<log_type>& coll_logs = node.storage(tags::coll_logs{});
-    total_created_logs += new_logs.size();
-    non_unique_received_logs += coll_logs.size();
-    std::copy(coll_logs.begin(), coll_logs.end(), std::inserter(received_logs, received_logs.end()));
+    total_created_logs += node.storage(tags::new_logs{}).size();
+    for (auto const& log : node.storage(tags::coll_logs{})) {
+        int i = round((node.current_time()*10 - get<tags::log_time>(log)) / 256);
+        received_logs.emplace(256 * i + get<tags::log_time>(log), log);
+    }
     node.storage(tags::log_received__perc{}) = received_logs.size() / (double)total_created_logs;
 }
 
