@@ -13,8 +13,7 @@
 #include "lib/fcpp.hpp"
 
 #define NO_GOODS 255
-#define UNLOAD_GOODS 254
-#define UNDEFINED_GOODS 253
+#define UNDEFINED_GOODS 254
 
 #define LOG_TYPE_PALLET_CONTENT_CHANGE 1
 #define LOG_TYPE_HANDLE_PALLET 2
@@ -166,54 +165,6 @@ FUN device_t nearest_pallet_device(ARGS) { CODE
 }
 FUN_EXPORT nearest_pallet_device_t = common::export_list<bool>;
 
-FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CODE
-    using state_type = tuple<device_t,pallet_content_type>;
-    std::vector<log_type> loading_logs;
-    nbr(CALL, state_type(node.uid, node.storage(tags::loaded_goods{})), [&](field<state_type> fs) {
-        state_type last_state = self(CALL, fs);
-        pallet_content_type pallet_value = fold_hood(CALL, [&](state_type const& s, pallet_content_type acc) {
-            if (get<0>(s) == node.uid) {
-                return get<1>(s);
-            } else {
-                return acc;
-            }
-        }, fs, get<1>(last_state));
-        if (node.storage(tags::node_type{}) == warehouse_device_type::Pallet && get<1>(last_state) != pallet_value) {
-            loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, discretizer(current_clock), get<tags::goods_type>(pallet_value));
-        }
-        pallet_content_type goods_currenting_loading = node.storage(tags::loading_goods{});
-        device_t wearable_device_id = get<0>(last_state);
-        pallet_content_type wearable_value = get<1>(last_state);
-        device_t nearest = nearest_pallet_device(CALL);
-        if (get<0>(last_state) == node.uid && get<tags::goods_type>(goods_currenting_loading) != NO_GOODS) {
-            wearable_device_id = nearest;
-            if (get<tags::goods_type>(goods_currenting_loading) == UNLOAD_GOODS) {
-                wearable_value = NO_GOODS;
-            } else {
-                wearable_value = goods_currenting_loading;
-            }
-            loading_logs.emplace_back(LOG_TYPE_HANDLE_PALLET, node.uid, discretizer(current_clock), nearest);
-        }
-        if (any_hood(CALL, map_hood([&](state_type const& x) {
-                return get<0>(x) == get<0>(last_state) && get<1>(x) == get<1>(last_state);
-            }, fs)) && get<0>(last_state) != node.uid) {
-            node.storage(tags::loading_goods{}) = common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS);
-            wearable_device_id = node.uid;
-            wearable_value = common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS);
-        }
-        if (node.storage(tags::node_type{}) == warehouse_device_type::Pallet) {
-            node.storage(tags::loaded_goods{}) = pallet_value;
-        }
-        return mux(
-            node.storage(tags::node_type{}) == warehouse_device_type::Pallet,
-            state_type(node.uid, pallet_value),
-            state_type(wearable_device_id, wearable_value)
-        );
-    });
-    return loading_logs;
-}
-FUN_EXPORT load_goods_on_pallet_t = common::export_list<tuple<device_t,pallet_content_type>, nearest_pallet_device_t>;
-
 // TODO: [LATER] tweak distortion
 //! @brief Computes the distance of every neighbour from a source, and the best waypoint towards it (distorting the nbr_dist metric).
 FUN tuple<field<real_t>, device_t> distance_waypoint(ARGS, bool source, real_t distortion) { CODE
@@ -242,36 +193,36 @@ inline void load_content(pallet_content_type& c, pallet_content_type const& l) {
     c = l;
 }
 
-////! @brief Turns loading_goods on wearables into loaded_goods for the closest pallet.
-//FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CODE
-//    // currently loaded good (pallet) and good to be loaded (wearable)
-//    pallet_content_type& loading = node.storage(tags::loading_goods{});
-//    pallet_content_type& loaded  = node.storage(tags::loaded_goods{});
-//    // whether I am a wearable that is about to load
-//    bool is_loading = loading != null_content;
-//    // the loading or loaded good of a neighbor
-//    field<pallet_content_type> nbr_good = nbr(CALL, is_loading ? loading : loaded);
-//    // the nearest pallet device for loading neighbors
-//    device_t nearest = nearest_pallet_device(CALL);
-//    field<device_t> nbr_nearest = nbr(CALL, is_loading ? constant(CALL, nearest) : node.uid);
-//    // the loading logs vector
-//    std::vector<log_type> loading_logs;
-//    // a loading wearable with a matching nearest good is reset
-//    if (is_loading and details::self(nbr_good, nearest) == loading) {
-//        loading = null_content;
-//        loading_logs.emplace_back(LOG_TYPE_HANDLE_PALLET, node.uid, discretizer(current_clock), nearest);
-//    }
-//    // loading good if nearest for a neighbor (breaking ties by highest good type)
-//    auto t = max_hood(CALL, fcpp::make_tuple(nbr_nearest == node.uid, nbr_good), fcpp::make_tuple(false, no_content));
-//    if (get<0>(t)) {
-//        load_content(loaded, get<1>(t));
-//        loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, discretizer(current_clock), log_content(get<1>(t)));
-//    }
-//    // return loading logs
-//    return loading_logs;
-//}
-////! @brief Export list for load_goods_on_pallet.
-//FUN_EXPORT load_goods_on_pallet_t = common::export_list<nearest_pallet_device_t, constant_t<device_t>, pallet_content_type, device_t>;
+//! @brief Turns loading_goods on wearables into loaded_goods for the closest pallet.
+FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CODE
+    // currently loaded good (pallet) and good to be loaded (wearable)
+    pallet_content_type& loading = node.storage(tags::loading_goods{});
+    pallet_content_type& loaded  = node.storage(tags::loaded_goods{});
+    // whether I am a wearable that is about to load
+    bool is_loading = loading != null_content;
+    // the loading or loaded good of a neighbor
+    field<pallet_content_type> nbr_good = nbr(CALL, is_loading ? loading : loaded);
+    // the nearest pallet device for loading neighbors
+    device_t nearest = nearest_pallet_device(CALL);
+    field<device_t> nbr_nearest = nbr(CALL, is_loading ? constant(CALL, nearest) : node.uid);
+    // the loading logs vector
+    std::vector<log_type> loading_logs;
+    // a loading wearable with a matching nearest good is reset
+    if (is_loading and details::self(nbr_good, nearest) == loading) {
+        loading = null_content;
+        loading_logs.emplace_back(LOG_TYPE_HANDLE_PALLET, node.uid, discretizer(current_clock), nearest);
+    }
+    // loading good if nearest for a neighbor (breaking ties by highest good type)
+    auto t = max_hood(CALL, fcpp::make_tuple(nbr_nearest == node.uid, nbr_good), fcpp::make_tuple(false, no_content));
+    if (get<0>(t)) {
+        load_content(loaded, get<1>(t));
+        loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, discretizer(current_clock), log_content(get<1>(t)));
+    }
+    // return loading logs
+    return loading_logs;
+}
+//! @brief Export list for load_goods_on_pallet.
+FUN_EXPORT load_goods_on_pallet_t = common::export_list<nearest_pallet_device_t, constant_t<device_t>, pallet_content_type, device_t>;
 
 
 // TODO: [LATER] tweak threshold

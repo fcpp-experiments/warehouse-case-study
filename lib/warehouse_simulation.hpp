@@ -105,18 +105,18 @@ FUN void update_node_visually_in_simulation(ARGS) { CODE
         node.storage(node_shape{}) = shape::cube;
         current_loaded_good = get<tags::goods_type>(node.storage(loaded_goods{}));
     } else {
-        if (get<tags::goods_type>(node.storage(loading_goods{})) == NO_GOODS) {
+        if (node.storage(loading_goods{}) == null_content) {
             node.storage(node_shape{}) = shape::sphere;
         } else {
             node.storage(node_shape{}) = shape::star;
         }
         current_loaded_good = get<tags::goods_type>(node.storage(loading_goods{}));
     }
-    if (current_loaded_good == NO_GOODS) {
+    if (current_loaded_good == UNDEFINED_GOODS) {
         node.storage(node_color{}) = color(GREEN);
     } else if (current_loaded_good >= 0 && current_loaded_good < 100) {
         node.storage(node_color{}) = color(GOLD);
-    } else if (current_loaded_good == UNLOAD_GOODS) {
+    } else if (current_loaded_good == NO_GOODS) {
         node.storage(node_color{}) = color(DARK_GREEN);
     } else {
         node.storage(node_color{}) = color(RED);
@@ -291,7 +291,7 @@ FUN void update_simulation_pre_program(ARGS) { CODE
                 if (get<tags::goods_type>(node.net.node_at(get<2>(current_state)).storage(tags::loaded_goods{})) == get<1>(current_state)) {
                     node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = node.uid;
                     node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERTING, get<1>(current_state), get<2>(current_state));
-                    node.storage(tags::loading_goods{}) = common::make_tagged_tuple<tags::goods_type>(NO_GOODS);
+                    node.storage(tags::loading_goods{}) = null_content;
                 } else {
                     node.storage(tags::loading_goods{}) = common::make_tagged_tuple<tags::goods_type>(get<1>(current_state));
                 }
@@ -314,7 +314,7 @@ FUN void update_simulation_pre_program(ARGS) { CODE
                 goods_counter[get<1>(current_state)] = goods_counter[get<1>(current_state)] - 1;
                 node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_IDLE, NO_GOODS, 0);
                 node.storage(tags::wearable_sim_target_pos{}) = make_vec(0,0,0);
-                node.storage(tags::loading_goods{}) = common::make_tagged_tuple<tags::goods_type>(UNLOAD_GOODS);
+                node.storage(tags::loading_goods{}) = no_content;
             }
         } else if (get<0>(current_state) == WEARABLE_INSERTED) {
             if (make_vec(0,0,0) == node.storage(tags::wearable_sim_target_pos{})) {
@@ -512,7 +512,8 @@ using plot_t = plot::join<msg_plot_t, log_plot_t, loss_plot_t, delay_plot_t>;
 CONSTANT_DISTRIBUTION(false_distribution, bool, false);
 CONSTANT_DISTRIBUTION(pallet_distribution, warehouse_device_type, warehouse_device_type::Pallet);
 CONSTANT_DISTRIBUTION(wearable_distribution, warehouse_device_type, warehouse_device_type::Wearable);
-CONSTANT_DISTRIBUTION(no_goods_distribution, pallet_content_type, fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS));
+CONSTANT_DISTRIBUTION(no_goods_distribution, pallet_content_type, coordination::no_content);
+CONSTANT_DISTRIBUTION(undefined_goods_distribution, pallet_content_type, coordination::null_content);
 CONSTANT_DISTRIBUTION(no_query_distribution, query_type, fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS));
 CONSTANT_DISTRIBUTION(wearables_sim_idle_distribution, wearable_sim_state_type, make_tuple(WEARABLE_IDLE, NO_GOODS, 0));
 
@@ -535,7 +536,7 @@ DECLARE_OPTIONS(list,
         led_on, false_distribution,
         node_type, pallet_distribution,
         loaded_goods, no_goods_distribution,
-        loading_goods, no_goods_distribution,
+        loading_goods, undefined_goods_distribution,
         querying, no_query_distribution,
         connection_data, distribution::constant_n<real_t, 6, 10>,
         pallet_handled, false_distribution
@@ -546,7 +547,7 @@ DECLARE_OPTIONS(list,
         led_on, false_distribution,
         node_type, wearable_distribution,
         loaded_goods, no_goods_distribution,
-        loading_goods, no_goods_distribution,
+        loading_goods, undefined_goods_distribution,
         querying, no_query_distribution,
         connection_data, distribution::constant_n<real_t, 1>,
         pallet_handled, false_distribution
@@ -556,7 +557,7 @@ DECLARE_OPTIONS(list,
         x, wearable_rectangle_d,
         node_type, pallet_distribution,
         loaded_goods, no_goods_distribution,
-        loading_goods, no_goods_distribution,
+        loading_goods, undefined_goods_distribution,
         querying, no_query_distribution,
         connection_data, distribution::constant_n<real_t, 6, 10>,
         pallet_handled, false_distribution
