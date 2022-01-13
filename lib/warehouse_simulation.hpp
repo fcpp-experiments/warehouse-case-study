@@ -286,7 +286,6 @@ FUN void update_simulation_pre_program(ARGS) { CODE
                 if (get<tags::goods_type>(node.net.node_at(get<2>(current_state)).storage(tags::loaded_goods{})) == get<1>(current_state)) {
                     node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = node.uid;
                     node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERTING, get<1>(current_state), get<2>(current_state));
-                    node.storage(tags::loading_goods{}) = null_content;
                 } else {
                     node.storage(tags::loading_goods{}) = common::make_tagged_tuple<tags::goods_type>(get<1>(current_state));
                 }
@@ -387,24 +386,18 @@ FUN_EXPORT update_simulation_post_program_t = common::export_list<real_t>;
 MAIN() {
     setup_nodes_if_first_round_of_simulation(CALL);
     update_simulation_pre_program(CALL);
-    device_t waypoint = warehouse_app(CALL, grid_cell_size, comm, 2000, 300);
+    device_t waypoint = warehouse_app(CALL, grid_cell_size, comm, 2000, 1.5*forklift_max_speed);
     simulation_statistics(CALL);
     update_simulation_post_program(CALL, waypoint);
     update_node_visually_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
 FUN_EXPORT main_t = common::export_list<
-    nearest_pallet_device_t,
-    load_goods_on_pallet_t, 
-    collision_detection_t,
-    find_space_t,
-    find_goods_t,
-    log_collection_t, 
-    update_node_visually_in_simulation_t, 
     setup_nodes_if_first_round_of_simulation_t,
     update_simulation_pre_program_t,
+    warehouse_app_t,
     update_simulation_post_program_t,
-    size_t
+    update_node_visually_in_simulation_t
 >;
 
 } // namespace coordination
