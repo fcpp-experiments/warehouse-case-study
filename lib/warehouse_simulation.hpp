@@ -3,8 +3,6 @@
 
 #include "lib/warehouse.hpp"
 
-#define MSG_SIZE_HARDWARE_LIMIT 224
-
 #define WEARABLE_IDLE 0
 #define WEARABLE_INSERT 1
 #define WEARABLE_RETRIEVE 2
@@ -47,7 +45,6 @@ using wearable_sim_state_type = fcpp::tuple<uint8_t, uint8_t, device_t>;
 namespace coordination {
 
     namespace tags {
-        struct querying {};
         //! @brief Color of the current node.
         struct node_color {};
         //! @brief Size of the current node.
@@ -55,13 +52,8 @@ namespace coordination {
         //! @brief Shape of the current node.
         struct node_shape {};
         struct node_uid {};
-        //! @brief Maximum message size ever experienced.
-        struct msg_size {};
-        struct msg_received__perc {};
-        struct log_collected {};
+        struct logs {};
         struct log_received__perc {};
-        struct log_created {};
-        struct logging_delay {};
         struct wearable_sim_op {};
         struct wearable_sim_target_pos {};
         struct pallet_sim_follow {};
@@ -111,7 +103,7 @@ FUN void update_node_visually_in_simulation(ARGS) { CODE
     uint8_t current_loaded_good = NO_GOODS;
     if (node.storage(node_type{}) == warehouse_device_type::Pallet) {
         node.storage(node_shape{}) = shape::cube;
-        current_loaded_good = get<tags::goods_type>(node.storage(loaded_good{}));
+        current_loaded_good = get<tags::goods_type>(node.storage(loaded_goods{}));
     } else {
         if (get<tags::goods_type>(node.storage(loading_goods{})) == NO_GOODS) {
             node.storage(node_shape{}) = shape::sphere;
@@ -129,7 +121,7 @@ FUN void update_node_visually_in_simulation(ARGS) { CODE
     } else {
         node.storage(node_color{}) = color(RED);
     }
-    if (node.storage(pallet_sim_handling{})) {
+    if (node.storage(pallet_handled{})) {
         node.storage(node_color{}) = color(DARK_BLUE);
     }
     if (node.storage(led_on{})) {
@@ -163,7 +155,7 @@ FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
             used_slots.insert(make_tuple(row,col,height));
             node.position() = make_vec(x,y,z);
             uint8_t init_good = random_good(CALL);
-            node.storage(tags::loaded_good{}) = init_good;
+            node.storage(tags::loaded_goods{}) = init_good;
             goods_counter[init_good] = goods_counter[init_good] + 1;
         } else {
             node.position() = make_vec(loading_zone_bound_x_0 + (node.next_int(1, 33) * grid_cell_size), loading_zone_bound_y_0 + (node.next_int(0, 3) * grid_cell_size), 0);
@@ -286,17 +278,17 @@ FUN void update_simulation_pre_program(ARGS) { CODE
                 for (auto search_candidate : details::get_ids(node.nbr_uid())) {
                     if (node.net.node_count(search_candidate) &&
                             node.net.node_at(search_candidate).storage(tags::node_type{}) == warehouse_device_type::Pallet &&
-                            get<tags::goods_type>(node.net.node_at(search_candidate).storage(tags::loaded_good{})) == NO_GOODS &&
-                            node.net.node_at(search_candidate).storage(tags::pallet_sim_handling{}) == false) {
+                            get<tags::goods_type>(node.net.node_at(search_candidate).storage(tags::loaded_goods{})) == NO_GOODS &&
+                            node.net.node_at(search_candidate).storage(tags::pallet_handled{}) == false) {
                         node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERT, get<1>(current_state), search_candidate);
-                        node.net.node_at(search_candidate, lock).storage(tags::pallet_sim_handling{}) = true;
+                        node.net.node_at(search_candidate, lock).storage(tags::pallet_handled{}) = true;
                         break;
                     }
                 }
             } else if (node.net.node_count(get<2>(current_state)) &&
                         distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space &&
                         nearest_pallet == get<2>(current_state)) {
-                if (get<tags::goods_type>(node.net.node_at(get<2>(current_state)).storage(tags::loaded_good{})) == get<1>(current_state)) {
+                if (get<tags::goods_type>(node.net.node_at(get<2>(current_state)).storage(tags::loaded_goods{})) == get<1>(current_state)) {
                     node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = node.uid;
                     node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERTING, get<1>(current_state), get<2>(current_state));
                     node.storage(tags::loading_goods{}) = common::make_tagged_tuple<tags::goods_type>(NO_GOODS);
@@ -318,7 +310,7 @@ FUN void update_simulation_pre_program(ARGS) { CODE
                     distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space &&
                     nearest_pallet == get<2>(current_state)) {
                 node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
-                node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_handling{}) = false;
+                node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_handled{}) = false;
                 goods_counter[get<1>(current_state)] = goods_counter[get<1>(current_state)] - 1;
                 node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_IDLE, NO_GOODS, 0);
                 node.storage(tags::wearable_sim_target_pos{}) = make_vec(0,0,0);
@@ -360,7 +352,7 @@ FUN void update_simulation_post_program(ARGS, device_t find_space_result, device
                 if (norm(pallet_node.position() - pallet_node.storage(tags::pallet_sim_follow_pos{})) < distance_to_consider_same_space) {
                     node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERTED, get<1>(current_state), get<2>(current_state));
                     node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
-                    node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_handling{}) = false;
+                    node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_handled{}) = false;
                     pallet_node.storage(tags::pallet_sim_follow_pos{}) = make_vec(0,0,0);
                 } else {
                     pallet_node.storage(tags::pallet_sim_follow{}) = 0;
@@ -371,11 +363,11 @@ FUN void update_simulation_post_program(ARGS, device_t find_space_result, device
             }
         } else if (get<0>(current_state) == WEARABLE_RETRIEVE && node.net.node_count(find_goods_result)) {
             vec<dim> const& target_position = node.net.node_at(find_goods_result).position();
-            if (get<tags::goods_type>(node.net.node_at(find_goods_result).storage(tags::loaded_good{})) == get<1>(current_state) &&
-                    node.net.node_at(find_goods_result).storage(tags::pallet_sim_handling{}) == false &&
+            if (get<tags::goods_type>(node.net.node_at(find_goods_result).storage(tags::loaded_goods{})) == get<1>(current_state) &&
+                    node.net.node_at(find_goods_result).storage(tags::pallet_handled{}) == false &&
                     distance_from(CALL, target_position) < distance_to_consider_same_space) {
                 stop_mov(CALL);
-                node.net.node_at(find_goods_result, lock).storage(tags::pallet_sim_handling{}) = true;
+                node.net.node_at(find_goods_result, lock).storage(tags::pallet_handled{}) = true;
                 node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_RETRIEVING, get<1>(current_state), find_goods_result);
             } else {
                 follow_target(CALL, waypoint_target(CALL, target_position), forklift_max_speed, real_t(1.0));
@@ -471,9 +463,11 @@ using pallet_rectangle_d = distribution::rect_n<1, loading_zone_bound_x_1, loadi
 using wearable_rectangle_d = distribution::rect_n<1, loading_zone_bound_x_0, loading_zone_bound_y_0, 0, loading_zone_bound_x_1, loading_zone_bound_y_1, 0>;
 //! @brief The contents of the node storage as tags and associated types.
 using store_t = tuple_store<
-    loaded_good,            pallet_content_type,
+    loaded_goods,           pallet_content_type,
     loading_goods,          pallet_content_type,
     querying,               query_type,
+    new_logs,               std::vector<log_type>,
+    coll_logs,              std::vector<log_type>,
     logs,                   std::vector<log_type>,
     led_on,                 bool,
     node_type,              warehouse_device_type,
@@ -492,7 +486,7 @@ using store_t = tuple_store<
     wearable_sim_target_pos,vec<dim>,
     pallet_sim_follow,      device_t,
     pallet_sim_follow_pos,  vec<dim>,
-    pallet_sim_handling,    bool
+    pallet_handled,         bool
 >;
 //! @brief The tags and corresponding aggregators to be logged.
 using aggregator_t = aggregators<
@@ -540,32 +534,32 @@ DECLARE_OPTIONS(list,
         x,      pallet_rectangle_d,
         led_on, false_distribution,
         node_type, pallet_distribution,
-        loaded_good, no_goods_distribution,
+        loaded_goods, no_goods_distribution,
         loading_goods, no_goods_distribution,
         querying, no_query_distribution,
         connection_data, distribution::constant_n<real_t, 6, 10>,
-        pallet_sim_handling, false_distribution
+        pallet_handled, false_distribution
     >,
     spawn_schedule<wearable_spawn_s>,
     init<
         x,      wearable_rectangle_d,
         led_on, false_distribution,
         node_type, wearable_distribution,
-        loaded_good, no_goods_distribution,
+        loaded_goods, no_goods_distribution,
         loading_goods, no_goods_distribution,
         querying, no_query_distribution,
         connection_data, distribution::constant_n<real_t, 1>,
-        pallet_sim_handling, false_distribution
+        pallet_handled, false_distribution
     >,
     spawn_schedule<empty_pallet_spawn_s>,
     init<
         x, wearable_rectangle_d,
         node_type, pallet_distribution,
-        loaded_good, no_goods_distribution,
+        loaded_goods, no_goods_distribution,
         loading_goods, no_goods_distribution,
         querying, no_query_distribution,
         connection_data, distribution::constant_n<real_t, 6, 10>,
-        pallet_sim_handling, false_distribution
+        pallet_handled, false_distribution
     >,
     plot_type<plot_t>, // the plot description to be used
     dimension<dim>, // dimensionality of the space
