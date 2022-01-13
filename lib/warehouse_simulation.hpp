@@ -45,21 +45,27 @@ using wearable_sim_state_type = fcpp::tuple<uint8_t, uint8_t, device_t>;
 namespace coordination {
 
     namespace tags {
-        //! @brief Color of the current node.
+        //! @brief Color of the central part of the current node.
         struct node_color {};
+        //! @brief Color of the lateral parts of the current node.
+        struct side_color {};
         //! @brief Size of the current node.
         struct node_size {};
         //! @brief Shape of the current node.
         struct node_shape {};
-        struct node_uid {};
-        struct logs {};
+        //! @brief Percentage of sent logs that are received somewhere.
         struct log_received__perc {};
+        //! @brief Simulation state of a wearable.
         struct wearable_sim_op {};
+        //! @brief Position of the target of a wearable.
         struct wearable_sim_target_pos {};
+        //! @brief UID of the node a pallet follows.
         struct pallet_sim_follow {};
+        //! @brief Position of the node a pallet follows.
         struct pallet_sim_follow_pos {};
     }
 
+//! @brief Generates a random good type according to a ZIPF distribution.
 FUN uint8_t random_good(ARGS) { CODE
     constexpr real_t f = 5.187377517639621;
     real_t r = node.next_real(f);
@@ -99,7 +105,6 @@ FUN vec<3> waypoint_target(ARGS, vec<3> q) { CODE
 
 FUN void update_node_visually_in_simulation(ARGS) { CODE
     using namespace tags;
-    node.storage(node_uid{}) = node.uid;
     uint8_t current_loaded_good = NO_GOODS;
     if (node.storage(node_type{}) == warehouse_device_type::Pallet) {
         node.storage(node_shape{}) = shape::cube;
@@ -383,7 +388,7 @@ FUN_EXPORT update_simulation_post_program_t = common::export_list<real_t>;
 MAIN() {
     setup_nodes_if_first_round_of_simulation(CALL);
     update_simulation_pre_program(CALL);
-    device_t waypoint = warehouse_app(CALL, grid_cell_size, comm, 2000, 1.5*forklift_max_speed);
+    device_t waypoint = warehouse_app(CALL, grid_cell_size, comm, 1500, 1.5*forklift_max_speed);
     simulation_statistics(CALL);
     update_simulation_post_program(CALL, waypoint);
     update_node_visually_in_simulation(CALL);
@@ -432,14 +437,12 @@ using store_t = tuple_store<
     querying,               query_type,
     new_logs,               std::vector<log_type>,
     coll_logs,              std::vector<log_type>,
-    logs,                   std::vector<log_type>,
     led_on,                 bool,
     node_type,              warehouse_device_type,
     node_color,             color,
     side_color,             color,
     node_shape,             shape,
     node_size,              double,
-    node_uid,               device_t,
     msg_size,               size_t,
     log_collected,          size_t,
     msg_received__perc,     bool,

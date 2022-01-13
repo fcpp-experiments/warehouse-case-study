@@ -76,8 +76,6 @@ namespace coordination {
         struct coll_logs {};
         //! @brief Whether the led is currently on.
         struct led_on {};
-        //! @brief DEPRECATED [to be moved in simulation]
-        struct side_color {};
         //! @brief Message size of the last message sent.
         struct msg_size {};
         //! @brief Whether the last message was sent.
@@ -247,12 +245,6 @@ FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t thresh
             v = (old(CALL, closest_wearable) - closest_wearable) / (node.current_time() - node.previous_time());
         return make_tuple(dist < radius ? v : -INF, dist < radius);
     }, wearable ? common::option<device_t>{node.uid} : common::option<device_t>{});
-    node.storage(tags::side_color{}) = color(BLACK);
-    for (size_t i=0; i<6; ++i)
-        if (logmap.count(i + 500) and logmap.at(i + 500) > -INF) {
-            node.storage(tags::side_color{}) = color::hsva(i*360/6,1,1,1);
-            break;
-        }
     std::vector<log_type> logvec;
     real_t vn = max(logmap[node.uid], real_t(0));
     real_t vo = old(CALL, vn);
@@ -370,8 +362,6 @@ FUN device_t warehouse_app(ARGS, real_t grid_step, real_t comm_rad, real_t safet
     logs = {};
     logs = logs + load_goods_on_pallet(CALL, current_clock);
     logs = logs + collision_detection(CALL, safety_radius, safe_speed, current_clock, comm_rad);
-    for (const auto& log : logs)
-        std::cerr << log << std::endl;
     node.storage(tags::coll_logs{}) = log_collection(CALL, logs);
     device_t space_waypoint = find_space(CALL, grid_step, comm_rad);
     device_t goods_waypoint = find_goods(CALL, node.storage(tags::querying{}), comm_rad);
