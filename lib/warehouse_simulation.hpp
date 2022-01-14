@@ -15,7 +15,7 @@ constexpr size_t pallet_node_num = 500;
 //! @brief Number of wearable devices.
 constexpr size_t wearable_node_num = 6;
 //! @brief The final simulation time.
-constexpr size_t end_time = 300;
+constexpr size_t end_time = 500;
 constexpr size_t empty_pallet_node_num = 10;
 //! @brief Dimensionality of the space.
 constexpr size_t dim = 3;
@@ -55,6 +55,8 @@ namespace coordination {
         struct node_shape {};
         //! @brief Percentage of sent logs that are received somewhere.
         struct log_received__perc {};
+        //! @brief Percentage of sent logs that are received twice.
+        struct log_redundant__perc {};
         //! @brief Simulation state of a wearable.
         struct wearable_sim_op {};
         //! @brief Position of the target of a wearable.
@@ -173,15 +175,20 @@ FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
 FUN_EXPORT setup_nodes_if_first_round_of_simulation_t = common::export_list<uint32_t>;
 
 unsigned int total_created_logs = 0;
-std::set<std::pair<int, log_type>> received_logs;
+std::set<std::pair<int, log_type>> received_logs[4];
 
 FUN void simulation_statistics(ARGS) { CODE
     total_created_logs += node.storage(tags::new_logs{}).size();
     for (auto const& log : node.storage(tags::coll_logs{})) {
         int i = round((node.current_time()*10 - get<tags::log_time>(log)) / 256);
-        received_logs.emplace(256 * i + get<tags::log_time>(log), log);
+        i = 256 * i + get<tags::log_time>(log);
+        received_logs[node.uid % 2].emplace(i, log);
+        received_logs[2].emplace(i, log);
+        if (received_logs[(node.uid + 1) % 2].count({i, log}))
+            received_logs[3].emplace(i, log);
     }
-    node.storage(tags::log_received__perc{}) = received_logs.size() / (double)total_created_logs;
+    node.storage(tags::log_received__perc{}) = received_logs[2].size() / (double)total_created_logs;
+    node.storage(tags::log_redundant__perc{}) = received_logs[3].size() / (double)total_created_logs;
 }
 
 FUN real_t distance_from(ARGS, vec<dim> const& other) { CODE
@@ -447,6 +454,7 @@ using store_t = tuple_store<
     log_collected,          size_t,
     msg_received__perc,     bool,
     log_received__perc,     double,
+    log_redundant__perc,    double,
     log_created,            unsigned int,
     logging_delay,          std::vector<times_t>,
     wearable_sim_op,        wearable_sim_state_type,
@@ -462,6 +470,7 @@ using aggregator_t = aggregators<
     log_collected,          aggregator::combine<aggregator::max<size_t>, aggregator::sum<size_t>>,
     log_created,            aggregator::combine<aggregator::max<size_t>, aggregator::sum<size_t>>,
     logging_delay,          aggregator::container<std::vector<times_t>, aggregator::combine<aggregator::max<times_t>, aggregator::mean<times_t>>>,
+    log_redundant__perc,    aggregator::mean<double>,
     log_received__perc,     aggregator::mean<double>
 >;
 
@@ -470,7 +479,7 @@ using msg_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::ty
 //! @brief Log plot.
 using log_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, log_created, log_collected>>;
 //! @brief Loss percentage plot.
-using loss_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, msg_received__perc, log_received__perc>>;
+using loss_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, msg_received__perc, log_received__perc, log_redundant__perc>>;
 //! @brief Log delay plot.
 using delay_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::type_sequence<>, logging_delay>>;
 //! @brief The overall description of plots.
