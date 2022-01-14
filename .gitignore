@@ -7,3 +7,28 @@ plot/
 output/
 .vagrant/
 .DS_Store
+
+#common files
+*~
+*.bin
+*.elf
+*.a
+*.o
+*.map
+*.d
+*.hex
+*.pyc
+*.DS_Store
+*.swp
+*.bat
+*.jlink
+
+*.log
+
+#platform specific
+*.evb1000
+obj_evb1000/*
+
+*.dwm1001
+obj_dwm1001/*
+obj_srf06-cc26xx

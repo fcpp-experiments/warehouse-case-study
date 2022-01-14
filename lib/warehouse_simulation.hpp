@@ -438,30 +438,17 @@ using pallet_rectangle_d = distribution::rect_n<1, loading_zone_bound_x_1, loadi
 //! @brief The distribution of initial node positions (random in a given rectangle).
 using wearable_rectangle_d = distribution::rect_n<1, loading_zone_bound_x_0, loading_zone_bound_y_0, 0, loading_zone_bound_x_1, loading_zone_bound_y_1, 0>;
 //! @brief The contents of the node storage as tags and associated types.
-using store_t = tuple_store<
-    loaded_goods,           pallet_content_type,
-    loading_goods,          pallet_content_type,
-    querying,               query_type,
-    new_logs,               std::vector<log_type>,
-    coll_logs,              std::vector<log_type>,
-    led_on,                 bool,
-    node_type,              warehouse_device_type,
+using simulation_store_t = tuple_store<
     node_color,             color,
     side_color,             color,
     node_shape,             shape,
     node_size,              double,
-    msg_size,               size_t,
-    log_collected,          size_t,
-    msg_received__perc,     bool,
     log_received__perc,     double,
     log_redundant__perc,    double,
-    log_created,            unsigned int,
-    logging_delay,          std::vector<times_t>,
     wearable_sim_op,        wearable_sim_state_type,
     wearable_sim_target_pos,vec<dim>,
     pallet_sim_follow,      device_t,
-    pallet_sim_follow_pos,  vec<dim>,
-    pallet_handled,         bool
+    pallet_sim_follow_pos,  vec<dim>
 >;
 //! @brief The tags and corresponding aggregators to be logged.
 using aggregator_t = aggregators<
@@ -504,7 +491,8 @@ DECLARE_OPTIONS(list,
     retain<metric::retain<3>>, // 3s retain time of messages
     round_schedule<round_s>, // the sequence generator for round events on nodes
     log_schedule<log_s>,     // the sequence generator for log events on the network
-    store_t,       // the contents of the node storage
+    store_t, // the contents of the node storage
+    simulation_store_t, // the simulation contents of the node storage
     aggregator_t,  // the tags and corresponding aggregators to be logged
     spawn_schedule<pallet_spawn_s>, // the sequence generator of node creation events on the network
     init<

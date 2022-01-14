@@ -32,13 +32,15 @@
 enum class warehouse_device_type { Pallet, Wearable };
 
 //! @brief Printing the device types.
-std::string to_string(warehouse_device_type t) {
+std::string to_string(warehouse_device_type const& t) {
     switch (t) {
         case warehouse_device_type::Pallet:
             return "Pallet";
             break;
         case warehouse_device_type::Wearable:
             return "Wearable";
+        default:
+            return "Error";
     }
 }
 
@@ -60,6 +62,8 @@ namespace coordination {
         //! @brief Content of the log.
         struct log_content {};
 
+        //! @brief A shared global clock.
+        struct global_clock {};
         //! @brief Whether the device is a Wearable or a Pallet.
         struct node_type {};
         //! @brief Whether a pallet is currently being handled by a wearable.
@@ -268,7 +272,6 @@ FUN device_t find_space(ARGS, real_t grid_step, real_t comm) { CODE
     int pallet_count = sum_hood(CALL, field<int>{node.nbr_dist() < 1.2 * grid_step and nbr(CALL, is_pallet)}, 0);
     bool source = is_pallet and pallet_count < 2;
     auto t = distance_waypoint(CALL, source, 0.1*comm);
-    real_t dist = self(CALL, get<0>(t));
     return get<1>(t);
 }
 //! @brief Export list for find_space.
@@ -289,7 +292,6 @@ FUN device_t find_goods(ARGS, query_type query, real_t comm) { CODE
     std::unordered_map<key_type, device_t> resmap = spawn(CALL, [&](key_type const& key){
         bool found = match(get<1>(key), node.storage(tags::loaded_goods{})) and node.storage(tags::pallet_handled{}) == false;
         auto t = distance_waypoint(CALL, found, 0.1*comm);
-        real_t dist = self(CALL, get<0>(t));
         device_t waypoint = get<1>(t);
         return make_tuple(waypoint, get<0>(key) != node.uid ? status::internal : query == no_query ? status::terminated : status::internal_output);
     }, query == no_query ? common::option<key_type>{} : common::option<key_type>{node.uid,query});
@@ -360,6 +362,7 @@ FUN_EXPORT statistics_t = export_list<>;
 FUN device_t warehouse_app(ARGS, real_t grid_step, real_t comm_rad, real_t safety_radius, real_t safe_speed) { CODE
     bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet;
     times_t current_clock = shared_clock(CALL);
+    node.storage(tags::global_clock{}) = current_clock;
     std::vector<log_type>& logs = node.storage(tags::new_logs{});
     logs = {};
     logs = logs + load_goods_on_pallet(CALL, current_clock);
@@ -375,81 +378,34 @@ FUN device_t warehouse_app(ARGS, real_t grid_step, real_t comm_rad, real_t safet
 //! @brief Export list for warehouse_app.
 FUN_EXPORT warehouse_app_t = export_list<shared_clock_t, load_goods_on_pallet_t, collision_detection_t, find_space_t, find_goods_t, device_t, log_collection_t, statistics_t>;
 
-
-/**
- * DEPLOYMENT PLAN:
- *
- * - long button press terminates, short button press interacts
- * - desk 1 representing "loading zone", with empty pallets
- * - desk 2 representing an "aisle", with full pallets
- * - one device is a wearable, the rest are pallets
- * - every device is set up as empty (use buttons on pallets for initial setup)
- * - use button on idle wearable to make it do something random
- * - handled pallet has flashing light (use button to reset it)
- * - querying wearable has flashing lights (turns off on load)
- */
-FUN void deployment_main(ARGS) { CODE
-    // primitive check of button status
-    bool button = false; // TODO
-    // detect a short press
-    bool button_pressed = button and not old(CALL, button);
-    // terminate on 5s long press
-    if (time_since(CALL, not button) >= 5) node.terminate();
-    // set up node type
-    bool is_pallet = node.uid != 00000; // TODO
-    node.storage(tags::node_type{}) = is_pallet ? warehouse_device_type::Pallet : warehouse_device_type::Wearable;
-    // effect of button on pallets
-    if (is_pallet and button_pressed) {
-        if (node.storage(tags::pallet_handled{})) {
-            // resetting handling status
-            node.storage(tags::pallet_handled{}) == false;
-        } else {
-            // increasing content (for initial setup): NO_GOODS/0/1/2...
-            uint8_t& loaded  = get<tags::goods_type>(node.storage(tags::loaded_goods{}));
-            loaded = (loaded+1) % 256;
-        }
-    }
-    // on wearables, button triggers an action on pallets
-    if (not is_pallet and button_pressed) {
-        // might be equally loading or unloading
-        bool is_loading = node.next_int(1);
-        if (is_loading) {
-            // loading random good between 0 and 2
-            node.storage(tags::loading_goods{}) = node.next_int(2);
-            node.storage(tags::querying{}) = no_query;
-            // experimenter should move it close to an empty pallet,
-            // then with it to a space following led lights, and back
-        } else {
-            // querying for a random good between 0 and 2
-            node.storage(tags::loading_goods{}) = null_content;
-            node.storage(tags::querying{}) = node.next_int(2);
-            // experimenter should follow led lights to find pallet to unload,
-            // then back with it to loading zone
-        }
-    }
-
-    constexpr real_t grid_step = 1; // TODO
-    device_t waypoint = warehouse_app(CALL, grid_step, 0, 0, 0); // TODO: tweak numbers
-    // checking if querying wearables has found its pallet
-    if (not is_pallet and node.storage(tags::querying{}) != no_query) {
-        if (waypoint != node.uid and details::self(node.nbr_dist(), waypoint) < 0.5*grid_step) {
-            // resetting query and unloading good
-            node.storage(tags::loading_goods{}) = no_content;
-            node.storage(tags::querying{}) = no_query;
-        }
-    }
-
-    // add flashing lights to handled pallets and querying wearables
-    if (int(node.current_time()) % 2 == 0)
-        if (node.storage(tags::pallet_handled{}) or node.storage(tags::querying{}) != no_query)
-            node.storage(tags::led_on{});
-    // do something noticeable if led is on
-    if (node.storage(tags::led_on{})) assert(true);
-}
-FUN_EXPORT deployment_main_t = export_list<bool, time_since_t, warehouse_app_t>;
-
-
 } // namespace coordination
+
+//! @brief Namespace for component options.
+namespace option {
+
+//! @brief Import tags to be used for component options.
+using namespace component::tags;
+//! @brief Import tags used by aggregate functions.
+using namespace coordination::tags;
+
+using store_t = tuple_store<
+    loaded_goods,           pallet_content_type,
+    loading_goods,          pallet_content_type,
+    querying,               query_type,
+    new_logs,               std::vector<log_type>,
+    coll_logs,              std::vector<log_type>,
+    led_on,                 bool,
+    global_clock,           times_t,
+    node_type,              warehouse_device_type,
+    msg_size,               size_t,
+    msg_received__perc,     bool,
+    log_collected,          size_t,
+    log_created,            unsigned int,
+    logging_delay,          std::vector<times_t>,
+    pallet_handled,         bool
+>;
+
+} // namespace option
 
 } // namespace fcpp
 
