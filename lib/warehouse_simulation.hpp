@@ -105,37 +105,37 @@ FUN vec<3> waypoint_target(ARGS, vec<3> q) { CODE
 
 FUN void update_node_visually_in_simulation(ARGS) { CODE
     using namespace tags;
-    uint8_t current_loaded_good = NO_GOODS;
+    uint8_t current_loaded_good;
     if (node.storage(node_type{}) == warehouse_device_type::Pallet) {
+        node.storage(node_size{}) = (grid_cell_size * 2) / 3;
         node.storage(node_shape{}) = shape::cube;
         current_loaded_good = get<tags::goods_type>(node.storage(loaded_goods{}));
     } else {
-        if (node.storage(loading_goods{}) == null_content) {
-            node.storage(node_shape{}) = shape::sphere;
-        } else {
-            node.storage(node_shape{}) = shape::star;
-        }
-        current_loaded_good = get<tags::goods_type>(node.storage(loading_goods{}));
+        node.storage(node_size{}) = grid_cell_size;
+        node.storage(node_shape{}) = shape::sphere;
+        if (node.storage(querying{}) != no_query)
+            current_loaded_good = get<tags::goods_type>(node.storage(querying{}));
+        else
+            current_loaded_good = get<tags::goods_type>(node.storage(loading_goods{}));
     }
     if (current_loaded_good == UNDEFINED_GOODS) {
-        node.storage(node_color{}) = color(GREEN);
-    } else if (current_loaded_good >= 0 && current_loaded_good < 100) {
-        node.storage(node_color{}) = color(GOLD);
+        node.storage(node_color{}) = color(BLACK);
     } else if (current_loaded_good == NO_GOODS) {
-        node.storage(node_color{}) = color(DARK_GREEN);
+        node.storage(node_color{}) = color(WHITE);
     } else {
-        node.storage(node_color{}) = color(RED);
+        real_t h = current_loaded_good * 0.06 + 1;
+        h = 320 * (1 - 1 / h);
+        real_t s = (current_loaded_good & 1) > 0 ? 0.5 : 1;
+        real_t v = (current_loaded_good & 2) > 0 ? 0.5 : 1;
+        node.storage(node_color{}) = color::hsva(h,s,v,1);
     }
-    if (node.storage(pallet_handled{})) {
-        node.storage(node_color{}) = color(DARK_BLUE);
-    }
-    if (node.storage(led_on{})) {
-        node.storage(node_size{}) = (grid_cell_size * 3) / 2;
+    if (node.storage(pallet_handled{}) or node.storage(loading_goods{}) != null_content) {
+        node.storage(side_color{}) = color(RED);
+    } else if (node.storage(led_on{})) {
+        node.storage(side_color{}) = color(GOLD);
     } else {
-        node.storage(node_size{}) = (grid_cell_size * 2) / 3;
+        node.storage(side_color{}) = color(DIM_GRAY);
     }
-    if (node.uid >= pallet_node_num && node.uid < pallet_node_num + wearable_node_num)
-        node.storage(tags::node_color{}) = color::hsva((node.uid-pallet_node_num)*360/wearable_node_num,1,1,1);
 }
 
 FUN_EXPORT update_node_visually_in_simulation_t = common::export_list<vec<dim>, int>;
