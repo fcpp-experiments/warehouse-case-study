@@ -165,7 +165,7 @@ FUN device_t nearest_pallet_device(ARGS) { CODE
     return get<1>(min_hood(CALL, make_tuple(mux(nbr_pallet, node.nbr_dist(), INF), node.nbr_uid())));
 }
 //! @brief Export list for nearest_pallet_device.
-FUN_EXPORT nearest_pallet_device_t = common::export_list<bool>;
+FUN_EXPORT nearest_pallet_device_t = export_list<bool>;
 
 
 //! @brief Computes the distance of every neighbour from a source, and the best waypoint towards it (distorting the nbr_dist metric).
@@ -180,7 +180,7 @@ FUN tuple<field<real_t>, device_t> distance_waypoint(ARGS, bool source, real_t d
     });
 }
 //! @brief Export list for distance_waypoint.
-FUN_EXPORT distance_waypoint_t = common::export_list<real_t>;
+FUN_EXPORT distance_waypoint_t = export_list<real_t>;
 
 
 //! @brief Null content.
@@ -221,6 +221,7 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CO
     // loading good if nearest for a neighbor (breaking ties by highest good type)
     auto t = max_hood(CALL, fcpp::make_tuple(nbr_nearest == node.uid, nbr_good), fcpp::make_tuple(false, no_content));
     if (get<0>(t) and loaded != get<1>(t)) {
+        node.storage(tags::pallet_handled{}) = true;
         load_content(loaded, get<1>(t));
         loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, discretizer(current_clock), log_content(get<1>(t)));
     }
@@ -228,9 +229,10 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CO
     return loading_logs;
 }
 //! @brief Export list for load_goods_on_pallet.
-FUN_EXPORT load_goods_on_pallet_t = common::export_list<nearest_pallet_device_t, constant_t<device_t>, pallet_content_type, device_t>;
+FUN_EXPORT load_goods_on_pallet_t = export_list<nearest_pallet_device_t, constant_t<device_t>, pallet_content_type, device_t>;
 
 
+// TODO: broadcast dist to cut propagation radius?
 //! @brief Detects potential collision risks.
 FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold, times_t current_clock, real_t comm) { CODE
     bool wearable = node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
@@ -255,7 +257,7 @@ FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t thresh
     return logvec;
 }
 //! @brief Export list for collision_detection.
-FUN_EXPORT collision_detection_t = common::export_list<spawn_t<device_t, bool>, distance_waypoint_t, real_t>;
+FUN_EXPORT collision_detection_t = export_list<spawn_t<device_t, bool>, distance_waypoint_t, real_t>;
 
 
 //! @brief Searches the direction towards the closest space.
@@ -270,7 +272,7 @@ FUN device_t find_space(ARGS, real_t grid_step, real_t comm) { CODE
     return get<1>(t);
 }
 //! @brief Export list for find_space.
-FUN_EXPORT find_space_t = common::export_list<distance_waypoint_t, bool>;
+FUN_EXPORT find_space_t = export_list<distance_waypoint_t, bool>;
 
 //! @brief No query.
 constexpr query_type no_query{NO_GOODS};
@@ -285,7 +287,7 @@ inline bool match(query_type const& q, pallet_content_type const& c) {
 FUN device_t find_goods(ARGS, query_type query, real_t comm) { CODE
     using key_type = tuple<device_t,query_type>;
     std::unordered_map<key_type, device_t> resmap = spawn(CALL, [&](key_type const& key){
-        bool found = match(get<1>(key), node.storage(tags::loaded_goods{})) && node.storage(tags::pallet_handled{}) == false;
+        bool found = match(get<1>(key), node.storage(tags::loaded_goods{})) and node.storage(tags::pallet_handled{}) == false;
         auto t = distance_waypoint(CALL, found, 0.1*comm);
         real_t dist = self(CALL, get<0>(t));
         device_t waypoint = get<1>(t);
@@ -294,7 +296,7 @@ FUN device_t find_goods(ARGS, query_type query, real_t comm) { CODE
     return resmap.empty() ? node.uid : resmap.begin()->second;
 }
 //! @brief Export list for find_goods.
-FUN_EXPORT find_goods_t = common::export_list<spawn_t<tuple<device_t,query_type>, status>, distance_waypoint_t>;
+FUN_EXPORT find_goods_t = export_list<spawn_t<tuple<device_t,query_type>, status>, distance_waypoint_t>;
 
 
 //! @brief Checks whether a vector of logs is sorted.
@@ -322,7 +324,7 @@ FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> cons
     return source ? r : std::vector<log_type>{};
 }
 //! @brief Export list for single_log_collection.
-FUN_EXPORT single_log_collection_t = common::export_list<hops_t, std::vector<log_type>>;
+FUN_EXPORT single_log_collection_t = export_list<hops_t, std::vector<log_type>>;
 
 //! @brief Collects logs towards wearables with redundancy.
 FUN std::vector<log_type> log_collection(ARGS, std::vector<log_type> const& new_logs) { CODE
@@ -332,7 +334,7 @@ FUN std::vector<log_type> log_collection(ARGS, std::vector<log_type> const& new_
     return r0.empty() ? r1 : r0;
 }
 //! @brief Export list for log_collection.
-FUN_EXPORT log_collection_t = common::export_list<single_log_collection_t>;
+FUN_EXPORT log_collection_t = export_list<single_log_collection_t>;
 
 
 //! @brief Computes some statistics for network analysis.
@@ -351,7 +353,7 @@ FUN void statistics(ARGS, times_t current_clock) { CODE
     node.storage(tags::logging_delay{}) = delays;
 }
 //! @brief Export list for statistics.
-FUN_EXPORT statistics_t = common::export_list<>;
+FUN_EXPORT statistics_t = export_list<>;
 
 
 //! @brief Application for warehouse assistance.
@@ -371,7 +373,80 @@ FUN device_t warehouse_app(ARGS, real_t grid_step, real_t comm_rad, real_t safet
     return waypoint;
 }
 //! @brief Export list for warehouse_app.
-FUN_EXPORT warehouse_app_t = common::export_list<shared_clock_t, load_goods_on_pallet_t, collision_detection_t, find_space_t, find_goods_t, device_t, log_collection_t, statistics_t>;
+FUN_EXPORT warehouse_app_t = export_list<shared_clock_t, load_goods_on_pallet_t, collision_detection_t, find_space_t, find_goods_t, device_t, log_collection_t, statistics_t>;
+
+
+/**
+ * DEPLOYMENT PLAN:
+ *
+ * - long button press terminates, short button press interacts
+ * - desk 1 representing "loading zone", with empty pallets
+ * - desk 2 representing an "aisle", with full pallets
+ * - one device is a wearable, the rest are pallets
+ * - every device is set up as empty (use buttons on pallets for initial setup)
+ * - use button on idle wearable to make it do something random
+ * - handled pallet has flashing light (use button to reset it)
+ * - querying wearable has flashing lights (turns off on load)
+ */
+FUN void deployment_main(ARGS) { CODE
+    // primitive check of button status
+    bool button = false; // TODO
+    // detect a short press
+    bool button_pressed = button and not old(CALL, button);
+    // terminate on 5s long press
+    if (time_since(CALL, not button) >= 5) node.terminate();
+    // set up node type
+    bool is_pallet = node.uid != 00000; // TODO
+    node.storage(tags::node_type{}) = is_pallet ? warehouse_device_type::Pallet : warehouse_device_type::Wearable;
+    // effect of button on pallets
+    if (is_pallet and button_pressed) {
+        if (node.storage(tags::pallet_handled{})) {
+            // resetting handling status
+            node.storage(tags::pallet_handled{}) == false;
+        } else {
+            // increasing content (for initial setup): NO_GOODS/0/1/2...
+            uint8_t& loaded  = get<tags::goods_type>(node.storage(tags::loaded_goods{}));
+            loaded = (loaded+1) % 256;
+        }
+    }
+    // on wearables, button triggers an action on pallets
+    if (not is_pallet and button_pressed) {
+        // might be equally loading or unloading
+        bool is_loading = node.next_int(1);
+        if (is_loading) {
+            // loading random good between 0 and 2
+            node.storage(tags::loading_goods{}) = node.next_int(2);
+            node.storage(tags::querying{}) = no_query;
+            // experimenter should move it close to an empty pallet,
+            // then with it to a space following led lights, and back
+        } else {
+            // querying for a random good between 0 and 2
+            node.storage(tags::loading_goods{}) = null_content;
+            node.storage(tags::querying{}) = node.next_int(2);
+            // experimenter should follow led lights to find pallet to unload,
+            // then back with it to loading zone
+        }
+    }
+
+    constexpr real_t grid_step = 1; // TODO
+    device_t waypoint = warehouse_app(CALL, grid_step, 0, 0, 0); // TODO: tweak numbers
+    // checking if querying wearables has found its pallet
+    if (not is_pallet and node.storage(tags::querying{}) != no_query) {
+        if (waypoint != node.uid and details::self(node.nbr_dist(), waypoint) < 0.5*grid_step) {
+            // resetting query and unloading good
+            node.storage(tags::loading_goods{}) = no_content;
+            node.storage(tags::querying{}) = no_query;
+        }
+    }
+
+    // add flashing lights to handled pallets and querying wearables
+    if (int(node.current_time()) % 2 == 0)
+        if (node.storage(tags::pallet_handled{}) or node.storage(tags::querying{}) != no_query)
+            node.storage(tags::led_on{});
+    // do something noticeable if led is on
+    if (node.storage(tags::led_on{})) assert(true);
+}
+FUN_EXPORT deployment_main_t = export_list<bool, time_since_t, warehouse_app_t>;
 
 
 } // namespace coordination
