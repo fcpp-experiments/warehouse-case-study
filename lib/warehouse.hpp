@@ -176,10 +176,10 @@ FUN_EXPORT nearest_pallet_device_t = export_list<bool>;
 FUN tuple<field<real_t>, device_t> distance_waypoint(ARGS, bool source, real_t distortion) { CODE
     return nbr(CALL, INF, [&] (field<real_t> d) {
         real_t dist;
-        device_t waypoint;
-        tie(dist, waypoint) = min_hood(CALL, make_tuple(d + node.nbr_dist(), node.nbr_uid()), make_tuple(source ? -distortion : INF, node.uid));
+        dist = min_hood(CALL, d + node.nbr_dist(), source ? -distortion : INF);
         dist += distortion;
         mod_self(CALL, d) = dist;
+        device_t waypoint = get<1>(min_hood(CALL, make_tuple(d, node.nbr_uid())));
         return make_tuple(make_tuple(d, waypoint), dist);
     });
 }
