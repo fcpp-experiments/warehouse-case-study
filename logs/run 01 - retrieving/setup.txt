@@ -1,0 +1,3 @@
+3 pallets, 1 wearable
+2 pallets have good 0, another (farther) has good 1
+wearable retrieves good 1 and brings it to loading zone for unloading

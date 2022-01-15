@@ -1,0 +1,378 @@
+00> DW1000 Radio Configuration: 
+00>   Channel: 4
+00>   PRF: 2
+00>   PLEN: 20
+00>   PAC Size: 0
+00>   TX Pre Code: 17
+00>   RX Pre Code: 17
+00>   Non-std SFD: 0
+00>   Data Rate: 2
+00>   PHR Mode: 0
+00>   SFD Timeout: 129
+00>   Smart TX power: 1
+00>   PG Delay: 95
+00>   TX Power: 3A5A7A9A
+00>   RX ant delay: 16455
+00>   TX ant delay: 16455
+00>   LDE NTM: 13
+00>   LDE PMULT: 3
+00> [INFO: Main] Starting Contiki-NG-release/v4.7-dirty
+00> [INFO: Main] - Routing: nullrouting
+00> [INFO: Main] - Net: nullnet
+00> [INFO: Main] - MAC: CSMA
+00> [INFO: Main] - 802.15.4 PANID: 0xABCD
+00> [INFO: Main] - 802.15.4 Default channel: 26
+00> [INFO: Main] Node ID: 0
+00> [INFO: Main] Link-layer address: 0000
+00> Link address: C1:31
+00> ########################################################
+00> # FCPP execution started at:  Thu Jan  1 00:00:04 1970 #
+00> ########################################################
+00> # loaded_goods = (goods_type => 255), loading_goods = (goods_type => 254), querying = (goods_type => 255), connection_data = <...>, start = 0.00, uid = 59385
+00> #
+00> # The columns have the following meaning:
+00> # time nbr_count loaded_goods  querying309.00 
+00> space_waypoint: 59385, goods_waypoint: 59385
+00> 2 (goods_type => 1) (goods_type => 254) (goods_type => 255) [] [] false 324.90 Pallet 88 true 0 0 [] false 
+00> <10210,10832><50126,4969>
+00> 310.00 
+00> space_waypoint: 59385, goods_waypoint: 59385
+00> 2 (goods_type => 1) (goods_type => 254) (goods_type => 255) [] [] false 325.90 Pallet 88 true 0 0 [] false 
+00> <10210,10832><50126,4969>
+00> 311.00 
+00> space_waypoint: 59385, goods_waypoint: 59385
+00> 2 (goods_type => 1) (goods_type => 254) (goods_type => 255) [] [] false 326.90 Pallet 88 true 0 0 [] false 
+00> <10210,10832><50126,5392>
+00> 312.00 
+00> space_waypoint: 59385, goods_waypoint: 59385
+00> 2 (goods_type => 1) (goods_type => 254) (goods_type => 255) [] [] false 327.90 Pallet 88 true 0 0 [] false 
+00> <10210,10832><50126,5392>
+00> 313.00 
+00> ----
+00> log size 1641
+00> ########################################################
+00> # FCPP execution started at:  Thu Jan  1 00:00:00 1970 #
+00> ########################################################
+00> # node_type = Pallet
+00> #
+00> # The columns have the following meaning:
+00> # global_clock loaded_goods loading_goods querying led_on pallet_handled new_logs msg_size 
+00> 0.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 0 
+00> 16.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 17.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 18.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 19.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 20.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 21.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 22.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 23.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 24.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 25.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 26.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 27.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 28.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 29.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 30.89 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 31.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 32.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 33.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 34.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 35.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 36.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 37.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 38.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 39.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 40.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 41.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 42.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 43.90 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 44.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 45.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 46.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 47.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 48.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 49.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 50.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 51.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 52.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 53.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 54.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 55.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 56.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 57.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 58.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 59.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 60.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 61.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 62.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 63.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 64.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 65.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 66.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 67.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 68.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 69.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 70.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 71.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 72.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 73.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 74.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 75.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 76.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 77.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 78.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 79.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 80.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 81.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 82.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 83.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 84.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 85.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 86.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 87.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 88.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 89.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 90.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 91.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 92.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 93.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 94.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 95.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 96.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 97.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 98.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 99.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 100.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 101.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 102.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 103.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 104.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 105.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 106.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 107.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 108.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 109.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 110.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 111.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 112.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 113.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 114.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 115.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 116.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 117.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 118.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 119.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 120.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 121.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 122.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 123.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 124.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 125.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 126.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 127.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 128.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 129.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 130.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 131.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 132.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 133.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 134.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 135.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 136.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 137.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 138.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 139.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 140.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 141.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 142.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 143.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 144.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 145.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 146.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 147.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 148.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 149.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 150.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 151.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 152.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 153.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 154.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 155.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 156.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 157.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 158.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 159.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 160.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 161.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 162.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 163.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 164.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 165.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 166.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 167.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 168.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 169.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 170.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 171.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 172.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 173.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 174.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 175.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 176.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 177.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 178.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 179.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 180.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 181.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 182.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 183.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 184.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 185.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 186.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 187.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 188.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 189.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 190.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 191.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 192.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 193.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 194.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 195.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 196.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 197.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 198.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 199.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 200.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 201.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 202.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 203.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 204.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 205.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 206.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 207.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 208.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 209.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 210.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 211.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 212.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 213.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 214.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 215.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 216.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 217.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 218.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 219.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 220.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 221.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 222.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 223.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 224.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 225.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 226.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 227.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 228.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 229.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 230.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 231.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 232.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 233.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 234.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) true false [] 88 
+00> 235.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 236.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 237.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 238.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 239.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 240.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 241.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 242.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 243.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 244.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 245.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 246.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 247.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 248.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 249.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 250.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 251.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 252.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 253.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 254.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 255.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 256.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 257.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 258.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 259.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 260.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 261.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 262.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 263.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 264.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 265.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 266.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 267.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 268.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 269.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 270.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 271.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 272.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 273.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 274.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 275.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 276.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 277.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 278.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 279.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 280.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 281.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 282.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 283.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 284.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 285.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 286.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 287.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 288.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 289.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 290.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 291.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 292.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 293.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 294.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 295.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 296.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 297.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 298.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 299.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 300.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 301.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 302.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 303.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 304.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 305.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 306.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 307.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 308.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 309.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 310.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 311.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 312.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 313.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 314.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 315.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 316.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 317.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 318.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 319.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 320.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 321.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 322.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 323.90 (goods_type => 0) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 324.90 (goods_type => 1) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 325.90 (goods_type => 1) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 326.90 (goods_type => 1) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> 327.90 (goods_type => 1) (goods_type => 254) (goods_type => 255) false false [] 88 
+00> ########################################################
+00> # FCPP execution finished at: Thu Jan  1 00:05:17 1970 #
+00> ########################################################
+00> space_waypoint: 59385, goods_waypoint: 59385
+00> 2 (goods_type => 1) (goods_type => 254) (goods_type => 255) [] [] false 328.90 Pallet 88 true 0 0 [] false 
+00> <10210,10832><50126,5861>

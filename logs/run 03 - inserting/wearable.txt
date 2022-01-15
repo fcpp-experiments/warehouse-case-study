@@ -1,0 +1,820 @@
+00> DW1000 Radio Configuration: 
+00>   Channel: 4
+00>   PRF: 2
+00>   PLEN: 20
+00>   PAC Size: 0
+00>   TX Pre Code: 17
+00>   RX Pre Code: 17
+00>   Non-std SFD: 0
+00>   Data Rate: 2
+00>   PHR Mode: 0
+00>   SFD Timeout: 129
+00>   Smart TX power: 1
+00>   PG Delay: 95
+00>   TX Power: 3A5A7A9A
+00>   RX ant delay: 16455
+00>   TX ant delay: 16455
+00>   LDE NTM: 13
+00>   LDE PMULT: 3
+00> [INFO: Main] Starting Contiki-NG-release/v4.7-dirty
+00> [INFO: Main] - Routing: nullrouting
+00> [INFO: Main] - Net: nullnet
+00> [INFO: Main] - MAC: CSMA
+00> [INFO: Main] - 802.15.4 PANID: 0xABCD
+00> [INFO: Main] - 802.15.4 Default channel: 26
+00> [INFO: Main] Node ID: 0
+00> [INFO: Main] Link-layer address: 0000
+00> Link address: CD:1A
+00> ########################################################
+00> # FCPP execution started at:  Thu Jan  1 00:00:04 1970 #
+00> ########################################################
+00> # loaded_goods = (goods_type => 255), loading_goods = (goods_type => 254), querying = (goods_type => 255), connection_data = <...>, start = 0.00, uid = 10692
+00> #
+00> # The columns have the following meaning:
+00> # time nbr_count loaded_goods  querying1.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 90.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22737,2147483647>
+00> 2.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 91.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647>
+00> 3.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 92.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647>
+00> 4.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 93.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647>
+00> 5.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 94.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647>
+00> 6.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 95.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647>
+00> 7.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 96.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647>
+00> 8.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 97.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647>
+00> 9.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 98.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647><59385,2147483647>
+00> 10.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 99.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647><59385,2147483647>
+00> 11.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 100.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647><59385,2147483647>
+00> 12.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 101.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><50126,2147483647><59385,2147483647>
+00> 13.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 102.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,4172><22737,2147483647><50126,2147483647><59385,2147483647>
+00> 14.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 103.62 Wearable 106 true 0 0 [] false 
+00> <22526,4172><22737,3609><50126,2147483647><59385,2147483647>
+00> 15.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 104.62 Wearable 106 true 0 0 [] false 
+00> <22526,4172><22737,3609><50126,2147483647><59385,2147483647>
+00> 16.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 105.62 Wearable 106 true 0 0 [] false 
+00> <22526,4172><22737,3609><50126,2147483647><59385,2147483647>
+00> 17.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 106.62 Wearable 106 true 0 0 [] false 
+00> <22526,6892><22737,3609><59385,2147483647>
+00> 18.00 
+00> space_waypoint: 10692, goods_waypoint: 10692
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 107.62 Wearable 106 true 0 0 [] false 
+00> <22526,6892><22737,3609>
+00> 19.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 108.62 Wearable 106 true 0 0 [] false 
+00> <22526,6892><22737,3609><59385,2147483647>
+00> 20.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 109.62 Wearable 106 true 0 0 [] false 
+00> <22526,6892><22737,3609><59385,2147483647>
+00> 21.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 110.62 Wearable 106 true 0 0 [] false 
+00> <22526,9144><22737,3609><59385,2147483647>
+00> 22.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 111.62 Wearable 106 true 0 0 [] false 
+00> <22526,9285><22737,3609><59385,2147483647>
+00> 23.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 112.62 Wearable 106 true 0 0 [] false 
+00> <22526,9285><22737,3609><59385,2147483647>
+00> 24.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 113.62 Wearable 106 true 0 0 [] false 
+00> <22526,9285><22737,3609><59385,2147483647>
+00> 25.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 114.62 Wearable 106 true 0 0 [] false 
+00> <22526,9144><22737,10129><50126,2147483647><59385,2147483647>
+00> 26.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 115.62 Wearable 106 true 0 0 [] false 
+00> <22526,9144><22737,10129><50126,2147483647><59385,2147483647>
+00> 27.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 116.62 Wearable 106 true 0 0 [] false 
+00> <22526,9331><22737,10129><50126,2147483647><59385,2147483647>
+00> 28.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 117.62 Wearable 106 true 0 0 [] false 
+00> <22526,9331><22737,10129><50126,2147483647><59385,2147483647>
+00> 29.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 118.62 Wearable 106 true 0 0 [] false 
+00> <22526,9331><22737,10129><50126,2147483647>
+00> 30.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 119.62 Wearable 106 true 0 0 [] false 
+00> <22526,9331><22737,10129><50126,2147483647>
+00> 31.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 120.62 Wearable 106 true 0 0 [] false 
+00> <22526,9331><22737,10129><50126,2147483647>
+00> 32.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 121.62 Wearable 106 true 0 0 [] false 
+00> <22526,9331><22737,10129><50126,2147483647><59385,2147483647>
+00> 33.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 122.62 Wearable 106 true 0 0 [] false 
+00> <22526,9331><22737,8018><50126,2147483647><59385,2147483647>
+00> 34.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 123.62 Wearable 106 true 0 0 [] false 
+00> <22526,9331><22737,8018><50126,2147483647><59385,2147483647>
+00> 35.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 124.62 Wearable 106 true 0 0 [] false 
+00> <22526,9425><22737,8018><50126,2147483647><59385,2147483647>
+00> 36.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 125.62 Wearable 106 true 0 0 [] false 
+00> <22526,9425><22737,8018><50126,2147483647><59385,2147483647>
+00> 37.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 126.62 Wearable 106 true 0 0 [] false 
+00> <22526,9050><22737,8112><50126,2147483647><59385,2147483647>
+00> 38.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 127.62 Wearable 106 true 0 0 [] false 
+00> <22526,9050><22737,8112><50126,2147483647><59385,2147483647>
+00> 39.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 128.62 Wearable 106 true 0 0 [] false 
+00> <22526,9050><22737,8112><32199,2147483647><50126,2147483647><59385,2147483647>
+00> 40.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 129.62 Wearable 106 true 0 0 [] false 
+00> <22526,9050><22737,11958><32199,2147483647><50126,2147483647>
+00> 41.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 130.62 Wearable 106 true 0 0 [] false 
+00> <22526,8769><22737,11958><32199,2147483647><50126,2147483647>
+00> 42.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 131.62 Wearable 106 true 0 0 [] false 
+00> <22526,8862><22737,11958><32199,2147483647><50126,2147483647>
+00> 43.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 132.62 Wearable 106 true 0 0 [] false 
+00> <22526,8862><22737,11958><32199,2147483647><50126,2147483647>
+00> 44.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 133.62 Wearable 106 true 0 0 [] false 
+00> <22526,8862><32199,2147483647><50126,2147483647>
+00> 45.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 134.62 Wearable 106 true 0 0 [] false 
+00> <22526,8862><32199,2147483647><50126,2147483647>
+00> 46.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 135.62 Wearable 106 true 0 0 [] false 
+00> <22526,8862><32199,2147483647><50126,2147483647><59385,2147483647>
+00> 47.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 136.62 Wearable 106 true 0 0 [] false 
+00> <22526,8862><22737,2147483647><50126,2147483647><59385,2147483647>
+00> 48.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 137.62 Wearable 106 true 0 0 [] false 
+00> <22526,8862><22737,2147483647><50126,2147483647><59385,2147483647>
+00> 49.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 138.62 Wearable 106 true 0 0 [] false 
+00> <22526,8722><22737,2147483647><50126,2147483647><59385,2147483647>
+00> 50.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [] false 139.62 Wearable 106 true 0 0 [] false 
+00> <22526,8909><22737,2147483647><50126,2147483647><59385,2147483647>
+00> 51.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [(log_content_type => 1; logger_id => 22737; log_time => 85; log_content => 0)] false 140.62 Wearable 106 true 1 0 [4.09] false 
+00> <10210,2147483647><22526,8909><22737,5204><50126,2147483647><59385,2147483647>
+00> 52.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [(log_content_type => 1; logger_id => 22737; log_time => 85; log_content => 0)] false 141.62 Wearable 112 true 1 0 [5.09] false 
+00> <10210,2147483647><22526,8909><22737,5204><59385,2147483647>
+00> 53.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 0) (goods_type => 255) [] [(log_content_type => 1; logger_id => 22737; log_time => 85; log_content => 0)] false 142.62 Wearable 112 true 1 0 [6.09] false 
+00> <10210,2147483647><22526,8909><22737,5204><59385,2147483647>
+00> 54.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [(log_content_type => 2; logger_id => 10692; log_time => 156; log_content => 22737)] [(log_content_type => 2; logger_id => 10692; log_time => 156; log_content => 22737)] false 143.62 Wearable 112 true 1 1 [0.00] false 
+00> <10210,2147483647><22526,8909><22737,5204>
+00> 55.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 144.62 Wearable 118 true 0 0 [] false 
+00> <10210,2147483647><22526,10363><22737,5204><50126,2147483647>
+00> 56.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 145.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,10363><22737,5204><50126,2147483647>
+00> 57.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 146.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,10363><22737,5204><50126,2147483647>
+00> 58.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 147.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,10363><22737,5204><50126,2147483647>
+00> 59.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 148.62 Wearable 106 true 0 0 [] false 
+00> <22526,10785><22737,5204><50126,2147483647>
+00> 60.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 149.62 Wearable 106 true 0 0 [] false 
+00> <22526,10785><22737,5204><50126,2147483647><59385,2147483647>
+00> 61.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 150.62 Wearable 106 true 0 0 [] false 
+00> <22526,10785><22737,5204><50126,2147483647><59385,2147483647>
+00> 62.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 151.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,10785><22737,5204><50126,2147483647><59385,2147483647>
+00> 63.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 152.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,10785><22737,5204><32199,2147483647><50126,2147483647><59385,2147483647>
+00> 64.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 153.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,10785><22737,5204><32199,9519><50126,2147483647><59385,2147483647>
+00> 65.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 154.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,10785><22737,5204><32199,9519><50126,18994><59385,2147483647>
+00> 66.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 155.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,10785><22737,5204><32199,9519><50126,25273><59385,2147483647>
+00> 67.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 156.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,10785><22737,1358><32199,9519><50126,25273><59385,2147483647>
+00> 68.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 157.62 Wearable 106 true 0 0 [] false 
+00> <10210,18196><22526,10785><22737,1358><32199,9519><50126,25273><59385,10832>
+00> 69.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 158.62 Wearable 106 true 0 0 [] false 
+00> <10210,18196><22526,10785><22737,1358><32199,6001><50126,25273><59385,10832>
+00> 70.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 159.62 Wearable 106 true 0 0 [] false 
+00> <10210,18196><22737,1358><32199,5438><50126,25273><59385,10832>
+00> 71.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 160.62 Wearable 106 true 0 0 [] false 
+00> <10210,18196><22737,3375><32199,5438><50126,25273><59385,10832>
+00> 72.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 161.62 Wearable 106 true 0 0 [] false 
+00> <10210,18196><22737,3375><32199,5392><50126,17821><59385,10832>
+00> 73.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 162.62 Wearable 106 true 0 0 [] false 
+00> <10210,18196><22526,2147483647><22737,3375><32199,5392><50126,17821><59385,10832>
+00> 74.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 163.62 Wearable 106 true 0 0 [] false 
+00> <10210,18196><22526,2147483647><22737,3375><32199,5392><50126,15194>
+00> 75.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 164.62 Wearable 106 true 0 0 [] false 
+00> <10210,18196><22526,2147483647><22737,3375><32199,5392><50126,15194>
+00> 76.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 165.62 Wearable 106 true 0 0 [] false 
+00> <10210,18196><22526,2147483647><22737,3375><32199,12521><50126,15194><59385,2147483647>
+00> 77.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 166.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><22737,3375><32199,12521><50126,15194><59385,2147483647>
+00> 78.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 167.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><22737,3375><32199,12521><50126,12568><59385,11677>
+00> 79.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 168.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><22737,3515><32199,12521><50126,12568><59385,11677>
+00> 80.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 169.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><22737,3515><32199,5063><50126,20729><59385,13881>
+00> 81.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 170.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,3187><32199,5063><50126,20729><59385,13881>
+00> 82.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 171.62 Wearable 106 true 0 0 [] false 
+00> <10210,16179><22526,2147483647><22737,3187><32199,5063><50126,20729><59385,13881>
+00> 83.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 172.62 Wearable 106 true 0 0 [] false 
+00> <10210,16179><22526,2147483647><22737,3984><32199,6611><50126,20729><59385,13881>
+00> 84.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 173.62 Wearable 106 true 0 0 [] false 
+00> <10210,16179><22526,2147483647><22737,3984><32199,6611><50126,18290><59385,13881>
+00> 85.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 174.62 Wearable 106 true 0 0 [] false 
+00> <10210,16179><22526,2147483647><22737,3656><32199,5532><50126,18290><59385,9097>
+00> 86.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 175.62 Wearable 106 true 0 0 [] false 
+00> <10210,14913><22526,2147483647><22737,3656><32199,5532><50126,15382><59385,9097>
+00> 87.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 176.62 Wearable 106 true 0 0 [] false 
+00> <10210,14913><22526,2147483647><22737,3656><32199,5532><50126,15382><59385,9097>
+00> 88.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 177.62 Wearable 106 true 0 0 [] false 
+00> <10210,14913><22526,2147483647><22737,3656><32199,5532><50126,15382><59385,9097>
+00> 89.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 178.62 Wearable 106 true 0 0 [] false 
+00> <10210,14913><22526,2147483647><22737,3656><32199,5532><50126,15382><59385,9097>
+00> 90.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 179.62 Wearable 106 true 0 0 [] false 
+00> <10210,14913><22526,2147483647><22737,3656><32199,5532><50126,15382><59385,9097>
+00> 91.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 180.62 Wearable 106 true 0 0 [] false 
+00> <10210,14913><22526,2147483647><22737,3656><32199,18665><50126,15382><59385,9097>
+00> 92.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 181.62 Wearable 106 true 0 0 [] false 
+00> <10210,14913><22526,2147483647><22737,3656><32199,18665><50126,3703><59385,9097>
+00> 93.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 182.62 Wearable 106 true 0 0 [] false 
+00> <10210,14913><22526,2147483647><22737,2108><32199,18665><50126,3703><59385,9097>
+00> 94.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 183.62 Wearable 106 true 0 0 [] false 
+00> <10210,9613><22526,2147483647><22737,2108><32199,18665><50126,4031><59385,9097>
+00> 95.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 184.62 Wearable 106 true 0 0 [] false 
+00> <10210,9613><22737,4078><32199,18665><50126,4031><59385,9097>
+00> 96.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 185.62 Wearable 106 true 0 0 [] false 
+00> <10210,9613><22737,4078><32199,18665><50126,1733><59385,9097>
+00> 97.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 186.62 Wearable 106 true 0 0 [] false 
+00> <10210,9613><22737,4078><32199,18665><50126,1733><59385,9097>
+00> 98.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 187.62 Wearable 106 true 0 0 [] false 
+00> <10210,9613><22737,4078><32199,18665><50126,3375><59385,9097>
+00> 99.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 188.62 Wearable 106 true 0 0 [] false 
+00> <10210,9613><22737,3750><32199,18665><50126,3375><59385,9097>
+00> 100.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 189.62 Wearable 106 true 0 0 [] false 
+00> <10210,9613><22737,3750><32199,18665><50126,3375><59385,9097>
+00> 101.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 190.62 Wearable 106 true 0 0 [] false 
+00> <10210,9613><22737,3187><32199,18665><50126,3375><59385,9097>
+00> 102.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 191.62 Wearable 106 true 0 0 [] false 
+00> <10210,11958><22737,3187><32199,18665><50126,11395><59385,9097>
+00> 103.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 192.62 Wearable 106 true 0 0 [] false 
+00> <10210,11958><22526,2147483647><22737,3187><32199,9285><50126,11395><59385,6611>
+00> 104.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 193.62 Wearable 106 true 0 0 [] false 
+00> <10210,11958><22526,2147483647><22737,3938><32199,9378><50126,11817><59385,6611>
+00> 105.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 194.62 Wearable 106 true 0 0 [] false 
+00> <10210,11958><22526,2147483647><22737,3938><32199,9894><50126,11817><59385,6611>
+00> 106.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 195.62 Wearable 106 true 0 0 [] false 
+00> <10210,11958><22526,2147483647><22737,3938><32199,9894><50126,10832><59385,6611>
+00> 107.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 196.62 Wearable 106 true 0 0 [] false 
+00> <10210,11958><22526,2147483647><22737,3938><32199,9894><50126,10832><59385,6611>
+00> 108.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 197.62 Wearable 106 true 0 0 [] false 
+00> <10210,11958><22526,2147483647><22737,3938><32199,9894><50126,11677><59385,6611>
+00> 109.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 198.62 Wearable 106 true 0 0 [] false 
+00> <10210,11958><22526,2147483647><22737,3938><32199,9894><50126,11677><59385,6611>
+00> 110.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 199.62 Wearable 106 true 0 0 [] false 
+00> <10210,11958><22526,2147483647><22737,3938><32199,11208><50126,11677><59385,6611>
+00> 111.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 200.62 Wearable 106 true 0 0 [] false 
+00> <22737,3938><32199,11208><50126,11677><59385,6611>
+00> 112.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 201.62 Wearable 106 true 0 0 [] false 
+00> <22737,3938><32199,11208><50126,18525><59385,6611>
+00> 113.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 202.62 Wearable 106 true 0 0 [] false 
+00> <22737,3938><32199,11208><50126,18525><59385,6611>
+00> 114.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 203.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22737,4876><32199,1780><50126,18525><59385,6611>
+00> 115.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 204.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22737,4876><32199,1780><50126,18525><59385,6611>
+00> 116.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 205.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22737,4876><32199,1780><50126,18525>
+00> 117.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 206.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22737,4876><32199,1780><50126,18525>
+00> 118.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 207.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22737,4876><32199,1780><50126,18525>
+00> 119.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 208.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22737,4876><32199,1780><50126,18525><59385,2147483647>
+00> 120.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 209.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,18712><50126,18525><59385,2147483647>
+00> 121.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 210.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,18712><50126,18525><59385,2147483647>
+00> 122.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 211.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,17493><50126,4454><59385,2147483647>
+00> 123.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 212.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,17493><50126,4454><59385,2147483647>
+00> 124.00 
+00> space_waypoint: 32199, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 213.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,17493><50126,9707><59385,2147483647>
+00> 125.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 214.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,17493><50126,9707><59385,2147483647>
+00> 126.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 215.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,14069><50126,9707><59385,2147483647>
+00> 127.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 216.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,14069><50126,9707><59385,2147483647>
+00> 128.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 217.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,14069><50126,9707><59385,10739>
+00> 129.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 218.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,4876><32199,14069><50126,9707><59385,10739>
+00> 130.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 219.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,12427><32199,14069><50126,10035><59385,10739>
+00> 131.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 220.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,12427><32199,14069><50126,10035><59385,10739>
+00> 132.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 221.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,12427><32199,12849><50126,10035><59385,10739>
+00> 133.00 
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 222.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,12427><32199,12849><50126,10035><59385,10739>
+00> 134.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 223.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,12427><32199,12849><50126,10035><59385,10739>
+00> 135.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 224.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22737,12427><32199,12849><50126,10035><59385,10739>
+00> 136.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 225.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22526,2147483647><22737,12427><32199,12849><50126,10035><59385,10739>
+00> 137.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 226.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22526,2147483647><22737,12427><32199,12849><50126,10035><59385,10739>
+00> 138.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 227.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22526,2147483647><22737,12427><32199,14819><50126,10035><59385,10739>
+00> 139.00 
+00> space_waypoint: 22737, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 228.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22526,2147483647><22737,12427><32199,14819><50126,10035><59385,10739>
+00> 140.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 229.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22526,2147483647><22737,12427><32199,14819><50126,10035><59385,10739>
+00> 141.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 230.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22526,2147483647><22737,12427><32199,14819><50126,10035><59385,10739>
+00> 142.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 231.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22526,2147483647><22737,12427><32199,14819><50126,10035><59385,10739>
+00> 143.00 
+00> space_waypoint: 50126, goods_waypoint: 10692
+00> 6 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 232.62 Wearable 106 true 0 0 [] false 
+00> <10210,10176><22526,2147483647><22737,12427><32199,14819><50126,10035><59385,10739>
+00> 144.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 233.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><22737,12427><32199,18149><59385,10739>
+00> 145.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 234.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><22737,12427><32199,18149><59385,10739>
+00> 146.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 235.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><22737,12427><32199,18149><59385,10739>
+00> 147.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 236.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><22737,12427><32199,18149><50126,2147483647><59385,10739>
+00> 148.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 237.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><32199,18149><50126,2147483647><59385,38631>
+00> 149.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 238.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><32199,18149><50126,2147483647><59385,38631>
+00> 150.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 239.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><32199,18149><50126,2147483647><59385,38631>
+00> 151.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 1) (goods_type => 255) [] [] false 240.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647><59385,29235>
+00> 152.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 3 (goods_type => 255) (goods_type => 1) (goods_type => 255) [] [] false 241.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647><59385,29235>
+00> 153.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 4 (goods_type => 255) (goods_type => 1) (goods_type => 255) [] [] false 242.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><32199,2147483647><50126,2147483647><59385,21386>
+00> 154.00 
+00> space_waypoint: 59385, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 1) (goods_type => 255) [] [] false 243.62 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><22737,2147483647><32199,8018><50126,2147483647><59385,21386>
+00> 155.00 
+00> ----
+00> log size 857
+00> ########################################################
+00> # FCPP execution started at:  Thu Jan  1 00:00:00 1970 #
+00> ########################################################
+00> # node_type = Wearable
+00> #
+00> # The columns have the following meaning:
+00> # global_clock loaded_goods loading_goods querying led_on pallet_handled new_logs msg_size 
+00> 0.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 0 
+00> 90.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 91.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 92.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 93.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 94.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 95.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 96.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 97.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 98.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 99.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 100.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 101.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 102.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 103.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 104.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 105.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 106.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 107.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 108.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 109.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 110.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 111.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 112.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 113.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 114.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 115.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 116.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 117.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 118.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 119.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 120.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 121.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 122.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 123.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 124.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 125.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 126.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 127.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 128.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 129.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 130.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 131.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 132.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 133.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 134.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 135.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 136.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 137.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 138.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 139.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 140.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 106 
+00> 141.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 112 
+00> 142.62 (goods_type => 255) (goods_type => 0) (goods_type => 255) false false [] 112 
+00> 143.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [(log_content_type => 2; logger_id => 10692; log_time => 156; log_content => 22737)] 112 
+00> 144.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 118 
+00> 145.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 146.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 147.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 148.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 149.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 150.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 151.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 152.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 153.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 154.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 155.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 156.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 157.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 158.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 159.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 160.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 161.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 162.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 163.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 164.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 165.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 166.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 167.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 168.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 169.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 170.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 171.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 172.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 173.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 174.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 175.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 176.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 177.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 178.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 179.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 180.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 181.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 182.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 183.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 184.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 185.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 186.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 187.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 188.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 189.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 190.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 191.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 192.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 193.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 194.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 195.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 196.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 197.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 198.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 199.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 200.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 201.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 202.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 203.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 204.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 205.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 206.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 207.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 208.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 209.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 210.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 211.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 212.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 213.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 214.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 215.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 216.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 217.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 218.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 219.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 220.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 221.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 222.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 223.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 224.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 225.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 226.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 227.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 228.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 229.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 230.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 231.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 232.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 233.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 234.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 235.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 236.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 237.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 238.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 239.62 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 240.62 (goods_type => 255) (goods_type => 1) (goods_type => 255) false false [] 106 
+00> 241.62 (goods_type => 255) (goods_type => 1) (goods_type => 255) false false [] 106 
+00> 242.62 (goods_type => 255) (goods_type => 1) (goods_type => 255) false false [] 106 
+00> 243.62 (goods_type => 255) (goods_type => 1) (goods_type => 255) false false [] 106 
+00> ########################################################
+00> # FCPP execution finished at: Thu Jan  1 00:02:39 1970 #
+00> ########################################################
+00> space_waypoint: 10210, goods_waypoint: 10692
+00> 5 (goods_type => 255) (goods_type => 1) (goods_type => 255) [] [] false 244.62 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><22737,2147483647><32199,8112><50126,2147483647>

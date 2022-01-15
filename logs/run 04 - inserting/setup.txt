@@ -1,0 +1,3 @@
+4 pallet at an L shape, 1 with good 1 and 3 with good 0
+2 empty pallets in loading zone
+wearable loads a pallet and put it close to the loaded ones

@@ -1,0 +1,1054 @@
+00> DW1000 Radio Configuration: 
+00>   Channel: 4
+00>   PRF: 2
+00>   PLEN: 20
+00>   PAC Size: 0
+00>   TX Pre Code: 17
+00>   RX Pre Code: 17
+00>   Non-std SFD: 0
+00>   Data Rate: 2
+00>   PHR Mode: 0
+00>   SFD Timeout: 129
+00>   Smart TX power: 1
+00>   PG Delay: 95
+00>   TX Power: 3A5A7A9A
+00>   RX ant delay: 16455
+00>   TX ant delay: 16455
+00>   LDE NTM: 13
+00>   LDE PMULT: 3
+00> [INFO: Main] Starting Contiki-NG-release/v4.7-dirty
+00> [INFO: Main] - Routing: nullrouting
+00> [INFO: Main] - Net: nullnet
+00> [INFO: Main] - MAC: CSMA
+00> [INFO: Main] - 802.15.4 PANID: 0xABCD
+00> [INFO: Main] - 802.15.4 Default channel: 26
+00> [INFO: Main] Node ID: 0
+00> [INFO: Main] Link-layer address: 0000
+00> Link address: CD:1A
+00> ########################################################
+00> # FCPP execution started at:  Thu Jan  1 00:00:04 1970 #
+00> ########################################################
+00> # loaded_goods = (goods_type => 255), loading_goods = (goods_type => 254), querying = (goods_type => 255), connection_data = <...>, start = 0.00, uid = 10692
+00> #
+00> # The columns have the following meaning:
+00> # time nbr_count loaded_goods  querying2.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 2.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 3.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 3.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 4.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 4.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 5.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 5.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 6.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 6.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 7.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 7.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 8.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 8.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 9.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 9.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 10.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 10.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 11.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 11.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 12.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 12.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 13.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 13.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 14.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 14.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 15.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 15.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 16.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 16.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 17.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 17.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 18.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 18.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 19.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 19.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 20.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 20.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 21.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 21.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 22.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 22.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 23.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 23.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 24.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 24.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 25.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 25.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 26.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 26.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647>
+00> 27.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 27.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647>
+00> 28.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 28.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647>
+00> 29.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 29.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,86>
+00> 30.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 30.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,86>
+00> 31.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 31.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,86>
+00> 32.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 32.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,85>
+00> 33.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 33.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,137>
+00> 34.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 34.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,137>
+00> 35.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 35.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,137>
+00> 36.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 36.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,137>
+00> 37.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 37.00 Wearable 106 true 0 0 [] false 
+00> <22526,137>
+00> 38.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 38.00 Wearable 106 true 0 0 [] false 
+00> <22526,137>
+00> 39.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 39.00 Wearable 106 true 0 0 [] false 
+00> <22526,137>
+00> 40.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 40.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 41.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 41.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 42.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 42.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 43.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 43.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 44.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 44.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 45.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 45.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 46.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 46.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 47.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 47.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 48.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 48.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 49.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 49.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 50.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 50.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 51.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 51.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 52.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 52.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 53.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 53.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 54.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 54.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 55.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 55.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 56.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 56.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 57.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 57.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 58.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 58.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 59.00 
+00> 0 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 59.00 Wearable 106 true 0 0 [] false 
+00> 
+00> 60.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 60.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647>
+00> 61.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 61.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647>
+00> 62.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 62.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647>
+00> 63.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 63.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647>
+00> 64.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 64.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647>
+00> 65.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 65.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647>
+00> 66.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 66.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647>
+00> 67.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 67.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647>
+00> 68.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 68.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 69.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 69.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 70.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 70.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 71.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 71.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 72.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 72.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 73.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 73.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 74.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 74.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 75.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 75.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 76.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 76.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 77.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 77.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 78.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 78.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 79.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 79.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 80.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 80.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 81.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 81.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 82.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 82.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 83.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 83.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 84.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 84.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 85.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 85.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 86.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 86.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 87.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 87.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 88.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 88.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 89.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 89.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 90.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 90.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 91.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 91.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 92.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 92.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 93.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 93.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 94.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 94.00 Wearable 106 true 0 0 [] false 
+00> <50126,2147483647>
+00> 95.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 95.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 96.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 96.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 97.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 97.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 98.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 98.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 99.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 99.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 100.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 100.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 101.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 101.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 102.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 102.00 Wearable 106 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 103.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 103.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 104.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 104.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 105.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 105.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 106.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 106.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 107.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 107.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 108.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 108.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 109.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 109.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 110.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 110.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 111.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 111.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 112.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 112.00 Wearable 120 true 0 0 [] false 
+00> <50126,169>
+00> 113.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 113.00 Wearable 120 true 0 0 [] false 
+00> <50126,169>
+00> 114.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 114.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 115.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 115.00 Wearable 120 true 0 0 [] false 
+00> <22526,2147483647><50126,169>
+00> 116.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 116.00 Wearable 120 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><50126,169>
+00> 117.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 117.00 Wearable 120 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><50126,169>
+00> 118.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 118.00 Wearable 120 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><50126,169>
+00> 119.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 119.00 Wearable 120 true 0 0 [] false 
+00> <10210,2147483647><22526,2147483647><50126,169>
+00> 120.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 120.00 Wearable 120 true 0 0 [] false 
+00> <10210,120><22526,2147483647><50126,169>
+00> 121.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] false 121.00 Wearable 120 true 0 0 [] false 
+00> <10210,120><22526,2147483647><50126,169>
+00> 122.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 1) [] [] true 122.00 Wearable 120 true 0 0 [] false 
+00> <10210,120><22526,2147483647><50126,169>
+00> 123.00 
+00> 3 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 123.00 Wearable 120 true 0 0 [] false 
+00> <10210,120><22526,2147483647><50126,169>
+00> 124.00 
+00> 2 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 124.00 Wearable 120 true 0 0 [] false 
+00> <10210,120><22526,2147483647>
+00> 125.00 
+00> 3 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 125.00 Wearable 110 true 0 0 [] false 
+00> <10210,120><22526,2147483647><50126,2147483647>
+00> 126.00 
+00> 3 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 126.00 Wearable 110 true 0 0 [] false 
+00> <10210,120><22526,2147483647><50126,2147483647>
+00> 127.00 
+00> 2 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 127.00 Wearable 110 true 0 0 [] false 
+00> <10210,120><50126,2147483647>
+00> 128.00 
+00> 2 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 128.00 Wearable 110 true 0 0 [] false 
+00> <10210,120><50126,2147483647>
+00> 129.00 
+00> 2 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 129.00 Wearable 110 true 0 0 [] false 
+00> <10210,120><50126,2147483647>
+00> 130.00 
+00> 2 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 130.00 Wearable 110 true 0 0 [] false 
+00> <10210,120><50126,2147483647>
+00> 131.00 
+00> 2 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 131.00 Wearable 110 true 0 0 [] false 
+00> <10210,120><50126,2147483647>
+00> 132.00 
+00> 2 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 132.00 Wearable 110 true 0 0 [] false 
+00> <10210,120><50126,2147483647>
+00> 133.00 
+00> 1 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 133.00 Wearable 110 true 0 0 [] false 
+00> <10210,120>
+00> 134.00 
+00> 1 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 134.00 Wearable 110 true 0 0 [] false 
+00> <10210,120>
+00> 135.00 
+00> 1 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 135.00 Wearable 110 true 0 0 [] false 
+00> <10210,120>
+00> 136.00 
+00> 1 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 136.00 Wearable 110 true 0 0 [] false 
+00> <10210,120>
+00> 137.00 
+00> 1 (goods_type => 255) (goods_type => 255) (goods_type => 255) [] [] false 137.00 Wearable 110 true 0 0 [] false 
+00> <10210,120>
+00> 138.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [(log_content_type => 2; logger_id => 10692; log_time => 100; log_content => 10210)] [(log_content_type => 2; logger_id => 10692; log_time => 100; log_content => 10210)] false 138.00 Wearable 110 true 1 1 [0.00] false 
+00> <10210,120>
+00> 139.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 139.00 Wearable 118 true 0 0 [] false 
+00> <10210,9><22526,2147483647>
+00> 140.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 140.00 Wearable 110 true 0 0 [] false 
+00> <10210,9><22526,2147483647>
+00> 141.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 141.00 Wearable 110 true 0 0 [] false 
+00> <10210,9><22526,2147483647>
+00> 142.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 142.00 Wearable 110 true 0 0 [] false 
+00> <10210,9><22526,2147483647><50126,2147483647>
+00> 143.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 143.00 Wearable 110 true 0 0 [] false 
+00> <10210,83><22526,2147483647><50126,2147483647>
+00> 144.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 144.00 Wearable 110 true 0 0 [] false 
+00> <10210,83><22526,2147483647><50126,2147483647>
+00> 145.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 145.00 Wearable 110 true 0 0 [] false 
+00> <10210,83><22526,2147483647><50126,2147483647>
+00> 146.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 146.00 Wearable 110 true 0 0 [] false 
+00> <10210,83><22526,2147483647><50126,2147483647>
+00> 147.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 147.00 Wearable 110 true 0 0 [] false 
+00> <10210,87><50126,2147483647>
+00> 148.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 148.00 Wearable 110 true 0 0 [] false 
+00> <10210,87><50126,2147483647>
+00> 149.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 149.00 Wearable 110 true 0 0 [] false 
+00> <10210,87><50126,2147483647>
+00> 150.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 150.00 Wearable 110 true 0 0 [] false 
+00> <10210,87>
+00> 151.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 151.00 Wearable 106 true 0 0 [] false 
+00> <10210,87>
+00> 152.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 152.00 Wearable 106 true 0 0 [] false 
+00> <10210,76>
+00> 153.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 153.00 Wearable 106 true 0 0 [] false 
+00> <10210,76>
+00> 154.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 154.00 Wearable 106 true 0 0 [] false 
+00> <10210,76>
+00> 155.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 155.00 Wearable 106 true 0 0 [] false 
+00> <10210,76>
+00> 156.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 156.00 Wearable 106 true 0 0 [] false 
+00> <10210,76>
+00> 157.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 157.00 Wearable 106 true 0 0 [] false 
+00> <10210,76>
+00> 158.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 158.00 Wearable 106 true 0 0 [] false 
+00> <10210,76>
+00> 159.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 159.00 Wearable 106 true 0 0 [] false 
+00> <10210,76>
+00> 160.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 160.00 Wearable 106 true 0 0 [] false 
+00> <10210,76>
+00> 161.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 161.00 Wearable 106 true 0 0 [] false 
+00> <10210,111>
+00> 162.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 162.00 Wearable 106 true 0 0 [] false 
+00> <10210,117>
+00> 163.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 163.00 Wearable 106 true 0 0 [] false 
+00> <10210,117><50126,2147483647>
+00> 164.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 164.00 Wearable 110 true 0 0 [] false 
+00> <10210,178><50126,2147483647>
+00> 165.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 165.00 Wearable 110 true 0 0 [] false 
+00> <10210,178><22526,2147483647><50126,2147483647>
+00> 166.00 
+00> 3 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 166.00 Wearable 110 true 0 0 [] false 
+00> <10210,256><22526,2147483647><50126,2147483647>
+00> 167.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 167.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 168.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 168.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 169.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 169.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 170.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 170.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 171.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 171.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 172.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 172.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 173.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 173.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 174.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 174.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,2147483647>
+00> 175.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 175.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,77>
+00> 176.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 176.00 Wearable 110 true 0 0 [] false 
+00> <22526,2147483647><50126,83>
+00> 177.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 177.00 Wearable 106 true 0 0 [] false 
+00> <22526,27><50126,81>
+00> 178.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 178.00 Wearable 106 true 0 0 [] false 
+00> <22526,27><50126,81>
+00> 179.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 179.00 Wearable 106 true 0 0 [] false 
+00> <22526,27><50126,85>
+00> 180.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 180.00 Wearable 106 true 0 0 [] false 
+00> <22526,27><50126,84>
+00> 181.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 181.00 Wearable 106 true 0 0 [] false 
+00> <22526,27><50126,84>
+00> 182.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 182.00 Wearable 106 true 0 0 [] false 
+00> <22526,47><50126,83>
+00> 183.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 183.00 Wearable 106 true 0 0 [] false 
+00> <22526,40><50126,82>
+00> 184.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 184.00 Wearable 106 true 0 0 [] false 
+00> <22526,40><50126,80>
+00> 185.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 185.00 Wearable 106 true 0 0 [] false 
+00> <22526,45><50126,80>
+00> 186.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 186.00 Wearable 106 true 0 0 [] false 
+00> <22526,44><50126,80>
+00> 187.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 187.00 Wearable 106 true 0 0 [] false 
+00> <22526,44><50126,80>
+00> 188.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 188.00 Wearable 106 true 0 0 [] false 
+00> <22526,44><50126,83>
+00> 189.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 189.00 Wearable 106 true 0 0 [] false 
+00> <22526,44><50126,83>
+00> 190.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 190.00 Wearable 106 true 0 0 [] false 
+00> <22526,41><50126,83>
+00> 191.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 191.00 Wearable 106 true 0 0 [] false 
+00> <22526,41><50126,70>
+00> 192.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 192.00 Wearable 106 true 0 0 [] false 
+00> <22526,82><50126,70>
+00> 193.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 193.00 Wearable 106 true 0 0 [] false 
+00> <22526,82><50126,70>
+00> 194.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 194.00 Wearable 106 true 0 0 [] false 
+00> <22526,84><50126,50>
+00> 195.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 195.00 Wearable 106 true 0 0 [] false 
+00> <22526,79><50126,57>
+00> 196.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 196.00 Wearable 106 true 0 0 [] false 
+00> <22526,79><50126,57>
+00> 197.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 197.00 Wearable 106 true 0 0 [] false 
+00> <22526,79><50126,57>
+00> 198.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 198.00 Wearable 106 true 0 0 [] false 
+00> <22526,79><50126,57>
+00> 199.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 199.00 Wearable 106 true 0 0 [] false 
+00> <22526,79><50126,50>
+00> 200.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 200.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,38>
+00> 201.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 201.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,49>
+00> 202.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 202.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,47>
+00> 203.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 203.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,47>
+00> 204.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 204.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,34>
+00> 205.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 205.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,52>
+00> 206.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 206.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,52>
+00> 207.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 207.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,52>
+00> 208.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 208.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,49>
+00> 209.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 209.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,25>
+00> 210.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 210.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,30>
+00> 211.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 211.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,30>
+00> 212.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 212.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,30>
+00> 213.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 213.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,30>
+00> 214.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 214.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,30>
+00> 215.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 215.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,30>
+00> 216.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 216.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,31>
+00> 217.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 217.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,31>
+00> 218.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 218.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,28>
+00> 219.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 219.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,31>
+00> 220.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 220.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,32>
+00> 221.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 221.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,32>
+00> 222.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 222.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,40>
+00> 223.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 223.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,42>
+00> 224.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 224.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,42>
+00> 225.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 225.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,42>
+00> 226.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 226.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,42>
+00> 227.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 227.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,42>
+00> 228.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 228.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,42>
+00> 229.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 229.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,42>
+00> 230.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 230.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,40>
+00> 231.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 231.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,48>
+00> 232.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 232.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,39>
+00> 233.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 233.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,39>
+00> 234.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 234.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,39>
+00> 235.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 235.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,37>
+00> 236.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 236.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,38>
+00> 237.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 237.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,38>
+00> 238.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 238.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,38>
+00> 239.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 239.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,38>
+00> 240.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 240.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,38>
+00> 241.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 241.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,38>
+00> 242.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 242.00 Wearable 106 true 0 0 [] false 
+00> <22526,90><50126,38>
+00> 243.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 243.00 Wearable 106 true 0 0 [] false 
+00> <22526,90>
+00> 244.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 244.00 Wearable 106 true 0 0 [] false 
+00> <22526,90>
+00> 245.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 245.00 Wearable 106 true 0 0 [] false 
+00> <22526,90>
+00> 246.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 246.00 Wearable 106 true 0 0 [] false 
+00> <22526,90>
+00> 247.00 
+00> 2 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 247.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647><22526,90>
+00> 248.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 255) [] [] false 248.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 249.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 2) [] [] false 249.00 Wearable 106 true 0 0 [] false 
+00> <10210,2147483647>
+00> 250.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 2) [] [] true 250.00 Wearable 120 true 0 0 [] false 
+00> <10210,2147483647>
+00> 251.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 2) [] [] false 251.00 Wearable 120 true 0 0 [] false 
+00> <10210,2147483647>
+00> 252.00 
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 2) [] [] true 252.00 Wearable 120 true 0 0 [] false 
+00> <10210,2147483647>
+00> 253.00 
+00> ----
+00> log size 1379
+00> ########################################################
+00> # FCPP execution started at:  Thu Jan  1 00:00:00 1970 #
+00> ########################################################
+00> # node_type = Wearable
+00> #
+00> # The columns have the following meaning:
+00> # global_clock loaded_goods loading_goods querying led_on pallet_handled new_logs msg_size 
+00> 0.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 0 
+00> 1.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 2.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 3.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 4.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 5.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 6.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 7.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 8.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 9.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 10.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 11.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 12.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 13.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 14.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 15.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 16.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 17.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 18.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 19.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 20.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 21.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 22.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 23.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 24.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 25.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 26.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 27.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 28.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 29.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 30.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 31.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 32.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 33.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 34.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 35.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 36.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 37.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 38.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 39.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 40.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 41.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 42.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 43.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 44.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 45.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 46.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 47.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 48.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 49.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 50.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 51.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 52.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 53.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 54.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 55.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 56.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 57.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 58.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 59.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 60.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 61.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 62.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 63.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 64.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 65.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 66.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 67.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 68.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 69.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 70.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 71.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 72.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 73.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 74.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 75.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 76.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 77.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 78.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 79.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 80.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 81.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 82.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 83.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 84.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 85.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 86.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 87.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 88.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 89.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 90.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 91.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 92.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 93.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 94.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 95.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 96.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 97.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 98.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 99.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 100.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 101.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 102.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 106 
+00> 103.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 104.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 105.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 106.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 107.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 108.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 109.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 110.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 111.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 112.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 113.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 114.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 115.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 116.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 117.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 118.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 119.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 120.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 121.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) false false [] 120 
+00> 122.00 (goods_type => 255) (goods_type => 254) (goods_type => 1) true false [] 120 
+00> 123.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 120 
+00> 124.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 120 
+00> 125.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 126.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 127.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 128.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 129.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 130.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 131.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 132.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 133.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 134.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 135.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 136.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 137.00 (goods_type => 255) (goods_type => 255) (goods_type => 255) false false [] 110 
+00> 138.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [(log_content_type => 2; logger_id => 10692; log_time => 100; log_content => 10210)] 110 
+00> 139.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 118 
+00> 140.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 141.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 142.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 143.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 144.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 145.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 146.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 147.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 148.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 149.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 150.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 151.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 152.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 153.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 154.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 155.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 156.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 157.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 158.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 159.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 160.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 161.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 162.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 163.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 164.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 165.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 166.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 167.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 168.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 169.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 170.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 171.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 172.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 173.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 174.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 175.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 176.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 110 
+00> 177.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 178.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 179.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 180.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 181.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 182.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 183.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 184.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 185.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 186.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 187.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 188.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 189.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 190.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 191.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 192.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 193.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 194.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 195.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 196.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 197.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 198.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 199.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 200.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 201.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 202.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 203.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 204.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 205.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 206.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 207.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 208.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 209.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 210.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 211.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 212.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 213.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 214.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 215.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 216.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 217.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 218.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 219.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 220.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 221.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 222.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 223.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 224.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 225.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 226.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 227.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 228.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 229.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 230.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 231.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 232.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 233.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 234.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 235.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 236.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 237.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 238.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 239.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 240.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 241.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 242.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 243.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 244.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 245.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 246.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 247.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 248.00 (goods_type => 255) (goods_type => 254) (goods_type => 255) false false [] 106 
+00> 249.00 (goods_type => 255) (goods_type => 254) (goods_type => 2) false false [] 106 
+00> 250.00 (goods_type => 255) (goods_type => 254) (goods_type => 2) true false [] 120 
+00> 251.00 (goods_type => 255) (goods_type => 254) (goods_type => 2) false false [] 120 
+00> 252.00 (goods_type => 255) (goods_type => 254) (goods_type => 2) true false [] 120 
+00> ########################################################
+00> # FCPP execution finished at: Thu Jan  1 00:04:17 1970 #
+00> ########################################################
+00> 1 (goods_type => 255) (goods_type => 254) (goods_type => 2) [] [] false 253.00 Wearable 120 true 0 0 [] false 
+00> <10210,2147483647>

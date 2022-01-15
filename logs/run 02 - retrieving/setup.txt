@@ -1,0 +1,6 @@
+3 pallet with goods: 1 with 1 and 2 with 0
+1 pallet empty in loading zone
+wearable starts in loading zone
+wearable retrieves good 1
+pallet with goods 1 fixed his led
+all goes as expected and both return to loading zone
