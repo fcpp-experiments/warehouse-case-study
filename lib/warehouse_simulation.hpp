@@ -1,3 +1,9 @@
+// Copyright © 2022 Lorenzo Testa and Giorgio Audrito. All Rights Reserved.
+
+/**
+ * @file warehouse_simulation.hpp
+ * @brief Case study on smart warehouse management (simulation-specific code).
+ */
 #ifndef FCPP_WAREHOUSE_SIMULATION_H_
 #define FCPP_WAREHOUSE_SIMULATION_H_
 
@@ -10,36 +16,41 @@
 #define WEARABLE_RETRIEVING 4
 #define WEARABLE_INSERTED 5
 
-//! @brief Number of pallet devices.
-constexpr size_t pallet_node_num = 500;
-//! @brief Number of wearable devices.
+//! @brief Number of wearables (forklifts).
 constexpr size_t wearable_node_num = 6;
-//! @brief The final simulation time.
-constexpr size_t end_time = 500;
+//! @brief Number of empty pallets in loading zone.
 constexpr size_t empty_pallet_node_num = 10;
+//! @brief Number of stored pallets in aisles.
+constexpr size_t pallet_node_num = 500;
+
+//! @brief The final simulation time (s).
+constexpr size_t end_time = 500;
 //! @brief Dimensionality of the space.
 constexpr size_t dim = 3;
-//! @brief Side of the area.
-constexpr size_t side = 8550;
-constexpr size_t side_2 = 9450;
-//! @brief Height of the area.
-constexpr size_t height = 1000;
-//! @brief Communication radius (25m w-w, 15m w-p, 9m p-p).
+//! @brief Maximum communication radius in cm (25m wearable-w, 15m w-p, 9m p-p).
 constexpr size_t comm = 2500;
-
-constexpr size_t grid_cell_size = 150;
-
+//! @brief Maximum speed of forklifts (280 cm/s = 10 km/h).
 constexpr fcpp::real_t forklift_max_speed = 280;
 
-constexpr size_t distance_to_consider_same_space = 100; // must be less than grid_cell_size
+//! @brief Bounds of the area (cm).
+constexpr size_t xside = 8550;
+constexpr size_t yside = 9450;
+constexpr size_t height = 1000;
+//! @brief Distance between slots in aisles.
+constexpr size_t grid_cell_size = 150;
+//! @brief Threshold distance for position quantisation.
+constexpr size_t distance_to_consider_same_space = 100;
 
+//! @brief Bounds of the loading zone as grid indices.
 constexpr size_t loading_zone_bound_x_0 = grid_cell_size * 2;
 constexpr size_t loading_zone_bound_x_1 = grid_cell_size * 34;
 constexpr size_t loading_zone_bound_y_0 = grid_cell_size * 2;
 constexpr size_t loading_zone_bound_y_1 = grid_cell_size * 8;
 
+
 namespace fcpp {
 
+//! @brief Internal state type for simulation of wearable behavior.
 using wearable_sim_state_type = fcpp::tuple<uint8_t, uint8_t, device_t>;
 
 namespace coordination {
@@ -105,6 +116,77 @@ FUN vec<3> waypoint_target(ARGS, vec<3> q) { CODE
     return make_vec(qx, p[1], 0) * grid_cell_size;
 }
 
+//! @brief Horizontal distance towards another position.
+FUN real_t distance_from(ARGS, vec<dim> const& other) { CODE
+    vec<dim> other_copy(other); // consider it only horizontally
+    other_copy[2] = 0;
+    vec<dim> position_copy(node.position());
+    position_copy[2] = 0;
+    return norm(other_copy - position_copy);
+}
+
+//! @brief Stops the current device.
+FUN void stop_mov(ARGS) { CODE
+    node.propulsion() = make_vec(0,0,0);
+    node.velocity() = make_vec(0,0,0);
+}
+
+//! @brief Computes whether there is a pallet nearby.
+FUN bool pallet_in_near_location(ARGS, vec<dim> loc) { CODE
+    for (auto pallets : details::get_ids(node.nbr_uid())) {
+        if (node.net.node_count(pallets) and
+                norm(loc - node.net.node_at(pallets).position()) < distance_to_consider_same_space) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//! @brief Finds an empty slot in the vicinity of a given device.
+FUN vec<dim> find_actual_space(ARGS, device_t near) { CODE
+    vec<dim> const& near_position = node.net.node_at(near).position();
+    vec<dim> test_position(near_position);
+    vec<dim> limit_test(near_position);
+    bool found = false;
+    for (uint8_t i = 0; i < 3 and !found; i++) {
+        limit_test[1] = (((i * 4) + (14 * (i + 1)) + 9) * grid_cell_size) + (grid_cell_size / 2);
+        found = norm(near_position - limit_test) < distance_to_consider_same_space;
+    }
+    if (!found) {
+        test_position[1] = test_position[1] + grid_cell_size;
+        if (!pallet_in_near_location(CALL, test_position)) {
+            return test_position;
+        }
+    }
+    test_position = near_position;
+    found = false;
+    for (uint8_t i = 0; i < 3 and !found; i++) {
+        limit_test[1] = (((i * 18) + 9) * grid_cell_size) + (grid_cell_size / 2);
+        found = norm(near_position - limit_test) < distance_to_consider_same_space;
+    }
+    if (!found) {
+        test_position[1] = test_position[1] - grid_cell_size;
+        if (!pallet_in_near_location(CALL, test_position)) {
+            return test_position;
+        }
+    }
+    test_position = near_position;
+    if (near_position[2] / grid_cell_size < 2) {
+        test_position[2] = test_position[2] + grid_cell_size;
+        if (!pallet_in_near_location(CALL, test_position)) {
+            return test_position;
+        }
+    }
+    if (near_position[2] / grid_cell_size > 0) {
+        test_position[2] = test_position[2] - grid_cell_size;
+        if (!pallet_in_near_location(CALL, test_position)) {
+            return test_position;
+        }
+    }
+    return make_vec(near_position[0],near_position[1],grid_cell_size * 10);
+}
+
+//! @brief Tunes displaying properties of nodes based on their status.
 FUN void update_node_visually_in_simulation(ARGS) { CODE
     using namespace tags;
     uint8_t current_loaded_good;
@@ -140,16 +222,14 @@ FUN void update_node_visually_in_simulation(ARGS) { CODE
     }
 }
 
-FUN_EXPORT update_node_visually_in_simulation_t = common::export_list<vec<dim>, int>;
-
 std::set<tuple<int,int,int>> used_slots;
-
 std::vector<int> goods_counter(100, 0);
 
+//! @brief Setting up initial properties of nodes during the first simulation round.
 FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
-    if (coordination::counter(CALL) == 1 && 
+    if (coordination::counter(CALL) == 1 and
             node.storage(tags::node_type{}) == warehouse_device_type::Pallet) {
-        if (node.position()[0] > loading_zone_bound_x_1 && 
+        if (node.position()[0] > loading_zone_bound_x_1 and
                 node.position()[1] > loading_zone_bound_y_1) {
             int row, col, height;
             real_t x, y, z;
@@ -171,12 +251,12 @@ FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
         }
     }
 }
-
-FUN_EXPORT setup_nodes_if_first_round_of_simulation_t = common::export_list<uint32_t>;
+FUN_EXPORT setup_nodes_if_first_round_of_simulation_t = export_list<counter_t<>>;
 
 unsigned int total_created_logs = 0;
 std::set<std::pair<int, log_type>> received_logs[4];
 
+//! @brief Computes additional statistics for simulation only.
 FUN void simulation_statistics(ARGS) { CODE
     total_created_logs += node.storage(tags::new_logs{}).size();
     for (auto const& log : node.storage(tags::coll_logs{})) {
@@ -191,72 +271,7 @@ FUN void simulation_statistics(ARGS) { CODE
     node.storage(tags::log_redundant__perc{}) = received_logs[3].size() / (double)total_created_logs;
 }
 
-FUN real_t distance_from(ARGS, vec<dim> const& other) { CODE
-    vec<dim> other_copy(other); // consider it only horizontally
-    other_copy[2] = 0;
-    vec<dim> position_copy(node.position());
-    position_copy[2] = 0;
-    return norm(other_copy - position_copy);
-}
-
-FUN void stop_mov(ARGS) { CODE
-    node.propulsion() = make_vec(0,0,0);
-    node.velocity() = make_vec(0,0,0);
-}
-
-FUN bool pallet_in_near_location(ARGS, vec<dim> loc) { CODE
-    for (auto pallets : details::get_ids(node.nbr_uid())) {
-        if (node.net.node_count(pallets) &&
-                norm(loc - node.net.node_at(pallets).position()) < distance_to_consider_same_space) {
-            return true;
-        }
-    }
-    return false;
-}
-
-FUN vec<dim> find_actual_space(ARGS, device_t near) { CODE
-    vec<dim> const& near_position = node.net.node_at(near).position();
-    vec<dim> test_position(near_position);
-    vec<dim> limit_test(near_position);
-    bool found = false;
-    for (uint8_t i = 0; i < 3 && !found; i++) {
-        limit_test[1] = (((i * 4) + (14 * (i + 1)) + 9) * grid_cell_size) + (grid_cell_size / 2);
-        found = norm(near_position - limit_test) < distance_to_consider_same_space;
-    }
-    if (!found) {
-        test_position[1] = test_position[1] + grid_cell_size;
-        if (!pallet_in_near_location(CALL, test_position)) {
-            return test_position;
-        }
-    }
-    test_position = near_position;
-    found = false;
-    for (uint8_t i = 0; i < 3 && !found; i++) {
-        limit_test[1] = (((i * 18) + 9) * grid_cell_size) + (grid_cell_size / 2);
-        found = norm(near_position - limit_test) < distance_to_consider_same_space;
-    }
-    if (!found) {
-        test_position[1] = test_position[1] - grid_cell_size;
-        if (!pallet_in_near_location(CALL, test_position)) {
-            return test_position;
-        }
-    }
-    test_position = near_position;
-    if (near_position[2] / grid_cell_size < 2) {
-        test_position[2] = test_position[2] + grid_cell_size;
-        if (!pallet_in_near_location(CALL, test_position)) {
-            return test_position;
-        }
-    }
-    if (near_position[2] / grid_cell_size > 0) {
-        test_position[2] = test_position[2] - grid_cell_size;
-        if (!pallet_in_near_location(CALL, test_position)) {
-            return test_position;
-        }
-    }
-    return make_vec(near_position[0],near_position[1],grid_cell_size * 10);
-}
-
+//! @brief Simulation logic to be run before the main warehouse app.
 FUN void update_simulation_pre_program(ARGS) { CODE
     common::unique_lock<false> lock;
     device_t nearest_pallet = nearest_pallet_device(CALL);
@@ -280,17 +295,17 @@ FUN void update_simulation_pre_program(ARGS) { CODE
         } else if (get<0>(current_state) == WEARABLE_INSERT) {
             if (get<2>(current_state) == 0) {
                 for (auto search_candidate : details::get_ids(node.nbr_uid())) {
-                    if (node.net.node_count(search_candidate) &&
-                            node.net.node_at(search_candidate).storage(tags::node_type{}) == warehouse_device_type::Pallet &&
-                            get<tags::goods_type>(node.net.node_at(search_candidate).storage(tags::loaded_goods{})) == NO_GOODS &&
+                    if (node.net.node_count(search_candidate) and
+                            node.net.node_at(search_candidate).storage(tags::node_type{}) == warehouse_device_type::Pallet and
+                            get<tags::goods_type>(node.net.node_at(search_candidate).storage(tags::loaded_goods{})) == NO_GOODS and
                             node.net.node_at(search_candidate).storage(tags::pallet_handled{}) == false) {
                         node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_INSERT, get<1>(current_state), search_candidate);
                         node.net.node_at(search_candidate, lock).storage(tags::pallet_handled{}) = true;
                         break;
                     }
                 }
-            } else if (node.net.node_count(get<2>(current_state)) &&
-                        distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space &&
+            } else if (node.net.node_count(get<2>(current_state)) and
+                        distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space and
                         nearest_pallet == get<2>(current_state)) {
                 if (get<tags::goods_type>(node.net.node_at(get<2>(current_state)).storage(tags::loaded_goods{})) == get<1>(current_state)) {
                     node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = node.uid;
@@ -301,7 +316,7 @@ FUN void update_simulation_pre_program(ARGS) { CODE
             }
         } else if (get<0>(current_state) == WEARABLE_RETRIEVE) {
             node.storage(tags::querying{}) = common::make_tagged_tuple<coordination::tags::goods_type>(get<1>(current_state));
-        } else if (get<0>(current_state) == WEARABLE_RETRIEVING &&
+        } else if (get<0>(current_state) == WEARABLE_RETRIEVING and
                     node.net.node_count(get<2>(current_state))) {
             if (make_vec(0,0,0) == node.storage(tags::wearable_sim_target_pos{})) {
                 node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = node.uid;
@@ -309,8 +324,8 @@ FUN void update_simulation_pre_program(ARGS) { CODE
                 int random_x = node.next_int(loading_zone_bound_x_0, loading_zone_bound_x_1);
                 int random_y = loading_zone_bound_y_0 + (node.next_int(0, 3) * grid_cell_size);
                 node.storage(tags::wearable_sim_target_pos{}) = make_vec(random_x, random_y, 0);
-            } else if (distance_from(CALL, node.storage(tags::wearable_sim_target_pos{})) < distance_to_consider_same_space &&
-                    distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space &&
+            } else if (distance_from(CALL, node.storage(tags::wearable_sim_target_pos{})) < distance_to_consider_same_space and
+                    distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space and
                     nearest_pallet == get<2>(current_state)) {
                 node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
                 node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_handled{}) = false;
@@ -332,9 +347,9 @@ FUN void update_simulation_pre_program(ARGS) { CODE
         }
     }
 }
+FUN_EXPORT update_simulation_pre_program_t = export_list<nearest_pallet_device_t>;
 
-FUN_EXPORT update_simulation_pre_program_t = common::export_list<wearable_sim_state_type, vec<dim>>;
-
+//! @brief Simulation logic to be run after the main warehouse app.
 FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
     common::unique_lock<false> lock;
     if (node.storage(tags::node_type{}) == warehouse_device_type::Wearable) {
@@ -342,14 +357,14 @@ FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
         if (get<0>(current_state) == WEARABLE_IDLE) {
             stop_mov(CALL);
         } else if (get<0>(current_state) == WEARABLE_INSERT) {
-            if (get<2>(current_state) != 0 && node.net.node_count(get<2>(current_state))) {
+            if (get<2>(current_state) != 0 and node.net.node_count(get<2>(current_state))) {
                 follow_target(CALL, node.net.node_at(get<2>(current_state)).position(), forklift_max_speed, real_t(1.0));
             }
-        } else if (get<0>(current_state) == WEARABLE_INSERTING && node.net.node_count(waypoint)) {
+        } else if (get<0>(current_state) == WEARABLE_INSERTING and node.net.node_count(waypoint)) {
             node.storage(tags::pallet_sim_follow{}) = waypoint;
             vec<dim> target_position = node.net.node_at(waypoint).position();
             vec<dim> waypoint_position = waypoint_target(CALL, target_position);
-            if (distance_from(CALL, target_position) < (distance_to_consider_same_space * 3) &&
+            if (distance_from(CALL, target_position) < (distance_to_consider_same_space * 3) and
                     node.net.node_count(get<2>(current_state))) {
                 waypoint = constant(CALL, waypoint);
                 waypoint_position = target_position = constant(CALL, target_position);
@@ -370,10 +385,10 @@ FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
             } else {
                 follow_target(CALL, waypoint_position, forklift_max_speed, real_t(1.0));
             }
-        } else if (get<0>(current_state) == WEARABLE_RETRIEVE && node.net.node_count(waypoint)) {
+        } else if (get<0>(current_state) == WEARABLE_RETRIEVE and node.net.node_count(waypoint)) {
             vec<dim> const& target_position = node.net.node_at(waypoint).position();
-            if (get<tags::goods_type>(node.net.node_at(waypoint).storage(tags::loaded_goods{})) == get<1>(current_state) &&
-                    node.net.node_at(waypoint).storage(tags::pallet_handled{}) == false &&
+            if (get<tags::goods_type>(node.net.node_at(waypoint).storage(tags::loaded_goods{})) == get<1>(current_state) and
+                    node.net.node_at(waypoint).storage(tags::pallet_handled{}) == false and
                     distance_from(CALL, target_position) < distance_to_consider_same_space) {
                 stop_mov(CALL);
                 node.net.node_at(waypoint, lock).storage(tags::pallet_handled{}) = true;
@@ -381,11 +396,11 @@ FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
             } else {
                 follow_target(CALL, waypoint_target(CALL, target_position), forklift_max_speed, real_t(1.0));
             }
-        } else if (get<0>(current_state) == WEARABLE_RETRIEVING || get<0>(current_state) == WEARABLE_INSERTED) {
+        } else if (get<0>(current_state) == WEARABLE_RETRIEVING or get<0>(current_state) == WEARABLE_INSERTED) {
             follow_target(CALL, waypoint_target(CALL, node.storage(tags::wearable_sim_target_pos{})), forklift_max_speed, real_t(1.0));
         }
     } else {
-        if (node.storage(tags::pallet_sim_follow{}) != 0 && node.net.node_count(node.storage(tags::pallet_sim_follow{}))) {
+        if (node.storage(tags::pallet_sim_follow{}) != 0 and node.net.node_count(node.storage(tags::pallet_sim_follow{}))) {
             follow_target(CALL, node.net.node_at(node.storage(tags::pallet_sim_follow{})).position(), forklift_max_speed * 2, real_t(1.0));
         } else if (node.storage(tags::pallet_sim_follow_pos{}) != make_vec(0,0,0)) {
             follow_target(CALL, node.storage(tags::pallet_sim_follow_pos{}), forklift_max_speed, real_t(1.0));
@@ -394,8 +409,7 @@ FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
         }
     }
 }
-
-FUN_EXPORT update_simulation_post_program_t = common::export_list<constant_t<vec<dim>>, real_t, device_t>;
+FUN_EXPORT update_simulation_post_program_t = export_list<constant_t<device_t>, constant_t<vec<dim>>>;
 
 //! @brief Main function.
 MAIN() {
@@ -407,12 +421,11 @@ MAIN() {
     update_node_visually_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
-FUN_EXPORT main_t = common::export_list<
+FUN_EXPORT main_t = export_list<
     setup_nodes_if_first_round_of_simulation_t,
     update_simulation_pre_program_t,
     warehouse_app_t,
-    update_simulation_post_program_t,
-    update_node_visually_in_simulation_t
+    update_simulation_post_program_t
 >;
 
 } // namespace coordination
@@ -433,17 +446,33 @@ using round_s = sequence::periodic<
 >;
 //! @brief The sequence of network snapshots (one every simulated second).
 using log_s = sequence::periodic_n<1, 0, 1, end_time>;
-//! @brief The sequence of node generation events (multiple devices all generated at time 0).
-using pallet_spawn_s = sequence::multiple_n<pallet_node_num, 0>;
 
-using empty_pallet_spawn_s = sequence::multiple_n<empty_pallet_node_num, 0>;
+//! @brief The distribution of initial node positions (random in a given rectangle).
+using aisle_rectangle_d = distribution::rect_n<1, loading_zone_bound_x_1, loading_zone_bound_y_1, 0, xside, yside, 0>;
+//! @brief The distribution of initial node positions (random in a given rectangle).
+using loading_rectangle_d = distribution::rect_n<1, loading_zone_bound_x_0, loading_zone_bound_y_0, 0, loading_zone_bound_x_1, loading_zone_bound_y_1, 0>;
 
-using wearable_spawn_s = sequence::multiple_n<wearable_node_num, 0>;
-//! @brief The distribution of initial node positions (random in a given rectangle).
-using pallet_rectangle_d = distribution::rect_n<1, loading_zone_bound_x_1, loading_zone_bound_y_1, 0, side, side_2, 0>;
-//! @brief The distribution of initial node positions (random in a given rectangle).
-using wearable_rectangle_d = distribution::rect_n<1, loading_zone_bound_x_0, loading_zone_bound_y_0, 0, loading_zone_bound_x_1, loading_zone_bound_y_1, 0>;
-//! @brief The contents of the node storage as tags and associated types.
+//! @brief Declares `num` devices of a given `type` and `x_distr` position.
+template <warehouse_device_type type, intmax_t num, typename x_distr>
+DECLARE_OPTIONS(device,
+    // the sequence of node creation events on the network (multiple devices all generated at time 0)
+    spawn_schedule<sequence::multiple_n<num, 0>>,
+    // the initialisation data of the node
+    init<
+        // pallets have 60% communication power, wearable have 100%
+        connection_data,distribution::constant_n<real_t, type == warehouse_device_type::Wearable ? 100 : 60, 100>,
+        // the node type (wearable or pallet)
+        node_type,      distribution::constant_n<warehouse_device_type, (intmax_t)type>,
+        // the position distribution
+        x,              x_distr,
+        // non-standard default values
+        querying,       distribution::constant_n<query_type, NO_GOODS>,
+        loaded_goods,   distribution::constant_n<query_type, NO_GOODS>,
+        loading_goods,  distribution::constant_n<query_type, UNDEFINED_GOODS>
+    >
+);
+
+//! @brief The contents of the additional node storage for simulation as tags and associated types.
 using simulation_store_t = tuple_store<
     node_color,             color,
     side_color,             color,
@@ -478,68 +507,28 @@ using delay_plot_t = plot::split<plot::time, plot::values<aggregator_t, common::
 //! @brief The overall description of plots.
 using plot_t = plot::join<msg_plot_t, log_plot_t, loss_plot_t, delay_plot_t>;
 
-CONSTANT_DISTRIBUTION(false_distribution, bool, false);
-CONSTANT_DISTRIBUTION(pallet_distribution, warehouse_device_type, warehouse_device_type::Pallet);
-CONSTANT_DISTRIBUTION(wearable_distribution, warehouse_device_type, warehouse_device_type::Wearable);
-CONSTANT_DISTRIBUTION(no_goods_distribution, pallet_content_type, coordination::no_content);
-CONSTANT_DISTRIBUTION(undefined_goods_distribution, pallet_content_type, coordination::null_content);
-CONSTANT_DISTRIBUTION(no_query_distribution, query_type, fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS));
-CONSTANT_DISTRIBUTION(wearables_sim_idle_distribution, wearable_sim_state_type, make_tuple(WEARABLE_IDLE, NO_GOODS, 0));
-
 //! @brief The general simulation options.
 DECLARE_OPTIONS(list,
+    general,
     parallel<false>,     // no multithreading on node rounds
     synchronised<false>, // optimise for asynchronous networks
     message_size<true>,
-    export_split<true>,
     program<coordination::main>,   // program to be run (refers to MAIN above)
     exports<coordination::main_t>, // export type list (types used in messages)
-    retain<metric::retain<3>>, // 3s retain time of messages
     round_schedule<round_s>, // the sequence generator for round events on nodes
     log_schedule<log_s>,     // the sequence generator for log events on the network
-    store_t, // the contents of the node storage
-    simulation_store_t, // the simulation contents of the node storage
+    device<warehouse_device_type::Wearable, wearable_node_num,     loading_rectangle_d>, // wearable devices (in loading zone)
+    device<warehouse_device_type::Pallet,   empty_pallet_node_num, loading_rectangle_d>, // empty pallets in loading zone
+    device<warehouse_device_type::Pallet,   pallet_node_num,       aisle_rectangle_d>,   // stored pallets in aisles
+    simulation_store_t, // the additional contents of the node storage
     aggregator_t,  // the tags and corresponding aggregators to be logged
-    spawn_schedule<pallet_spawn_s>, // the sequence generator of node creation events on the network
-    init<
-        x,      pallet_rectangle_d,
-        led_on, false_distribution,
-        node_type, pallet_distribution,
-        loaded_goods, no_goods_distribution,
-        loading_goods, undefined_goods_distribution,
-        querying, no_query_distribution,
-        connection_data, distribution::constant_n<real_t, 6, 10>,
-        pallet_handled, false_distribution
-    >,
-    spawn_schedule<wearable_spawn_s>,
-    init<
-        x,      wearable_rectangle_d,
-        led_on, false_distribution,
-        node_type, wearable_distribution,
-        loaded_goods, no_goods_distribution,
-        loading_goods, undefined_goods_distribution,
-        querying, no_query_distribution,
-        connection_data, distribution::constant_n<real_t, 1>,
-        pallet_handled, false_distribution
-    >,
-    spawn_schedule<empty_pallet_spawn_s>,
-    init<
-        x, wearable_rectangle_d,
-        node_type, pallet_distribution,
-        loaded_goods, no_goods_distribution,
-        loading_goods, undefined_goods_distribution,
-        querying, no_query_distribution,
-        connection_data, distribution::constant_n<real_t, 6, 10>,
-        pallet_handled, false_distribution
-    >,
     plot_type<plot_t>, // the plot description to be used
     dimension<dim>, // dimensionality of the space
     connector<connect::radial<80,connect::powered<comm,1,dim>>>, // probabilistic connection within a comm range (50% loss at 80% radius)
-    connector<connect::fixed<comm, 1, dim>>,
     shape_tag<node_shape>, // the shape of a node is read from this tag in the store
     size_tag<node_size>,   // the size of a node is read from this tag in the store
     color_tag<node_color, side_color>,  // colors of a node are read from these
-    area<0,0,side,side_2>
+    area<0,0,xside,yside> // viewport area to be displayed
 );
 
 

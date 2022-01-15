@@ -21,9 +21,9 @@
 #define LOG_TYPE_COLLISION_RISK_END 4
 
 #if FCPP_ENVIRONMENT == FCPP_ENVIRONMENT_PHYSICAL
-    #define MSG_SIZE_HARDWARE_LIMIT 224
+    #define MSG_SIZE_HARDWARE_LIMIT 222
 #else
-    #define MSG_SIZE_HARDWARE_LIMIT 224 + 22 // extra space needed for simulation
+    #define MSG_SIZE_HARDWARE_LIMIT 222 + 20 // extra space needed for simulation
 #endif
 
 // [INTRODUCTION]
@@ -388,6 +388,7 @@ using namespace component::tags;
 //! @brief Import tags used by aggregate functions.
 using namespace coordination::tags;
 
+//! @brief Data in the node storage.
 using store_t = tuple_store<
     loaded_goods,           pallet_content_type,
     loading_goods,          pallet_content_type,
@@ -404,6 +405,16 @@ using store_t = tuple_store<
     logging_delay,          std::vector<times_t>,
     pallet_handled,         bool
 >;
+
+//! @brief Dictates that messages are thrown away after 5/1 seconds.
+using retain_t = retain<metric::retain<5, 1>>;
+
+//! @brief The general options.
+DECLARE_OPTIONS(general,
+    export_split<true>,
+    retain_t,
+    store_t
+);
 
 } // namespace option
 

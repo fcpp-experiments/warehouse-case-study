@@ -1,3 +1,9 @@
+// Copyright © 2022 Giorgio Audrito and Lorenzo Testa. All Rights Reserved.
+
+/**
+ * @file warehouse_hardware.hpp
+ * @brief Case study on smart warehouse management (deployment-specific code).
+ */
 #ifndef FCPP_WAREHOUSE_HARDWARE_H_
 #define FCPP_WAREHOUSE_HARDWARE_H_
 
@@ -6,11 +12,16 @@
 #include "dwm1001_hardware_api.h"
 #include "SEGGER_RTT.h"
 
-#define ROUND_PERIOD 1   // time in seconds between transmission rounds
+//! @brief Time in seconds between transmission rounds.
+constexpr size_t round_period = 1;
 
+//! @brief Reference size for the grid disposition in aisles (cm).
 constexpr size_t grid_cell_size = 150;
+
+//! @brief Communication radius (cm).
 constexpr size_t comm = 2500;
 
+//! @brief Print operator for warehouse device type.
 template<typename O>
 O& operator<<(O& o, warehouse_device_type const& t) {
     return o << to_string(t);
@@ -71,23 +82,21 @@ MAIN() {
             // then back with it to loading zone
         }
     }
-
-    constexpr real_t grid_step = 150; // TODO
-    device_t waypoint = warehouse_app(CALL, grid_step, 2000, 0, 0); // TODO: tweak numbers
+    // calls main warehouse app
+    device_t waypoint = warehouse_app(CALL, grid_cell_size, 2000, 0, 0); // TODO: tweak numbers
     // checking if querying wearables has found its pallet
     if (not is_pallet and node.storage(tags::querying{}) != no_query) {
-        if (waypoint != node.uid and details::self(node.nbr_dist(), waypoint) < 0.5*grid_step) {
+        if (waypoint != node.uid and details::self(node.nbr_dist(), waypoint) < 0.5*grid_cell_size) {
             // resetting query and unloading good
             node.storage(tags::loading_goods{}) = no_content;
             node.storage(tags::querying{}) = no_query;
         }
     }
-
     // add flashing lights to handled pallets and querying wearables
     if (int(node.current_time()) % 2 == 0)
         if (node.storage(tags::pallet_handled{}) or node.storage(tags::querying{}) != no_query)
             node.storage(tags::led_on{}) = true;
-    // do something noticeable if led is on
+    // physically turn on led if necessary
     set_led(node.storage(tags::led_on{}));
 }
 FUN_EXPORT main_t = export_list<bool, time_since_t, warehouse_app_t>;
@@ -97,18 +106,19 @@ FUN_EXPORT main_t = export_list<bool, time_since_t, warehouse_app_t>;
 //! @brief Namespace for component options.
 namespace option {
 
-//! @brief Dictates that messages are thrown away after 5/1 seconds.
-using retain_t = retain<metric::retain<5, 1>>;
 //! @brief Dictates that rounds are happening every 1 seconds (den, start, period).
-using schedule_t = round_schedule<sequence::periodic_n<1, ROUND_PERIOD, ROUND_PERIOD>>;
+using schedule_t = round_schedule<sequence::periodic_n<1, round_period, round_period>>;
 
+//! @brief Data to be stored in pallets for later printing.
 using rows_t = plot::rows<
     tuple_store<
         loaded_goods,       pallet_content_type,
         loading_goods,      pallet_content_type,
         querying,           query_type,
         led_on,             bool,
-        pallet_handled,     bool
+        pallet_handled,     bool,
+        new_logs,           std::vector<log_type>,
+        msg_size,           size_t
     >,
     tuple_store<
         global_clock,       times_t
@@ -121,12 +131,11 @@ using rows_t = plot::rows<
 
 //! @brief The general hardware options.
 DECLARE_OPTIONS(list,
+    general,
     base_fcpp_contiki_opt,
     program<coordination::main>,
     exports<coordination::main_t>,
-    retain_t,
     schedule_t,
-    store_t,
     plot_type<rows_t>
 );
 
