@@ -7,6 +7,8 @@
 #ifndef FCPP_WAREHOUSE_SIMULATION_H_
 #define FCPP_WAREHOUSE_SIMULATION_H_
 
+#include <set>
+
 #include "lib/warehouse.hpp"
 
 #define WEARABLE_IDLE 0
@@ -77,6 +79,8 @@ namespace coordination {
         struct pallet_sim_follow {};
         //! @brief Position of the node a pallet follows.
         struct pallet_sim_follow_pos {};
+        //! @brief UID of the waypoint selected for the device.
+        struct waypoint_uid {};
     }
 
 //! @brief Generates a random good type according to a ZIPF distribution.
@@ -108,14 +112,16 @@ FUN vec<3> waypoint_target(ARGS, vec<3> q) { CODE
         return make_vec(qx, p[1], 0) * grid_cell_size;
     // if in vertical corridor
     if (int(p[0])%5 == 3) {
-        real_t qy = (p[1] + q[1])/2;
-        qy = int((qy+1.5)/18) * 18 + 7.5;
+        vec<3> sp = constant(CALL, p); // starting position in the corridor
+        real_t qy = int((p[1] - 7.5)/18) * 18 + 7.5;
+        if (q[1] > qy + 3 and (q[1] > sp[1] or q[1] > qy + 15)) qy += 18;
         return make_vec(p[0], qy, 0) * grid_cell_size;
     }
     // otherwise
     qx = int((p[0]-1)/5) * 5 + 3.5;
     return make_vec(qx, p[1], 0) * grid_cell_size;
 }
+FUN_EXPORT waypoint_target_t = export_list<constant_t<vec<dim>>>;
 
 //! @brief Horizontal distance towards another position.
 FUN real_t distance_from(ARGS, vec<dim> const& other) { CODE
@@ -132,60 +138,24 @@ FUN void stop_mov(ARGS) { CODE
     node.velocity() = make_vec(0,0,0);
 }
 
-//! @brief Computes whether there is a pallet nearby.
-FUN bool pallet_in_near_location(ARGS, vec<dim> loc) { CODE
-    for (auto pallets : details::get_ids(node.nbr_uid())) {
-        if (node.net.node_count(pallets) and
-                norm(loc - node.net.node_at(pallets).position()) < distance_to_consider_same_space) {
-            return true;
-        }
-    }
-    return false;
-}
-
 //! @brief Finds an empty slot in the vicinity of a given device.
 FUN vec<dim> find_actual_space(ARGS, device_t near) { CODE
-    vec<dim> const& near_position = node.net.node_at(near).position();
-    vec<dim> test_position(near_position);
-    vec<dim> limit_test(near_position);
-    bool found = false;
-    for (uint8_t i = 0; i < 3 and !found; i++) {
-        limit_test[1] = (((i * 4) + (14 * (i + 1)) + 9) * grid_cell_size) + (grid_cell_size / 2);
-        found = norm(near_position - limit_test) < distance_to_consider_same_space;
+    std::set<tuple<int,int,int>> full;
+    for (device_t n : details::get_ids(node.nbr_uid())) {
+        vec<dim> p = node.net.node_at(n).position() / grid_cell_size - make_vec(0.5, 0.5, 0.5);
+        full.emplace(p[0], p[1], p[2]);
     }
-    if (!found) {
-        test_position[1] = test_position[1] + grid_cell_size;
-        if (!pallet_in_near_location(CALL, test_position)) {
-            return test_position;
-        }
-    }
-    test_position = near_position;
-    found = false;
-    for (uint8_t i = 0; i < 3 and !found; i++) {
-        limit_test[1] = (((i * 18) + 9) * grid_cell_size) + (grid_cell_size / 2);
-        found = norm(near_position - limit_test) < distance_to_consider_same_space;
-    }
-    if (!found) {
-        test_position[1] = test_position[1] - grid_cell_size;
-        if (!pallet_in_near_location(CALL, test_position)) {
-            return test_position;
-        }
-    }
-    test_position = near_position;
-    if (near_position[2] / grid_cell_size < 2) {
-        test_position[2] = test_position[2] + grid_cell_size;
-        if (!pallet_in_near_location(CALL, test_position)) {
-            return test_position;
-        }
-    }
-    if (near_position[2] / grid_cell_size > 0) {
-        test_position[2] = test_position[2] - grid_cell_size;
-        if (!pallet_in_near_location(CALL, test_position)) {
-            return test_position;
-        }
-    }
-    return make_vec(near_position[0],near_position[1],grid_cell_size * 10);
-}
+    int nx = node.net.node_at(near).position()[0] / grid_cell_size;
+    int ny = node.net.node_at(near).position()[1] / grid_cell_size;
+    std::vector<vec<dim>> spaces;
+    for (int y = ny-1; y <= ny+1; ++y)
+        if ((y+18) % 18 < 6 or y % 18 > 8)
+            for (int z = 0; z <= 2; ++z)
+                if (full.count({nx,y,z}) == 0)
+                    spaces.push_back(make_vec(nx,y,z));
+    if (spaces.size() == 0) spaces.push_back(make_vec(nx,ny,10));
+    return (spaces[node.next_int(spaces.size()-1)] + make_vec(0.5, 0.5, 0.5)) * grid_cell_size;
+ }
 
 //! @brief Tunes displaying properties of nodes based on their status.
 FUN void update_node_visually_in_simulation(ARGS) { CODE
@@ -240,7 +210,7 @@ FUN void setup_nodes_if_first_round_of_simulation(ARGS) { CODE
                 height = node.next_int(0,2);
                 x = ((((row / 2) * 3) + row) * grid_cell_size) + (grid_cell_size / 2);
                 y = ((((col / 15) * 3) + col + 9) * grid_cell_size) + (grid_cell_size / 2);
-                z = height * grid_cell_size;
+                z = height * grid_cell_size + (grid_cell_size / 2);
             } while (used_slots.find(make_tuple(row,col,height)) != used_slots.end());
             used_slots.insert(make_tuple(row,col,height));
             node.position() = make_vec(x,y,z);
@@ -329,9 +299,10 @@ FUN void update_simulation_pre_program(ARGS) { CODE
                     distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space and
                     nearest_pallet == get<2>(current_state)) {
                 if (node.net.node_at(get<2>(current_state)).storage(tags::loaded_goods{}) == no_content) {
-                    int random_x = node.next_int(loading_zone_bound_x_0, loading_zone_bound_x_1);
-                    int random_y = node.next_int(loading_zone_bound_y_0, loading_zone_bound_y_1);
-                    node.storage(tags::wearable_sim_target_pos{}) = make_vec(random_x, random_y, 0);
+                    real_t offs = 3 * grid_cell_size;
+                    real_t y = max(loading_zone_bound_y_0 + offs, min(node.position()[1], loading_zone_bound_y_1 - offs));
+                    y = node.next_real(y-offs, y+offs);
+                    node.storage(tags::wearable_sim_target_pos{}) = make_vec(node.position()[0], y, 0);
                     node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_RETRIEVED, get<1>(current_state), get<2>(current_state));
                 } else if (node.storage(tags::loading_goods{}) == null_content) {
                     node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
@@ -380,7 +351,7 @@ FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
                 waypoint = constant(CALL, waypoint);
                 waypoint_position = target_position = constant(CALL, target_position);
                 waypoint_position[0] = (int((waypoint_position[0]/grid_cell_size-1)/5) * 5 + 3.5) * grid_cell_size;
-                if (distance_from(CALL, waypoint_position) < distance_to_consider_same_space * 0.1) {
+                if (distance_from(CALL, waypoint_position) < distance_to_consider_same_space) {
                     stop_mov(CALL);
                     auto& pallet_node = node.net.node_at(get<2>(current_state), lock);
                     if (norm(pallet_node.position() - pallet_node.storage(tags::pallet_sim_follow_pos{})) < distance_to_consider_same_space * 0.1) {
@@ -388,7 +359,7 @@ FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
                         node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
                         node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_handled{}) = false;
                         pallet_node.storage(tags::pallet_sim_follow_pos{}) = make_vec(0,0,0);
-                    } else if (distance_from(CALL, pallet_node.position()) < distance_to_consider_same_space * 0.5) {
+                    } else if (distance_from(CALL, pallet_node.position()) < distance_to_consider_same_space) {
                         pallet_node.storage(tags::pallet_sim_follow{}) = 0;
                         pallet_node.storage(tags::pallet_sim_follow_pos{}) = find_actual_space(CALL, waypoint);
                     }
@@ -420,15 +391,15 @@ FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
         }
     }
 }
-FUN_EXPORT update_simulation_post_program_t = export_list<constant_t<device_t>, constant_t<vec<dim>>>;
+FUN_EXPORT update_simulation_post_program_t = export_list<constant_t<device_t>, constant_t<vec<dim>>, waypoint_target_t>;
 
 //! @brief Main function.
 MAIN() {
     setup_nodes_if_first_round_of_simulation(CALL);
     update_simulation_pre_program(CALL);
-    device_t waypoint = warehouse_app(CALL, grid_cell_size, comm, 1500, 1.5*forklift_max_speed);
+    node.storage(tags::waypoint_uid{}) = warehouse_app(CALL, grid_cell_size, comm, 1500, 1.5*forklift_max_speed);
     simulation_statistics(CALL);
-    update_simulation_post_program(CALL, waypoint);
+    update_simulation_post_program(CALL, node.storage(tags::waypoint_uid{}));
     update_node_visually_in_simulation(CALL);
 }
 //! @brief Export types used by the main function.
@@ -491,6 +462,7 @@ using simulation_store_t = tuple_store<
     node_size,              double,
     log_received__perc,     double,
     log_redundant__perc,    double,
+    waypoint_uid,           device_t,
     wearable_sim_op,        wearable_sim_state_type,
     wearable_sim_target_pos,vec<dim>,
     pallet_sim_follow,      device_t,

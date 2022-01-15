@@ -236,7 +236,6 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CO
 FUN_EXPORT load_goods_on_pallet_t = export_list<nearest_pallet_device_t, constant_t<device_t>, pallet_content_type, device_t>;
 
 
-// TODO: broadcast dist to cut propagation radius?
 //! @brief Detects potential collision risks.
 FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t threshold, times_t current_clock, real_t comm) { CODE
     bool wearable = node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
@@ -264,6 +263,26 @@ FUN std::vector<log_type> collision_detection(ARGS, real_t radius, real_t thresh
 FUN_EXPORT collision_detection_t = export_list<spawn_t<device_t, bool>, distance_waypoint_t, real_t>;
 
 
+//! @brief Combinatorics over neighbor distances to find whether there is a nearby space (unused).
+FUN bool smart_nearby_space(ARGS, bool is_pallet, real_t grid_step) { CODE
+    field<bool> nbr_pallet = nbr(CALL, is_pallet);
+    if (not is_pallet) return false;
+    field<int> ndi = round(node.nbr_dist() * node.nbr_dist() / (grid_step * grid_step)) * nbr_pallet;
+    int dc[6] = {0,0,0,0,0,0};
+    for (int i=1; i<6; ++i)
+        dc[i] = sum_hood(CALL, field<int>(ndi == i));
+    dc[0] = dc[1] + dc[5];
+    dc[3] = dc[2] + dc[4];
+    dc[4] += dc[1];
+    dc[5] += dc[2];
+    constexpr int lc[6] = {3, 2, 1, 2, 3, 2};
+    for (int i=0; i<6; ++i) if (dc[i] < lc[i])
+        return true;
+    return false;
+}
+//! @brief Export list for smart_nearby_space.
+FUN_EXPORT smart_nearby_space_t = export_list<bool>;
+
 //! @brief Searches the direction towards the closest space.
 FUN device_t find_space(ARGS, real_t grid_step, real_t comm) { CODE
     bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet and
@@ -285,7 +304,6 @@ inline bool match(query_type const& q, pallet_content_type const& c) {
     return get<tags::goods_type>(q) == get<tags::goods_type>(c);
 }
 
-// TODO: broadcast dist to cut propagation radius?
 //! @brief Searches the direction towards the closest pallet with a good matching the query.
 FUN device_t find_goods(ARGS, query_type query, real_t comm) { CODE
     using key_type = tuple<device_t,query_type>;
