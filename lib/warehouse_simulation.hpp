@@ -327,12 +327,15 @@ FUN void update_simulation_pre_program(ARGS) { CODE
             } else if (distance_from(CALL, node.storage(tags::wearable_sim_target_pos{})) < distance_to_consider_same_space and
                     distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space and
                     nearest_pallet == get<2>(current_state)) {
-                node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
-                node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_handled{}) = false;
-                goods_counter[get<1>(current_state)] = goods_counter[get<1>(current_state)] - 1;
-                node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_IDLE, NO_GOODS, 0);
-                node.storage(tags::wearable_sim_target_pos{}) = make_vec(0,0,0);
-                node.storage(tags::loading_goods{}) = no_content;
+                if (node.net.node_at(get<2>(current_state)).storage(tags::loaded_goods{}) == no_content) {
+                    node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_handled{}) = false;
+                    node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_IDLE, NO_GOODS, 0);
+                    node.storage(tags::wearable_sim_target_pos{}) = make_vec(0,0,0);
+                } else if (node.storage(tags::loading_goods{}) == null_content) {
+                    node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
+                    goods_counter[get<1>(current_state)] = goods_counter[get<1>(current_state)] - 1;
+                    node.storage(tags::loading_goods{}) = no_content;
+                }
             }
         } else if (get<0>(current_state) == WEARABLE_INSERTED) {
             if (make_vec(0,0,0) == node.storage(tags::wearable_sim_target_pos{})) {
@@ -517,9 +520,9 @@ DECLARE_OPTIONS(list,
     exports<coordination::main_t>, // export type list (types used in messages)
     round_schedule<round_s>, // the sequence generator for round events on nodes
     log_schedule<log_s>,     // the sequence generator for log events on the network
-    device<warehouse_device_type::Wearable, wearable_node_num,     loading_rectangle_d>, // wearable devices (in loading zone)
-    device<warehouse_device_type::Pallet,   empty_pallet_node_num, loading_rectangle_d>, // empty pallets in loading zone
     device<warehouse_device_type::Pallet,   pallet_node_num,       aisle_rectangle_d>,   // stored pallets in aisles
+    device<warehouse_device_type::Pallet,   empty_pallet_node_num, loading_rectangle_d>, // empty pallets in loading zone
+    device<warehouse_device_type::Wearable, wearable_node_num,     loading_rectangle_d>, // wearable devices (in loading zone)
     simulation_store_t, // the additional contents of the node storage
     aggregator_t,  // the tags and corresponding aggregators to be logged
     plot_type<plot_t>, // the plot description to be used
