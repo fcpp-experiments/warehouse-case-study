@@ -9,7 +9,7 @@ int button_is_pressed(void) {
 
 void set_led(int led_on) {
     if (led_on) {
-        leds_on(LEDS_1);
+        leds_on(LEDS_1 | LEDS_2 | LEDS_3 | LEDS_4);
     } else {
         leds_off(LEDS_1 | LEDS_2 | LEDS_3 | LEDS_4);
     }

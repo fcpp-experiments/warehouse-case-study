@@ -16,10 +16,10 @@
 constexpr size_t round_period = 1;
 
 //! @brief Reference size for the grid disposition in aisles (cm).
-constexpr size_t grid_cell_size = 150;
+constexpr size_t grid_cell_size = 100;
 
 //! @brief Communication radius (cm).
-constexpr size_t comm = 2500;
+constexpr size_t comm = 160;
 
 //! @brief Print operator for warehouse device type.
 template<typename O>
@@ -89,7 +89,7 @@ MAIN() {
         }
     }
     // calls main warehouse app
-    device_t waypoint = warehouse_app(CALL, grid_cell_size, 2000, 0, 0); // TODO: tweak numbers
+    device_t waypoint = warehouse_app(CALL, grid_cell_size, comm, 0, 0); // TODO: tweak numbers
     // checking if querying wearables has found its pallet
     if (not is_pallet and node.storage(tags::querying{}) != no_query) {
         if (waypoint != node.uid and details::self(node.nbr_dist(), waypoint) < 0.5*grid_cell_size) {
