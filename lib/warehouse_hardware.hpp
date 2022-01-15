@@ -118,7 +118,7 @@ using rows_t = plot::rows<
         led_on,             bool,
         pallet_handled,     bool,
         new_logs,           std::vector<log_type>,
-        msg_size,           size_t
+        msg_size,           uint8_t
     >,
     tuple_store<
         global_clock,       times_t
