@@ -15,6 +15,7 @@
 #define WEARABLE_INSERTING 3
 #define WEARABLE_RETRIEVING 4
 #define WEARABLE_INSERTED 5
+#define WEARABLE_RETRIEVED 6
 
 //! @brief Number of wearables (forklifts).
 constexpr size_t wearable_node_num = 6;
@@ -328,14 +329,21 @@ FUN void update_simulation_pre_program(ARGS) { CODE
                     distance_from(CALL, node.net.node_at(get<2>(current_state)).position()) < distance_to_consider_same_space and
                     nearest_pallet == get<2>(current_state)) {
                 if (node.net.node_at(get<2>(current_state)).storage(tags::loaded_goods{}) == no_content) {
-                    node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_handled{}) = false;
-                    node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_IDLE, NO_GOODS, 0);
-                    node.storage(tags::wearable_sim_target_pos{}) = make_vec(0,0,0);
+                    int random_x = node.next_int(loading_zone_bound_x_0, loading_zone_bound_x_1);
+                    int random_y = node.next_int(loading_zone_bound_y_0, loading_zone_bound_y_1);
+                    node.storage(tags::wearable_sim_target_pos{}) = make_vec(random_x, random_y, 0);
+                    node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_RETRIEVED, get<1>(current_state), get<2>(current_state));
                 } else if (node.storage(tags::loading_goods{}) == null_content) {
                     node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_sim_follow{}) = 0;
                     goods_counter[get<1>(current_state)] = goods_counter[get<1>(current_state)] - 1;
                     node.storage(tags::loading_goods{}) = no_content;
                 }
+            }
+        } else if (get<0>(current_state) == WEARABLE_RETRIEVED) {
+            if (distance_from(CALL, node.storage(tags::wearable_sim_target_pos{})) < distance_to_consider_same_space) {
+                node.net.node_at(get<2>(current_state), lock).storage(tags::pallet_handled{}) = false;
+                node.storage(tags::wearable_sim_op{}) = make_tuple(WEARABLE_IDLE, NO_GOODS, 0);
+                node.storage(tags::wearable_sim_target_pos{}) = make_vec(0,0,0);
             }
         } else if (get<0>(current_state) == WEARABLE_INSERTED) {
             if (make_vec(0,0,0) == node.storage(tags::wearable_sim_target_pos{})) {
@@ -399,7 +407,7 @@ FUN void update_simulation_post_program(ARGS, device_t waypoint) { CODE
             } else {
                 follow_target(CALL, waypoint_target(CALL, target_position), forklift_max_speed, real_t(1.0));
             }
-        } else if (get<0>(current_state) == WEARABLE_RETRIEVING or get<0>(current_state) == WEARABLE_INSERTED) {
+        } else if (get<0>(current_state) == WEARABLE_RETRIEVING or get<0>(current_state) == WEARABLE_RETRIEVED or get<0>(current_state) == WEARABLE_INSERTED) {
             follow_target(CALL, waypoint_target(CALL, node.storage(tags::wearable_sim_target_pos{})), forklift_max_speed, real_t(1.0));
         }
     } else {

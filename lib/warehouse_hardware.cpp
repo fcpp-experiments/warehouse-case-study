@@ -44,7 +44,10 @@ DECLARE_COMBINE(dwm1001_deployment, log_dumper, hardware_logger, storage, hardwa
 
 using component_type = component::dwm1001_deployment<fcpp::option::list>;
 
-static auto input_tuple = common::make_tagged_tuple<plotter, loaded_goods, loading_goods, querying>(&row_store,
-    coordination::no_content, coordination::null_content, fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS));
+static os::dwm1001_network::data_type driver_settings("DWM", -20);
+
+static auto input_tuple = common::make_tagged_tuple<plotter, loaded_goods, loading_goods, querying, connection_data>(
+    &row_store, coordination::no_content, coordination::null_content, 
+    fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS), driver_settings);
 
 FCPP_CONTIKI(component_type, input_tuple)

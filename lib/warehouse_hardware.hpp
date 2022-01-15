@@ -31,6 +31,11 @@ namespace fcpp {
 
 namespace coordination {
 
+    namespace tags {
+        //! @brief The number of neighbours for debug purposes
+        struct nbr_count {};
+    }
+
 /**
  * DEPLOYMENT PLAN:
  *
@@ -44,6 +49,7 @@ namespace coordination {
  * - querying wearable has flashing lights (turns off on load)
  */
 MAIN() {
+    node.storage(tags::nbr_count{}) = sum_hood(CALL, nbr(CALL, uint8_t{1}), uint8_t{0});;
     // primitive check of button status
     bool button = button_is_pressed();
     // detect a short press
@@ -99,7 +105,7 @@ MAIN() {
     // physically turn on led if necessary
     set_led(node.storage(tags::led_on{}));
 }
-FUN_EXPORT main_t = export_list<bool, time_since_t, warehouse_app_t>;
+FUN_EXPORT main_t = export_list<uint8_t, bool, time_since_t, warehouse_app_t>;
 
 } // namespace coordination
 
@@ -129,8 +135,13 @@ using rows_t = plot::rows<
     1024*10
 >;
 
+using namespace coordination::tags;
+
 //! @brief The general hardware options.
 DECLARE_OPTIONS(list,
+    tuple_store<
+        nbr_count,  uint8_t
+    >,
     general,
     base_fcpp_contiki_opt,
     program<coordination::main>,
