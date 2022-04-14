@@ -16,10 +16,10 @@
 constexpr size_t round_period = 1;
 
 //! @brief Reference size for the grid disposition in aisles (cm).
-constexpr size_t grid_cell_size = 100;
+constexpr size_t grid_cell_size = 90;
 
 //! @brief Communication radius (cm).
-constexpr size_t comm = 160;
+constexpr size_t comm = 230;
 
 //! @brief Print operator for warehouse device type.
 template<typename O>
@@ -57,7 +57,11 @@ MAIN() {
     // terminate on 5s long press
     if (time_since(CALL, not button) >= 5) node.terminate();
     // set up node type
-    bool is_pallet = node.uid != WEARABLE_ID;
+#if REPLY_PLATFORM == 1
+    bool is_pallet = true;
+#else
+    bool is_pallet = false;
+#endif
     node.storage(tags::node_type{}) = is_pallet ? warehouse_device_type::Pallet : warehouse_device_type::Wearable;
     // effect of button on pallets
     if (is_pallet and button_pressed) {
@@ -75,17 +79,21 @@ MAIN() {
         // might be equally loading or unloading
         bool is_loading = node.next_int(1);
         if (is_loading) {
+            int target = std::min(node.next_int(3), node.next_int(3));
             // loading random good between 0 and 2
-            node.storage(tags::loading_goods{}) = node.next_int(2);
+            node.storage(tags::loading_goods{}) = target;
             node.storage(tags::querying{}) = no_query;
             // experimenter should move it close to an empty pallet,
             // then with it to a space following led lights, and back
+            printf("###### STARTING LOADING GOOODS %d #######\n", target);
         } else {
+            int target = std::min(node.next_int(3), node.next_int(3));
             // querying for a random good between 0 and 2
             node.storage(tags::loading_goods{}) = null_content;
-            node.storage(tags::querying{}) = node.next_int(2);
+            node.storage(tags::querying{}) = target;
             // experimenter should follow led lights to find pallet to unload,
             // then back with it to loading zone
+            printf("###### STARTING QUERYING GOOODS %d #######\n", target);
         }
     }
     // calls main warehouse app
