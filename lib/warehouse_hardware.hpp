@@ -12,6 +12,10 @@
 #include "dwm1001_hardware_api.h"
 #include "SEGGER_RTT.h"
 
+#if REPLY_PLATFORM == 1
+#include "reply_fs_stream.hpp"
+#endif
+
 //! @brief Time in seconds between transmission rounds.
 constexpr size_t round_period = 1;
 
@@ -155,6 +159,9 @@ DECLARE_OPTIONS(list,
     program<coordination::main>,
     exports<coordination::main_t>,
     schedule_t,
+#if REPLY_PLATFORM == 1
+    stream_type<reply_fs_stream>,
+#endif
     plot_type<rows_t>
 );
 

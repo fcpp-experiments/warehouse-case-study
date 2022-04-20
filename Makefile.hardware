@@ -9,7 +9,9 @@ PRINTF_OVER_RTT=1
 REPLY_PLATFORM=1
 
 ifeq ($(REPLY_PLATFORM),1)
-  PROJECT_SOURCEFILES += dwm1001_reply_hardware_api.c
+  PROJECTDIRS += lib/reply_hardware_persistance
+  PROJECT_SOURCEFILES += cfs-xmem.c SPI_mem_manager.c xmem.c mem-arch.c flash_mem_manager.c 
+  PROJECT_SOURCEFILES += dwm1001_reply_hardware_api.c reply_fs_stream.cpp
   CFLAGS += -DREPLY_PLATFORM=1
 else
   PROJECT_SOURCEFILES += dwm1001_dev_hardware_api.c

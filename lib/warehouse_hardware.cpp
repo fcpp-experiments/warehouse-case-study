@@ -1,4 +1,5 @@
 #include "warehouse_hardware.hpp"
+#include "flash_mem_manager.h"
 
 using namespace fcpp;
 using namespace fcpp::option;
@@ -30,6 +31,9 @@ struct log_dumper {
                 SEGGER_RTT_SetFlagsUpBuffer(0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
                 *m_stream << "----" << std::endl << "log size " << row_store.byte_size() << std::endl;
                 row_store.print(*m_stream);
+                char file_name[] = "file";
+                int fd = open_file(file_name, 5, WRITE_MODE);
+                close_file_forever(fd);
             }
 
             //! @brief The stream where data is exported.
@@ -38,7 +42,11 @@ struct log_dumper {
     };
 };
 
-DECLARE_COMBINE(dwm1001_deployment, log_dumper, hardware_logger, storage, hardware_connector, timer, scheduler, hardware_identifier, randomizer, calculus);
+DECLARE_COMBINE(dwm1001_deployment, log_dumper, hardware_logger, 
+#if REPLY_PLATFORM == 1
+persister,
+#endif
+storage, hardware_connector, timer, scheduler, hardware_identifier, randomizer, calculus);
 
 } // namespace fcpp::component
 
@@ -46,8 +54,16 @@ using component_type = component::dwm1001_deployment<fcpp::option::list>;
 
 static os::dwm1001_network::data_type driver_settings("DWM", -12, 3, 2, 0.1 * CLOCK_SECOND);
 
-static auto input_tuple = common::make_tagged_tuple<plotter, loaded_goods, loading_goods, querying, connection_data>(
+static auto input_tuple = common::make_tagged_tuple<plotter, loaded_goods, loading_goods, querying, connection_data
+#if REPLY_PLATFORM == 1
+    ,persistence_path
+#endif
+>(
     &row_store, coordination::no_content, coordination::null_content, 
-    fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS), driver_settings);
+    fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS), driver_settings
+#if REPLY_PLATFORM == 1
+    ,"DWMPersistance"
+#endif
+);
 
 FCPP_CONTIKI(component_type, input_tuple)

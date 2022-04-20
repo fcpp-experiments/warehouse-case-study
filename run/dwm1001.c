@@ -9,6 +9,8 @@
 
 #if REPLY_PLATFORM == 1
 
+#include "flash_mem_manager.h"
+
 #define VIBRATOR_PIN        29
 #define SW_POWER_OFF_PIN    22
 #define LED2_PIN            30
