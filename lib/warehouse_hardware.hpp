@@ -40,6 +40,15 @@ namespace coordination {
         struct nbr_count {};
     }
 
+//! @brief Number of rounds elapsed since the last true `value`.
+template <typename node_t>
+inline int rounds_since(node_t& node, trace_t call_point, bool value) {
+    return value ? 0 : counter(node, call_point, uint8_t{1}, 0);
+}
+//! @brief Export list for rounds_since.
+using rounds_since_t = common::export_list<uint8_t>;
+
+
 /**
  * DEPLOYMENT PLAN:
  *
@@ -53,13 +62,17 @@ namespace coordination {
  * - querying wearable has flashing lights (turns off on load)
  */
 MAIN() {
-    node.storage(tags::nbr_count{}) = sum_hood(CALL, nbr(CALL, uint8_t{1}), uint8_t{0});;
     // primitive check of button status
     bool button = button_is_pressed();
-    // detect a short press
-    bool button_pressed = old(CALL, not button) and button;
     // terminate on 5s long press
-    if (time_since(CALL, not button) >= 5) node.terminate();
+    if (rounds_since(CALL, not button) >= 5) {
+        node.terminate();
+        return;
+    }
+    // detect a short press
+    bool button_pressed = old(CALL, uint8_t{button}) and not button;
+    // number of neighbours (for debugging)
+    node.storage(tags::nbr_count{}) = node.size();
     // set up node type
 #if REPLY_PLATFORM == 1
     bool is_pallet = true;
@@ -117,7 +130,7 @@ MAIN() {
     // physically turn on led if necessary
     set_led(node.storage(tags::led_on{}));
 }
-FUN_EXPORT main_t = export_list<uint8_t, bool, time_since_t, warehouse_app_t>;
+FUN_EXPORT main_t = export_list<uint8_t, rounds_since_t, warehouse_app_t>;
 
 } // namespace coordination
 

@@ -165,11 +165,11 @@ namespace coordination {
 // [AGGREGATE PROGRAM]
 
 FUN device_t nearest_pallet_device(ARGS) { CODE
-    field<bool> nbr_pallet = nbr(CALL, node.storage(tags::node_type{}) == warehouse_device_type::Pallet);
+    field<uint8_t> nbr_pallet = nbr(CALL, uint8_t{node.storage(tags::node_type{}) == warehouse_device_type::Pallet});
     return get<1>(min_hood(CALL, make_tuple(mux(nbr_pallet, node.nbr_dist(), INF), node.nbr_uid())));
 }
 //! @brief Export list for nearest_pallet_device.
-FUN_EXPORT nearest_pallet_device_t = export_list<bool>;
+FUN_EXPORT nearest_pallet_device_t = export_list<uint8_t>;
 
 
 //! @brief Computes the distance of every neighbour from a source, and the best waypoint towards it (distorting the nbr_dist metric).
@@ -211,20 +211,20 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CO
     // whether I am a wearable that is about to load
     bool is_loading = loading != null_content;
     // the loading or loaded good of a neighbor
-    field<pallet_content_type> nbr_good = nbr(CALL, is_loading ? loading : loaded);
+    field<uint8_t> nbr_good = nbr(CALL, get<0>(is_loading ? loading : loaded));
     // the nearest pallet device for loading neighbors
     device_t nearest = nearest_pallet_device(CALL);
-    field<device_t> nbr_nearest = nbr(CALL, is_loading ? constant(CALL, nearest) : node.uid);
+    field<real_t> nbr_nearest = nbr(CALL, is_loading ? constant(CALL, (real_t)nearest) : (real_t)node.uid);
     // the loading logs vector
     std::vector<log_type> loading_logs;
     // a loading wearable with a matching nearest good is reset
-    if (is_loading and details::self(nbr_good, nearest) == loading) {
+    if (is_loading and details::self(nbr_good, nearest) == get<0>(loading)) {
         loading = null_content;
         loading_logs.emplace_back(LOG_TYPE_HANDLE_PALLET, node.uid, discretizer(current_clock), nearest);
     }
     // loading good if nearest for a neighbor (breaking ties by highest good type)
-    auto t = max_hood(CALL, fcpp::make_tuple(nbr_nearest == node.uid, nbr_good), fcpp::make_tuple(false, no_content));
-    if (get<0>(t) and loaded != get<1>(t)) {
+    auto t = max_hood(CALL, fcpp::make_tuple(nbr_nearest == node.uid, nbr_good), fcpp::make_tuple(false, get<0>(no_content)));
+    if (get<0>(t) and get<0>(loaded) != get<1>(t)) {
         node.storage(tags::pallet_handled{}) = true;
         load_content(loaded, get<1>(t));
         loading_logs.emplace_back(LOG_TYPE_PALLET_CONTENT_CHANGE, node.uid, discretizer(current_clock), log_content(get<1>(t)));
@@ -233,7 +233,7 @@ FUN std::vector<log_type> load_goods_on_pallet(ARGS, times_t current_clock) { CO
     return loading_logs;
 }
 //! @brief Export list for load_goods_on_pallet.
-FUN_EXPORT load_goods_on_pallet_t = export_list<nearest_pallet_device_t, constant_t<device_t>, pallet_content_type, device_t>;
+FUN_EXPORT load_goods_on_pallet_t = export_list<nearest_pallet_device_t, constant_t<real_t>, real_t, uint8_t>;
 
 
 //! @brief Detects potential collision risks.
@@ -288,13 +288,15 @@ FUN device_t find_space(ARGS, real_t grid_step, real_t comm) { CODE
     bool is_pallet = node.storage(tags::node_type{}) == warehouse_device_type::Pallet and
         node.storage(tags::loaded_goods{}) != no_content and
         node.storage(tags::pallet_handled{}) == false;
-    int pallet_count = sum_hood(CALL, field<int>{node.nbr_dist() < 1.2 * grid_step and nbr(CALL, is_pallet)}, 0);
+    int pallet_count = fold_hood(CALL, [&](tuple<real_t, uint8_t> t, int c){
+        return c + (get<0>(t) < 1.2 * grid_step and get<1>(t));
+    }, make_tuple(node.nbr_dist(), nbr(CALL, uint8_t{is_pallet})), 0);
     bool source = is_pallet and pallet_count < 2;
     auto t = distance_waypoint(CALL, source, 0.1*comm);
     return get<1>(t);
 }
 //! @brief Export list for find_space.
-FUN_EXPORT find_space_t = export_list<distance_waypoint_t, bool>;
+FUN_EXPORT find_space_t = export_list<distance_waypoint_t, uint8_t>;
 
 //! @brief No query.
 constexpr query_type no_query{NO_GOODS};
@@ -329,12 +331,13 @@ bool is_sorted(std::vector<log_type> const& v) {
 //! @brief Collects logs towards wearables of given UID parity.
 FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> const& new_logs, int parity) { CODE
     bool source = node.uid % 2 == parity and node.storage(tags::node_type{}) == warehouse_device_type::Wearable;
-    field<hops_t> nbrdist = nbr(CALL, std::numeric_limits<hops_t>::max(), [&](field<hops_t> d){
-        hops_t nd = min_hood(CALL, d, source ? hops_t(-1) : std::numeric_limits<hops_t>::max()-1) + 1;
+    field<uint8_t> nbrdist = nbr(CALL, std::numeric_limits<uint8_t>::max(), [&](field<uint8_t> d){
+        uint8_t nd = min_hood(CALL, d, std::numeric_limits<uint8_t>::max());
+        nd = source ? 0 : nd + 1;
         mod_self(CALL, d) = nd;
         return make_tuple(std::move(d), nd);
     });
-    hops_t dist = self(CALL, nbrdist);
+    uint8_t dist = self(CALL, nbrdist);
     std::vector<log_type> r = nbr(CALL, std::vector<log_type>{}, [&](field<std::vector<log_type>> nl){
         std::vector<log_type> uplogs   = sum_hood(CALL, mux(nbrdist > dist, nl, std::vector<log_type>{}));
         std::vector<log_type> downlogs = sum_hood(CALL, mux(nbrdist < dist, nl, std::vector<log_type>{}));
@@ -344,7 +347,7 @@ FUN std::vector<log_type> single_log_collection(ARGS, std::vector<log_type> cons
     return source ? r : std::vector<log_type>{};
 }
 //! @brief Export list for single_log_collection.
-FUN_EXPORT single_log_collection_t = export_list<hops_t, std::vector<log_type>>;
+FUN_EXPORT single_log_collection_t = export_list<uint8_t, std::vector<log_type>>;
 
 //! @brief Collects logs towards wearables with redundancy.
 FUN std::vector<log_type> log_collection(ARGS, std::vector<log_type> const& new_logs) { CODE
@@ -389,12 +392,12 @@ FUN device_t warehouse_app(ARGS, real_t grid_step, real_t comm_rad, real_t safet
     device_t space_waypoint = find_space(CALL, grid_step, comm_rad);
     device_t goods_waypoint = find_goods(CALL, node.storage(tags::querying{}), comm_rad);
     device_t waypoint = is_pallet ? node.uid : node.storage(tags::querying{}) == no_query ? space_waypoint : goods_waypoint;
-    node.storage(tags::led_on{}) = any_hood(CALL, nbr(CALL, waypoint) == node.uid, false);
+    node.storage(tags::led_on{}) = any_hood(CALL, nbr(CALL, (real_t)waypoint) == node.uid, false);
     statistics(CALL, current_clock);
     return waypoint;
 }
 //! @brief Export list for warehouse_app.
-FUN_EXPORT warehouse_app_t = export_list<shared_clock_t, load_goods_on_pallet_t, collision_detection_t, find_space_t, find_goods_t, device_t, log_collection_t, statistics_t>;
+FUN_EXPORT warehouse_app_t = export_list<shared_clock_t, load_goods_on_pallet_t, collision_detection_t, find_space_t, find_goods_t, real_t, log_collection_t, statistics_t>;
 
 } // namespace coordination
 
