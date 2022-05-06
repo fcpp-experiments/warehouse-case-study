@@ -1,5 +1,8 @@
 #include "warehouse_hardware.hpp"
+
+#if REPLY_PLATFORM == 1
 #include "flash_mem_manager.h"
+#endif
 
 using namespace fcpp;
 using namespace fcpp::option;
@@ -27,13 +30,15 @@ struct log_dumper {
 
             void terminate() {
                 P::node::terminate();
+                #if REPLY_PLATFORM == 1
+                char file_name[] = "file";
+                int fd = open_file(file_name, 5, WRITE_MODE);
+                close_file_forever(fd);
+                #endif
                 // force full log
                 SEGGER_RTT_SetFlagsUpBuffer(0, SEGGER_RTT_MODE_BLOCK_IF_FIFO_FULL);
                 *m_stream << "----" << std::endl << "log size " << row_store.byte_size() << std::endl;
                 row_store.print(*m_stream);
-                char file_name[] = "file";
-                int fd = open_file(file_name, 5, WRITE_MODE);
-                close_file_forever(fd);
             }
 
             //! @brief The stream where data is exported.
@@ -58,12 +63,14 @@ static auto input_tuple = common::make_tagged_tuple<plotter, loaded_goods, loadi
 #if REPLY_PLATFORM == 1
     ,persistence_path
 #endif
+,hoodsize
 >(
     &row_store, coordination::no_content, coordination::null_content, 
     fcpp::common::make_tagged_tuple<coordination::tags::goods_type>(NO_GOODS), driver_settings
 #if REPLY_PLATFORM == 1
     ,"DWMPersistance"
 #endif
+,static_cast<device_t>(5)
 );
 
 FCPP_CONTIKI(component_type, input_tuple)

@@ -220,8 +220,7 @@ xmem_pwrite(const void *_buf, int size, unsigned long addr)
 int
 xmem_erase(long size, unsigned long addr)
 {
-  printf("xmem erase \n");
-  // NRF_LOG_DEBUG("xmem erase");
+  //printf("xmem erase \n");
   unsigned long end = addr + size;
 
   if(size % XMEM_ERASE_UNIT_SIZE != 0) {

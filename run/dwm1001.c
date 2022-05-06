@@ -35,7 +35,7 @@ PROCESS_THREAD(app_process, ev, data) {
 	nrf_gpio_cfg_output(VIBRATOR_PIN);
 	nrf_gpio_pin_clear(VIBRATOR_PIN);
 #endif
-  for (i = 0; i < 20; i++) {
+  for (i = 0; i < 10; i++) {
     set_led((i + 1) % 2);
     etimer_set(&et, 0.2 * CLOCK_SECOND);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));

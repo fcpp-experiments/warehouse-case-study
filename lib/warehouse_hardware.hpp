@@ -20,10 +20,10 @@
 constexpr size_t round_period = 1;
 
 //! @brief Reference size for the grid disposition in aisles (cm).
-constexpr size_t grid_cell_size = 90;
+constexpr size_t grid_cell_size = 50;
 
 //! @brief Communication radius (cm).
-constexpr size_t comm = 230;
+constexpr size_t comm = 150;
 
 //! @brief Print operator for warehouse device type.
 template<typename O>
@@ -74,7 +74,7 @@ MAIN() {
     // number of neighbours (for debugging)
     node.storage(tags::nbr_count{}) = node.size();
     // set up node type
-#if REPLY_PLATFORM == 1
+#if IS_PALLET == 1
     bool is_pallet = true;
 #else
     bool is_pallet = false;
@@ -124,9 +124,9 @@ MAIN() {
         }
     }
     // add flashing lights to handled pallets and querying wearables
-    if (int(node.current_time()) % 2 == 0)
-        if (node.storage(tags::pallet_handled{}) or node.storage(tags::querying{}) != no_query)
-            node.storage(tags::led_on{}) = true;
+    if (node.storage(tags::pallet_handled{}) or node.storage(tags::querying{}) != no_query) {
+        node.storage(tags::led_on{}) = int(node.current_time()) % 2 == 0;
+    }
     // physically turn on led if necessary
     set_led(node.storage(tags::led_on{}));
 }
