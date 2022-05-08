@@ -5,7 +5,7 @@
  * @brief Runs multiple executions of the warehouse case study non-interactively from the command line, producing overall plots.
  */
 
-#include "lib/warehouse.hpp"
+#include "lib/warehouse_simulation.hpp"
 
 using namespace fcpp;
 
@@ -25,6 +25,6 @@ int main() {
     //! @brief Runs the given simulations.
     batch::run(comp_t{}, init_list);
     //! @brief Builds the resulting plots.
-    //std::cout << plot::file("batch", p.build());
+    std::cout << plot::file("batch", p.build());
     return 0;
 }
